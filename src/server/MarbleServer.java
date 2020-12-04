@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import com.google.gson.Gson;
 
+import protocol.ChatDto;
+import protocol.GameDto;
 import protocol.Protocol;
 
 public class MarbleServer {
@@ -42,23 +44,27 @@ public class MarbleServer {
 	// 유저 입장 시 생성되는 스레드
 	class PlayerThread {
 		private Socket socket;
+		private ChatThread ct;
+		private GameThread gt;
 		
 		public PlayerThread(Socket socket) {
 			this.socket = socket;
 		}
 		
 		void start() {
-			ChatThread ct = new ChatThread(socket);
+			ct = new ChatThread(socket);
 			ct.start();
+			gt = new GameThread(socket);
+			gt.start();
 		}
 	}
 	
 	// 유저 채팅을 위한 스레드
 	class ChatThread extends Thread {
-		private Socket socket;
 		private BufferedReader reader;
 		private PrintWriter writer;
 		private String id;
+		private ChatDto chatDto;
 		
 		public ChatThread(Socket socket) {
 			try {
@@ -73,9 +79,65 @@ public class MarbleServer {
 		public void run() {
 			String text = null;
 			Gson gson = new Gson();
+			chatDto = new ChatDto();
+			try {
+				while ((text = reader.readLine()) != null) {
+					chatDto = gson.fromJson(text, ChatDto.class);
+					
+					String tempText = "["+chatDto.getId()+"] " + chatDto.getText();
+					// user connect 시 최초 호출(서버에 id값 입력을 위함)
+					if (chatDto.getGubun().equals("IdSettingCode")) {
+						this.id = chatDto.getId();
+					}
+					if (!(tempText.contains("IdSettingCode"))) {
+						for (int i = 0; i < vc.size(); i++) {
+							vc.get(i).ct.writer.println(tempText);
+						}
+					}
+				}
+			} catch (IOException e) {
+				System.out.println(TAG + "연결 종료");
+			}
 		}
 	}
-	
+
+	// 게임 정보 전송을 위한 스레드
+	class GameThread extends Thread {
+		private BufferedReader reader;
+		private PrintWriter writer;
+		private String id;
+		private GameDto gameDto;
+		private int dice1;
+		private int dice2;
+		
+		public GameThread(Socket socket) {
+			try {
+				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				writer = new PrintWriter(socket.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		public void run() {
+			String text = null;
+			Gson gson = new Gson();
+			gameDto = new GameDto();
+			try {
+				while ((text = reader.readLine()) != null) {
+					gameDto = gson.fromJson(text, GameDto.class);
+					
+					dice1 = gameDto.getDice1();
+					dice2 = gameDto.getDice2();
+					
+					
+				}
+			} catch (IOException e) {
+				System.out.println(TAG + "연결 종료");
+			}
+		}
+	}
 	
 	public static void main(String[] args) {
 		new MarbleServer();
