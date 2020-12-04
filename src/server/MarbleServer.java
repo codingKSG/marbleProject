@@ -54,22 +54,24 @@ public class MarbleServer {
 		void start() {
 			ct = new ChatThread(socket);
 			ct.start();
+			System.out.println(TAG + "ChatThread 실행");
 			gt = new GameThread(socket);
 			gt.start();
+			System.out.println(TAG + "GameThread 실행");
 		}
 	}
 	
 	// 유저 채팅을 위한 스레드
 	class ChatThread extends Thread {
-		private BufferedReader reader;
-		private PrintWriter writer;
+		private BufferedReader chatReader;
+		private PrintWriter chatWriter;
 		private String id;
 		private ChatDto chatDto;
 		
 		public ChatThread(Socket socket) {
 			try {
-				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				writer = new PrintWriter(socket.getOutputStream());
+				chatReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				chatWriter = new PrintWriter(socket.getOutputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -81,7 +83,7 @@ public class MarbleServer {
 			Gson gson = new Gson();
 			chatDto = new ChatDto();
 			try {
-				while ((text = reader.readLine()) != null) {
+				while ((text = chatReader.readLine()) != null) {
 					chatDto = gson.fromJson(text, ChatDto.class);
 					
 					String tempText = "["+chatDto.getId()+"] " + chatDto.getText();
@@ -91,7 +93,7 @@ public class MarbleServer {
 					}
 					if (!(tempText.contains("IdSettingCode"))) {
 						for (int i = 0; i < vc.size(); i++) {
-							vc.get(i).ct.writer.println(tempText);
+							vc.get(i).ct.chatWriter.println(tempText);
 						}
 					}
 				}
@@ -103,8 +105,8 @@ public class MarbleServer {
 
 	// 게임 정보 전송을 위한 스레드
 	class GameThread extends Thread {
-		private BufferedReader reader;
-		private PrintWriter writer;
+		private BufferedReader gameReader;
+		private PrintWriter gameWriter;
 		private String id;
 		private GameDto gameDto;
 		private int dice1;
@@ -112,8 +114,8 @@ public class MarbleServer {
 		
 		public GameThread(Socket socket) {
 			try {
-				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				writer = new PrintWriter(socket.getOutputStream());
+				gameReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				gameWriter = new PrintWriter(socket.getOutputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -125,13 +127,11 @@ public class MarbleServer {
 			Gson gson = new Gson();
 			gameDto = new GameDto();
 			try {
-				while ((text = reader.readLine()) != null) {
+				while ((text = gameReader.readLine()) != null) {
 					gameDto = gson.fromJson(text, GameDto.class);
 					
 					dice1 = gameDto.getDice1();
 					dice2 = gameDto.getDice2();
-					
-					
 				}
 			} catch (IOException e) {
 				System.out.println(TAG + "연결 종료");
