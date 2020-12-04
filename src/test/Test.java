@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import protocol.JFrameSet;
+import tile.IslandTile;
 
 public class Test extends JFrame implements JFrameSet{
 	private Test test = this;
@@ -28,7 +29,7 @@ public class Test extends JFrame implements JFrameSet{
 		batch();
 		listener();
 		
-		
+		System.out.println();
 		
 		setVisible(true);
 	}
@@ -48,6 +49,8 @@ public class Test extends JFrame implements JFrameSet{
 		c = getContentPane();
 		setLayout(new GridLayout(3,3,5,5));
 		
+		IslandTile seoul = new IslandTile(500, 400, 5000, null);
+		
 	}
 
 	@Override
@@ -63,7 +66,8 @@ public class Test extends JFrame implements JFrameSet{
 	}
 
 	@Override
-	public void batch() {
+	public void batch() {		
+		
 		add(tile4);
 		add(tile5);
 		add(tile6);
@@ -78,13 +82,14 @@ public class Test extends JFrame implements JFrameSet{
 
 	@Override
 	public void listener() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	
 	
-	class groundLocation {
-		int location;
+	class groundLocation extends JPanel{
+		
+		
 	}
 	
 	class player{
