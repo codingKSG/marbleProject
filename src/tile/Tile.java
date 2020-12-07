@@ -1,9 +1,9 @@
 package tile;
 
 abstract class Tile {
-	private String name;
-	private int tileNum;
-	private int x;
-	private int y;
+	public String name;
+	public int tileNum;
+	public int x;
+	public int y;
 
 }
