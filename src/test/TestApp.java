@@ -48,7 +48,7 @@ public class TestApp extends JFrame implements JFrameSet {
 
 	@Override
 	public void init() {
-		player01 = new TestPlayer();
+		Player player01 = new Player();
 		
 		dice = 0;
 		
@@ -74,14 +74,14 @@ public class TestApp extends JFrame implements JFrameSet {
 		c = getContentPane();
 		setLayout(new GridLayout(3, 3, 5, 5));
 
-		islandTile tile0 = new islandTile("tile0", 0);
-		islandTile tile1 = new islandTile("tile1", 1);
-		islandTile tile2 = new islandTile("tile2", 2);
-		islandTile tile3 = new islandTile("tile3", 3);
-		islandTile tile4 = new islandTile("tile4", 4);
-		islandTile tile5 = new islandTile("tile5", 5);
-		islandTile tile6 = new islandTile("tile6", 6);
-		islandTile tile7 = new islandTile("tile7", 7);
+		IslandTile tile0 = new IslandTile("tile0", 0);
+		IslandTile tile1 = new IslandTile("tile1", 1);
+		IslandTile tile2 = new IslandTile("tile2", 2);
+		IslandTile tile3 = new IslandTile("tile3", 3);
+		IslandTile tile4 = new IslandTile("tile4", 4);
+		IslandTile tile5 = new IslandTile("tile5", 5);
+		IslandTile tile6 = new IslandTile("tile6", 6);
+		IslandTile tile7 = new IslandTile("tile7", 7);
 
 	}
 
@@ -91,7 +91,7 @@ public class TestApp extends JFrame implements JFrameSet {
 		setSize(800, 800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		c.setBackground(Color.BLACK);
+		c.setBackground(Color.WHITE);
 
 	}
 
@@ -99,8 +99,6 @@ public class TestApp extends JFrame implements JFrameSet {
 	public void batch() {
 		tileCenter.add(btn);
 		tileCenter.add(laLocation);
-		
-		add(player01);
 
 		add(tile4);
 		add(tile5);
@@ -116,32 +114,33 @@ public class TestApp extends JFrame implements JFrameSet {
 
 	@Override
 	public void listener() {
+		
+		
 		btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {				
 				Dice();
 			}
 		});
-
 	}
 
-	private class islandTile {
+	private class IslandTile {
 		String name;
 		int tileNum;
 
-		public islandTile(String name, int tileNum) {
+		public IslandTile(String name, int tileNum) {
 			this.name = name;
 			this.tileNum = tileNum;
 		}
 	}
 
-	private class player {
+	private class Player {
 		int location = 0;
 
-		void location(int dice) {
+		public void location(int dice) {
 			this.location = location + dice;
-			if (location == 8)
-				location = 0;
+			if (location >= 8)
+				location = location - 8;
 		}
 	}
 	
@@ -160,5 +159,7 @@ public class TestApp extends JFrame implements JFrameSet {
 
 	public static void main(String[] args) {
 		new TestApp();
+		
+		
 	}
 }
