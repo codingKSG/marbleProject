@@ -1,9 +1,10 @@
 package player;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,30 +12,38 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
 
-import protocol.GameDto;
 import protocol.JFrameSet;
 import protocol.Protocol;
 import protocol.RequestDto;
 
 public class MarbleClient extends JFrame implements JFrameSet{
 	
-	private Socket socket;
-	private BufferedReader reader;
-	private PrintWriter writer;
-	
 	private MarbleClient marbleClient = this;
 	private final static String TAG = "MarbleClient : ";
+	
+	private ClientPlayerThread cpt;
+	private Socket socket;
 	private String id;
 	private int dice1;
 	private int dice2;
+	private int nowBoardNum = 0;
+	private int nowX = 240;
+	private int nowY = 240;
 	
-	private JPanel tile0 ,tile1, tile2, tile3, tile4, tile5, tile6, tile7, tileCenter;
+	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7;
 	private Container c;
+	private JButton btnDiceRoll;
+	private Player player1;
+	private JLabel laDice;
 	
 	Random dice = new Random();
 	
@@ -56,87 +65,122 @@ public class MarbleClient extends JFrame implements JFrameSet{
 
 	@Override
 	public void init() {
-		connect();
-		tile0 = new JPanel();
-		tile1 = new JPanel();
-		tile2 = new JPanel();
-		tile3 = new JPanel();
-		tile4 = new JPanel();
-		tile5 = new JPanel();
-		tile6 = new JPanel();
-		tile7 = new JPanel();
-		tileCenter = new JPanel();
 		
+		board0 = new JLayeredPane();
+		board1 = new JLayeredPane();
+		board2 = new JLayeredPane();
+		board3 = new JLayeredPane();
+		board4 = new JLayeredPane();
+		board5 = new JLayeredPane();
+		board6 = new JLayeredPane();
+		board7 = new JLayeredPane();
+		laDice = new JLabel("");
+		btnDiceRoll = new JButton("주사위 굴리기");
+		player1 = new Player(nowX, nowY, id);
 		c = getContentPane();
-		setLayout(new GridLayout(3,3,5,5));
+		
 	}
 
 	@Override
 	public void setting() {
+		
 		setTitle("Marble Client" + " : " + id);
-		setSize(800,800);
+		setSize(330,330);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		tileCenter.setSize(500,500);
+		board0.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board2.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board3.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board4.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board5.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board6.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board7.setBorder(new LineBorder(new Color(0, 0, 0)));
+		player1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
-		c.setBackground(Color.BLACK);
+		c.setLayout(null);
+		player1.setLayout(null);
 		
+		player1.setForeground(Color.BLUE);
+		player1.setBackground(Color.BLUE);
+		player1.setBounds(nowX, nowY, 40, 40);
+		laDice.setBounds(124, 143, 57, 15);
+
+		btnDiceRoll.setBounds(100, 110, 100, 23);
+		
+		board0.setBounds(200, 200, 100, 100);
+		getContentPane().add(board0);
+		
+		board1.setBounds(0, 0, 100, 100);
+		getContentPane().add(board1);
+		
+		board2.setBounds(0, 100, 100, 100);
+		getContentPane().add(board2);
+		
+		board3.setBounds(0, 200, 100, 100);
+		getContentPane().add(board3);
+		
+		board4.setBounds(100, 200, 100, 100);
+		getContentPane().add(board4);
+		
+		board5.setBounds(100, 0, 100, 100);
+		getContentPane().add(board5);
+		
+		board6.setBounds(200, 0, 100, 100);
+		getContentPane().add(board6);
+		
+		board7.setBounds(200, 100, 100, 100);
+		getContentPane().add(board7);
+
 	}
 
 	@Override
 	public void batch() {
-		add(tile4);
-		add(tile5);
-		add(tile6);
-		add(tile3);
-		add(tileCenter);
-		add(tile7);
-		add(tile2);
-		add(tile1);
-		add(tile0);
-		
+		add(board0);
+		add(board1);
+		add(board2);
+		add(board3);
+		add(board4);
+		add(board5);
+		add(board6);
+		add(board7);
+		add(btnDiceRoll);
+		add(player1);
+		add(laDice);
 	}
 
 	@Override
 	public void listener() {
-		c.addMouseListener(new MouseAdapter() {
-			
+		btnDiceRoll.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cpt.playerRoll();
+			}
 		});
 	}
 	
-	
-	class groundLocation {
-		int location;
-	}
-	
-	class player{
-		int location = 0;
-		
-		void location(int dice) {
-			this.location = location + dice;
-			if(location >= 8) location -= 8;
-		}
-	}
-	
-	class ClientPlayerThread {
+	class ClientPlayerThread extends Thread {
 		
 		private Socket socket;
-		private ClientChatWriter ccw;
-		private ClientChatReader ccr;
-		private ClientGameWriter cgw;
-		private ClientGameReader cgr;
+		private BufferedReader reader;
+		private PrintWriter writer;
+		private Gson gson;
+		private String output;
+		private RequestDto dto;
+		private String id;
 		
-		public ClientPlayerThread(Socket socket) {
+		public ClientPlayerThread(Socket socket, String id) {
 			this.socket = socket;
-		}
-		
-		private void start() {
-			ccw = new ClientChatWriter(socket);
-			ccw.start();
-			System.out.println(TAG + "ClientChatThread 실행");
-			cgw = new ClientGameThread(socket);
-			cgw.start();
-			System.out.println(TAG + "ClientGameThread 실행");
+			this.id = id;
+			this.dto = new RequestDto();
+			this.gson = new Gson();
+			try {
+				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				writer = new PrintWriter(socket.getOutputStream(), true);
+				new Thread(new ClientPlayerReader(reader, writer)).start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		private void playerRoll() {
@@ -145,117 +189,85 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			dice1 = tempDice1;
 			dice2 = tempDice2;
 			
-			cgt.gameDto.setGubun("DICEROLL");
-			cgt.gameDto.setDice1(dice1);
-			cgt.gameDto.setDice2(dice2);
+			dto.setGubun(Protocol.GAME);
+			dto.setType(Protocol.DICEROLL);
+			dto.setId(id);
+			dto.setDice1(dice1);
+			dto.setDice2(dice2);
 			
+			output = gson.toJson(dto);
+			writer.println(output);
 			
+			System.out.println(TAG + "playerRoll 실행");
 		}
 		
-	}
-	
-	class ClientChatWriter extends Thread {
-		private String id;
-		private GameDto gameDto;
-		private BufferedReader clientChatReader;
-		private PrintWriter clientChatWriter;
-		
-		public ClientChatWriter(Socket socket) {
-			try {
-				clientChatReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				clientChatWriter = new PrintWriter(socket.getOutputStream());
-			} catch (IOException e) {
-				e.printStackTrace();
+		private void move(int x, int y, String id) {
+			if (!(this.id.equals(id))) {
+				return;
 			}
-		}
-		
-		@Override
-		public void run() {
-			String text = null;
-			Gson gson = new Gson();
-			gameDto = new GameDto();
+			dto.setId(id);
+			dto.setGubun(Protocol.GAME);
+			dto.setType(Protocol.MOVE);
+			int newBoardNum = (int)((dice1 + dice2) % 8);
+			dto.setNewBoardNum(newBoardNum);
 			
+			if (newBoardNum == 0) {
+				dto.setNewX(240);
+				dto.setNewY(240);
+			} else if (newBoardNum == 1) {
+				dto.setNewX(132);
+				dto.setNewY(240);
+			} else if (newBoardNum == 2) {
+				dto.setNewX(26);
+				dto.setNewY(240);
+			} else if (newBoardNum == 3) {
+				dto.setNewX(26);
+				dto.setNewY(131);
+			} else if (newBoardNum == 4) {
+				dto.setNewX(26);
+				dto.setNewY(26);
+			} else if (newBoardNum == 5) {
+				dto.setNewX(132);
+				dto.setNewY(26);
+			} else if (newBoardNum == 6) {
+				dto.setNewX(240);
+				dto.setNewY(26);
+			} else if (newBoardNum == 7) {
+				dto.setNewX(240);
+				dto.setNewY(131);
+			}
+			output = gson.toJson(dto);
+			writer.println(output);
 		}
 	}
 	
-	class ClientChatReader extends Thread {
+	class ClientPlayerReader extends Thread {
+		private BufferedReader reader;
+		private PrintWriter writer;
+		
+		public ClientPlayerReader(BufferedReader reader, PrintWriter writer) {
+			this.reader = reader;
+			this.writer = writer;
+		}
 		
 		@Override
 		public void run() {
-			String text = null;
-			RequestDto dto = new RequestDto();
-			Gson gson = new Gson();
 			try {
+				String text = null;
+				Gson gson = new Gson();
+				RequestDto dto = new RequestDto();
 				while ((text = reader.readLine()) != null) {
-						dto = gson.fromJson(text, dto.getClass()); 
-						
-						if (dto.getGubun().equals("GAME")) {
-							GameDto dto1 = (GameDto)dto;
-							dice1 = dto1.getDice1();
-							dice2 = dto1.getDice2();
-						}
+					dto = gson.fromJson(text, RequestDto.class);
+					if (dto.getType().equals(Protocol.DICEROLL)) {
+						laDice.setText(dto.getId() + ": " + dto.getDice1() + "," + dto.getDice2());
 					}
-			} catch (IOException e) {
-				System.out.println(TAG + "연결 종료");
-			}
-		}
-	}
-	
-	class ClientGameWriter extends Thread {
-		private String id;
-		private GameDto gameDto;
-		private BufferedReader gameReader;
-		private PrintWriter gameWriter;
-		private ClientGameReader cgr;
-		
-		public ClientGameWriter(Socket socket) {
-			try {
-				gameReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				gameWriter = new PrintWriter(socket.getOutputStream());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		@Override
-		public void run() {
-			cgr = new ClientGameReader();
-			cgr.start();
-			
-			String text = null;
-			Gson gson = new Gson();
-			gameDto = new GameDto();
-			try {
-				while ((text = gameReader.readLine()) != null) {
-					gameDto = gson.fromJson(text, GameDto.class);
 					
-					dice1 = gameDto.getDice1();
-					dice2 = gameDto.getDice2();
+					if (dto.getType().equals(Protocol.MOVE)) {
+						cpt.move(dto.getNewX(), dto.getNewY(), dto.getId());
+					}
 				}
 			} catch (IOException e) {
-				System.out.println(TAG + "연결 종료");
-			}
-		}
-	}
-	
-	class ClientGameReader extends Thread {
-		@Override
-		public void run() {
-			String text = null;
-			RequestDto dto = new RequestDto();
-			Gson gson = new Gson();
-			try {
-				while ((text = gameReader.readLine()) != null) {
-						dto = gson.fromJson(text, dto.getClass()); 
-						
-						if (dto.getGubun().equals("GAME")) {
-							GameDto dto1 = (GameDto)dto;
-							dice1 = dto1.getDice1();
-							dice2 = dto1.getDice2();
-						}
-					}
-			} catch (IOException e) {
-				System.out.println(TAG + "연결 종료");
+				e.printStackTrace();
 			}
 		}
 	}
@@ -265,11 +277,9 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		int port = Protocol.PORT;
 		try {
 			socket = new Socket(host, port);
-			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			writer = new PrintWriter(socket.getOutputStream());
-			ClientPlayerThread cpt = new ClientPlayerThread(socket);
+			cpt = new ClientPlayerThread(socket, id);
 			cpt.start();
-			System.out.println(TAG + id + " 연결 성공");
+			System.out.println(TAG + id + "연결 성공");
 		} catch (Exception e) {
 			System.out.println(TAG + id + "연결 실패");
 		}
