@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import com.google.gson.Gson;
 
+import object.Player;
 import protocol.ChatDto;
 import protocol.GameDto;
 import protocol.Protocol;
@@ -21,6 +22,17 @@ public class MarbleServer {
 	private ServerSocket serverSocket;
 	private Socket socket;
 	private Vector<PlayerThread> vc;
+	
+	String nowPlayer ; // 현재 차례인 플레이어
+	int countTurn ; // 현재 진행 턴 수
+	int dice1 ; // 주사위 값을 보여주기 위한 것
+	int dice2 ; // 주사위 값을 보여주기 위한 것
+	int countPlayer ; // 현재 생존 플레이어 수
+	Vector<Player> playerList ; // 플레이어 객체가 담긴 벡터
+
+	void initSequence() {} // 시작 전 순서 정하기
+	void sequenceFlow() {} // 턴 넘기기(다음 턴 플레이어의 isTurn을 true로 변경
+
 	
 	public MarbleServer() {
 		// 입장한 유저가 Vector에 담김
@@ -139,7 +151,4 @@ public class MarbleServer {
 		}
 	}
 	
-	public static void main(String[] args) {
-		new MarbleServer();
-	}
 }
