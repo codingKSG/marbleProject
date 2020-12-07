@@ -8,7 +8,6 @@ import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.border.Border;
 
 import protocol.JFrameSet;
 
@@ -21,7 +20,7 @@ public class Test02App extends JFrame implements JFrameSet {
 	private Container c, gameBoard;
 
 	private int dice;
-
+	
 	private JButton btn;
 
 	public Test02App() {
@@ -34,7 +33,7 @@ public class Test02App extends JFrame implements JFrameSet {
 		setSize(500, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		System.out.println("플레이어 위치 : ");
+		System.out.println("플레이어 위치 : "+ player02.getPlayerLocation());
 
 		setVisible(true);
 	}
@@ -71,12 +70,10 @@ public class Test02App extends JFrame implements JFrameSet {
 	public void batch() {
 		add(gameBoard, BorderLayout.CENTER);
 		add(btn, BorderLayout.SOUTH);
-
 	}
 
 	@Override
 	public void listener() {
-		player02.move(dice);
 
 		btn.addActionListener(new ActionListener() {
 
@@ -93,6 +90,7 @@ public class Test02App extends JFrame implements JFrameSet {
 		this.dice = dice.nextInt(6) + 1;
 
 		System.out.println(this.dice);
+		System.out.println("플레이어 위치 : "+ player02.getPlayerLocation());
 	}
 
 	public void playerMove() {

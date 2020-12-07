@@ -4,10 +4,10 @@ public class Test02Tile {
 	private Test02Tile test02tile = this;
 	
 	private String name;
-	private int location;
+	private int tileLocation;
 	
-	public Test02Tile(String name ,int location) {
+	public Test02Tile(String name ,int tileLocation) {
 		this.name = name;
-		this.location = location;
+		this.tileLocation = tileLocation;
 	}
 }
