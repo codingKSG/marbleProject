@@ -19,7 +19,7 @@ public class Test02Player extends JPanel{
 		setLocation(x, y);
 	}
 	
-	public void playerMove(int dice) {
+	public void move(int dice) {
 		this.location = location + dice;
 		
 		if(location >= 8) this.location = location - 8;
