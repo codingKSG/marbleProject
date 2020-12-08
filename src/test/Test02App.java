@@ -32,8 +32,6 @@ public class Test02App extends JFrame implements JFrameSet {
 		setTitle("위치별 다이얼로그 테스트");
 		setSize(500, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		System.out.println("플레이어 위치 : "+ player02.getPlayerLocation());
 
 		setVisible(true);
 	}
@@ -80,6 +78,9 @@ public class Test02App extends JFrame implements JFrameSet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dice();
+				
+				player02.move(dice);
+				System.out.println("플레이어 위치 : "+ player02.getPlayerLocation());
 			}
 		});
 	}
@@ -90,7 +91,6 @@ public class Test02App extends JFrame implements JFrameSet {
 		this.dice = dice.nextInt(6) + 1;
 
 		System.out.println(this.dice);
-		System.out.println("플레이어 위치 : "+ player02.getPlayerLocation());
 	}
 
 	public void playerMove() {
