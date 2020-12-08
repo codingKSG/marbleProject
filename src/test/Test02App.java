@@ -77,16 +77,11 @@ public class Test02App extends JFrame implements JFrameSet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dice();
-<<<<<<< HEAD
-				
-				player02.move(dice);
-				System.out.println("ÇÃ·¹ÀÌ¾î À§Ä¡ : "+ player02.getPlayerLocation());
-=======
+
 				player02.move(dice);
 				System.out.println("ÇÃ·¹ÀÌ¾î À§Ä¡ : " + player02.getPlayerLocation());
 				playerMove();
-				
->>>>>>> ê¹€ìƒê¸¸
+
 			}
 		});
 	}
