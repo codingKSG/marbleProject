@@ -97,14 +97,11 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board5.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board6.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board7.setBorder(new LineBorder(new Color(0, 0, 0)));
-		player1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		player1.setBorder(new LineBorder(new Color(255, 0, 0)));
 		
 		c.setLayout(null);
 		player1.setLayout(null);
 		
-		player1.setForeground(Color.BLUE);
-		player1.setBackground(Color.BLUE);
-		player1.setBounds(playerX, playerY, 40, 40);
 		laDice.setBounds(124, 143, 57, 15);
 
 		btnDiceRoll.setBounds(100, 110, 100, 23);
@@ -200,7 +197,6 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			dto.setId(id);
 			dto.setDice1(dice1);
 			dto.setDice2(dice2);
-			dto.setNewPlayerTile(newPlayerTile);
 			
 			output = gson.toJson(dto);
 			writer.println(output);

@@ -112,8 +112,6 @@ public class MarbleServer {
 				tempDto.setId(dto.getId());
 				tempDto.setNewPlayerX(dto.getNewPlayerX());
 				tempDto.setNewPlayerY(dto.getNewPlayerY());
-				tempDto.setNewPlayerTile(dto.getNewPlayerTile());
-				System.out.println(TAG + ":" + dto.getNewPlayerTile());
 				output = gson.toJson(tempDto);
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(output);

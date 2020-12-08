@@ -29,9 +29,9 @@ public class Player extends JLabel {
 		this.id = id;
 		
 		icPlayer = new ImageIcon("images/img_player01.png");
-		this.setIcon(icPlayer); // 기본이미지(오른쪽)
+		setIcon(icPlayer); // 기본이미지(오른쪽)
 		setSize(50, 50); // 크기설정
-		setLocation(x, y); // 시작좌표 설정
+		setLocation(playerX, playerY); // 시작좌표 설정
 	}
 
 	public void moveAnimation(int newX, int newY, int newPlayerTile) { // 오른쪽 이동
