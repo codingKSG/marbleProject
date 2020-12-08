@@ -22,18 +22,22 @@ public class Player extends JLabel {
 		this.id = id;
 		
 		icPlayer = new ImageIcon("images/img_player01.png");
-		setIcon(icPlayer); // 기본이미지(오른쪽)
+		this.setIcon(icPlayer); // 기본이미지(오른쪽)
 		setSize(50, 50); // 크기설정
 		setLocation(x, y); // 시작좌표 설정
 	}
 
 	public void moveAnimation(int newX, int newY) { // 오른쪽 이동
-		System.out.println(TAG + "moveAnimation()");
 		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				setLocation(newX, newY); // 내부에 repaint() 존재
+				System.out.println("변경전 x,y값 :" + x + "," + y);
+				x = newX;
+				y = newY;
+				setLocation(x, y); // 내부에 repaint() 존재
+				System.out.println(TAG + "moveAnimation 실행");
+				System.out.println("변경후 x,y값 :" + x + "," + y);
 			}
 		}).start();
 	}

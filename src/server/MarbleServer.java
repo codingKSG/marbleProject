@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import com.google.gson.Gson;
 
-import object.Player;
 import protocol.Protocol;
 import protocol.RequestDto;
 
@@ -77,7 +76,7 @@ public class MarbleServer {
 				Gson gson = new Gson();
 				while ((text = reader.readLine()) != null) {
 					dto = gson.fromJson(text, RequestDto.class);
-					System.out.println(TAG + "클라이언트 : " + dto);
+					System.out.println(TAG + id + " : " + dto);
 					router(dto);
 				}
 			} catch (IOException e) {
@@ -89,6 +88,10 @@ public class MarbleServer {
 			Gson gson = new Gson();
 			String output = "";
 			RequestDto tempDto = new RequestDto();
+			
+			if (dto.getType().equals(Protocol.IDSET)) {
+				playerThread.id = dto.getId();
+			}
 			
 			if (dto.getType().equals(Protocol.DICEROLL)) {
 				tempDto.setGubun(Protocol.GAME);
@@ -111,9 +114,7 @@ public class MarbleServer {
 				tempDto.setNewY(dto.getNewY());
 				output = gson.toJson(tempDto);
 				for (int i = 0; i < playerList.size(); i++) {
-					if (playerList.get(i).id.equals(tempDto.getId())) {
-						playerList.get(i).writer.println(output);
-					}
+					playerList.get(i).writer.println(output);
 				}
 			}
 		}

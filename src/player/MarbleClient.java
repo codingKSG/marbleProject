@@ -87,6 +87,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		setTitle("Marble Client" + " : " + id);
 		setSize(330,330);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 		
 		board0.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board1.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -177,6 +178,10 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			try {
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				writer = new PrintWriter(socket.getOutputStream(), true);
+				dto.setType(Protocol.IDSET);
+				dto.setId(this.id);
+				String idSet = gson.toJson(dto);
+				writer.println(idSet);
 				new Thread(new ClientPlayerReader(reader, writer)).start();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -188,27 +193,27 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			int tempDice2 = dice.nextInt(6)+1;
 			dice1 = tempDice1;
 			dice2 = tempDice2;
+			int newBoardNum = (int)((nowBoardNum + dice1 + dice2) % 8);
 			
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.DICEROLL);
 			dto.setId(id);
 			dto.setDice1(dice1);
 			dto.setDice2(dice2);
+			dto.setNewBoardNum(newBoardNum);
 			
 			output = gson.toJson(dto);
 			writer.println(output);
 			
 			System.out.println(TAG + "playerRoll 실행");
+			move(newBoardNum);
 		}
 		
-		private void move(int x, int y, String id) {
-			if (!(this.id.equals(id))) {
-				return;
-			}
+		private void move(int newBoardNum) {
+			
 			dto.setId(id);
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.MOVE);
-			int newBoardNum = (int)((dice1 + dice2) % 8);
 			dto.setNewBoardNum(newBoardNum);
 			
 			if (newBoardNum == 0) {
@@ -238,6 +243,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			}
 			output = gson.toJson(dto);
 			writer.println(output);
+			System.out.println(TAG + "MOVE 실행됨");
 		}
 	}
 	
@@ -260,10 +266,12 @@ public class MarbleClient extends JFrame implements JFrameSet{
 					dto = gson.fromJson(text, RequestDto.class);
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						laDice.setText(dto.getId() + ": " + dto.getDice1() + "," + dto.getDice2());
+						System.out.println(dto.getId() + "DICEROLL 받음");
 					}
 					
 					if (dto.getType().equals(Protocol.MOVE)) {
-						cpt.move(dto.getNewX(), dto.getNewY(), dto.getId());
+						player1.moveAnimation(dto.getNewX(), dto.getNewY());
+						System.out.println(dto.getId() + "MOVE 받음");
 					}
 				}
 			} catch (IOException e) {
@@ -282,6 +290,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			System.out.println(TAG + id + "연결 성공");
 		} catch (Exception e) {
 			System.out.println(TAG + id + "연결 실패");
+			
 		}
 	}
 	

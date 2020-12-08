@@ -7,6 +7,9 @@ public interface Protocol {
 	String CHAT = "CHAT";
 	String GAME = "GAME";
 	
+	// 초기 ID 셋팅
+	String IDSET = "IDSET";
+	
 	// 주사위를 굴린다는 신호
 	String DICEROLL = "DICEROLL";
 	
