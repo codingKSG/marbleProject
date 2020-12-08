@@ -33,8 +33,6 @@ public class Test02App extends JFrame implements JFrameSet {
 		setTitle("위치별 다이얼로그 테스트");
 		setSize(500, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		System.out.println("플레이어 위치 : ");
 
 		setVisible(true);
 	}
@@ -51,7 +49,6 @@ public class Test02App extends JFrame implements JFrameSet {
 		tile0 = new Test02Tile("섬5 타일", 5);
 		tile0 = new Test02Tile("시티6 타일", 6);
 		tile0 = new Test02Tile("스페셜7 타일", 7);
-		
 		
 		btn = new JButton("주사위 굴리기");
 		gameBoard = new Container();
@@ -76,13 +73,16 @@ public class Test02App extends JFrame implements JFrameSet {
 
 	@Override
 	public void listener() {
-		player02.move(dice);
 
 		btn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dice();
+				player02.move(dice);
+				System.out.println("플레이어 위치 : " + player02.getPlayerLocation());
+				playerMove();
+				
 			}
 		});
 	}
@@ -96,8 +96,21 @@ public class Test02App extends JFrame implements JFrameSet {
 	}
 
 	public void playerMove() {
-		
+		if(player02.getPlayerLocation() == 3 || player02.getPlayerLocation() == 5) {
+			System.out.println("섬 타일입니다.");
+			new DiallogIsland();
+		}else if(player02.getPlayerLocation() == 1 || player02.getPlayerLocation() == 2 || player02.getPlayerLocation() == 6) {
+			System.out.println("시티 타일입니다.");
+			new DiallogCity();
+		}else if(player02.getPlayerLocation() == 4 || player02.getPlayerLocation() == 7) {
+			System.out.println("스페셜 타일입니다.");
+			new DiallogSpecial();
+		}else if(player02.getPlayerLocation() == 0){
+			System.out.println("출발 타일입니다.");
+			new DiallogStart();
+		}
 	}
+
 
 	public static void main(String[] args) {
 		new Test02App();

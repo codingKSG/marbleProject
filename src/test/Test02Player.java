@@ -3,11 +3,15 @@ package test;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import lombok.Data;
+
+
+@Data
 public class Test02Player extends JPanel{
 	private Test02Player test02Player = this;
 	private final static String TAG = "TEST02PLAYER : ";
 	
-	private int location = 0;
+	private int playerLocation = 0;
 	
 	private ImageIcon player;
 	private int x = 240;
@@ -20,9 +24,9 @@ public class Test02Player extends JPanel{
 	}
 	
 	public void move(int dice) {
-		this.location = location + dice;
+		this.playerLocation = playerLocation + dice;
 		
-		if(location >= 8) this.location = location - 8;
+		if(playerLocation >= 8) this.playerLocation = playerLocation - 8;
 	}
 	
 }
