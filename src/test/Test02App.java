@@ -49,7 +49,6 @@ public class Test02App extends JFrame implements JFrameSet {
 		tile0 = new Test02Tile("Ω√∆º6 ≈∏¿œ", 6);
 		tile0 = new Test02Tile("Ω∫∆‰º»7 ≈∏¿œ", 7);
 		
-		
 		btn = new JButton("¡÷ªÁ¿ß ±º∏Æ±‚");
 		gameBoard = new Container();
 
@@ -78,9 +77,16 @@ public class Test02App extends JFrame implements JFrameSet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dice();
+<<<<<<< HEAD
 				
 				player02.move(dice);
 				System.out.println("«√∑π¿ÃæÓ ¿ßƒ° : "+ player02.getPlayerLocation());
+=======
+				player02.move(dice);
+				System.out.println("«√∑π¿ÃæÓ ¿ßƒ° : " + player02.getPlayerLocation());
+				playerMove();
+				
+>>>>>>> ÍπÄÏÉÅÍ∏∏
 			}
 		});
 	}
@@ -94,8 +100,21 @@ public class Test02App extends JFrame implements JFrameSet {
 	}
 
 	public void playerMove() {
-		
+		if(player02.getPlayerLocation() == 3 || player02.getPlayerLocation() == 5) {
+			System.out.println("º∂ ≈∏¿œ¿‘¥œ¥Ÿ.");
+			new DiallogIsland();
+		}else if(player02.getPlayerLocation() == 1 || player02.getPlayerLocation() == 2 || player02.getPlayerLocation() == 6) {
+			System.out.println("Ω√∆º ≈∏¿œ¿‘¥œ¥Ÿ.");
+			new DiallogCity();
+		}else if(player02.getPlayerLocation() == 4 || player02.getPlayerLocation() == 7) {
+			System.out.println("Ω∫∆‰º» ≈∏¿œ¿‘¥œ¥Ÿ.");
+			new DiallogSpecial();
+		}else if(player02.getPlayerLocation() == 0){
+			System.out.println("√‚πﬂ ≈∏¿œ¿‘¥œ¥Ÿ.");
+			new DiallogStart();
+		}
 	}
+
 
 	public static void main(String[] args) {
 		new Test02App();
