@@ -16,6 +16,7 @@ public class MarbleLogin extends JFrame {
 	
 	private MarbleLogin marbleLogin = this;
 	private static final String TAG = "MarbleLogin : ";
+	private String id;
 	
 	private JTextField tfId;
 	private JPanel jpCetner;
@@ -49,8 +50,8 @@ public class MarbleLogin extends JFrame {
 		setTitle("Marble Login");
 		setLocationRelativeTo(null);
 		
-		laText1.setFont(new Font("CookieRun", Font.BOLD, 20));
-		laText2.setFont(new Font("CookieRun", Font.BOLD, 20));
+		laText1.setFont(new Font("D2Coding", Font.BOLD, 20));
+		laText2.setFont(new Font("D2Coding", Font.BOLD, 20));
 		laText2.setForeground(Color.RED);
 	}
 	
@@ -82,10 +83,15 @@ public class MarbleLogin extends JFrame {
 		String userInput = tfId.getText();
 		if (userInput.length() > 10) {
 			laText2.setText("10자 이내의 ID로 변경해주세요 !");
+			return;
 		}
 		if (userInput.equals("")) {
 			laText2.setText("ID를 입력해주세요 !");
+			return;
 		}
+		this.id = userInput;
+		setVisible(false);
+		new MarbleClient(id);
 	}
 	
 	public static void main(String[] args) {
