@@ -1,4 +1,4 @@
-package player;
+package test;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;

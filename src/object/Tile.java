@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 
 public abstract  class Tile {
+	int tileType; // 0-출발 1-시티 2-섬 3-스페셜
 	String tileName; //해당 타일의 이름
 	int tileNum; // 해당 타일의 번호
 	int tileX;

@@ -8,9 +8,9 @@ public class CityTile extends isLandTile implements CityInterface{
 	int priceHouse; //집값
 	int priceBuilding; //빌딩값
 	int priceHotel; //호텔값
-	public CityTile(String tileName, int tileNum, int tileX, int tileY, int fine, int isPurchased, int priceLand,
+	public CityTile(int tileType, String tileName, int tileNum, int tileX, int tileY, int fine, int isPurchased, int priceLand,
 			String landOwner, int priceAll, int priceHouse, int priceBuilding, int priceHotel) {
-		super(tileName, tileNum, tileX, tileY, fine, isPurchased, priceLand, landOwner);
+		super(tileType, tileName, tileNum, tileX, tileY, fine, isPurchased, priceLand, landOwner);
 		this.priceAll = priceAll;
 		this.priceHouse = priceHouse;
 		this.priceBuilding = priceBuilding;

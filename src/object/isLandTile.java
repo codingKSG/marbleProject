@@ -10,9 +10,9 @@ public class isLandTile extends Tile implements IslandInterface{
 	int priceLand; // 땅값
 	String landOwner; //소유한 플레이어
 	@Builder
-	public isLandTile(String tileName, int tileNum, int tileX, int tileY, int fine, int isPurchased, int priceLand,
+	public isLandTile(int tileType, String tileName, int tileNum, int tileX, int tileY, int fine, int isPurchased, int priceLand,
 			String landOwner) {
-		super(tileName, tileNum, tileX, tileY);
+		super(tileType, tileName, tileNum, tileX, tileY);
 		this.fine = fine;
 		this.isPurchased = isPurchased;
 		this.priceLand = priceLand;

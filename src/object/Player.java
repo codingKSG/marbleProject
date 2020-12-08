@@ -11,8 +11,7 @@ public class Player {
 	int playerY; // y좌표
 	int countMove; // 몇 칸 갔는지 카운트
 	int countTurn; // 몇 바퀴 갔는지 카운트 // 이동칸수/총칸수
-	int dice1; // 주사위1의 값
-	int dice2; // 주사위2의 값
+	int nowPlayerTile; // 현재 플레이어가 위치한 타일번호
 	int island; // 무인도 남은 턴 수
 	boolean isTurn; // 현재 플레이어의 턴인지
 	boolean isPlaying; // 플레이어 생존 여부

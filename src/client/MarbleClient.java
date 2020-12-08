@@ -1,7 +1,6 @@
-package player;
+package client;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
@@ -35,9 +33,11 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private String id;
 	private int dice1;
 	private int dice2;
-	private int nowBoardNum = 0;
-	private int nowX = 240;
-	private int nowY = 240;
+	private int nowPlayerTile = 0;
+	private int playerX = 240;
+	private int playerY = 240;
+	private boolean isTurn = false; // 현재 플레이어의 턴인지
+	boolean isPlaying = true; // 플레이어 생존 여부
 	
 	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7;
 	private Container c;
@@ -76,7 +76,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board7 = new JLayeredPane();
 		laDice = new JLabel("");
 		btnDiceRoll = new JButton("주사위 굴리기");
-		player1 = new Player(nowX, nowY, id);
+		player1 = new Player(playerX, playerY, id);
 		c = getContentPane();
 		
 	}
@@ -104,7 +104,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		
 		player1.setForeground(Color.BLUE);
 		player1.setBackground(Color.BLUE);
-		player1.setBounds(nowX, nowY, 40, 40);
+		player1.setBounds(playerX, playerY, 40, 40);
 		laDice.setBounds(124, 143, 57, 15);
 
 		btnDiceRoll.setBounds(100, 110, 100, 23);
@@ -193,57 +193,72 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			int tempDice2 = dice.nextInt(6)+1;
 			dice1 = tempDice1;
 			dice2 = tempDice2;
-			int newBoardNum = (int)((nowBoardNum + dice1 + dice2) % 8);
+			int newPlayerTile = (int)((nowPlayerTile + dice1 + dice2) % 8);
 			
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.DICEROLL);
 			dto.setId(id);
 			dto.setDice1(dice1);
 			dto.setDice2(dice2);
-			dto.setNewBoardNum(newBoardNum);
+			dto.setNewPlayerTile(newPlayerTile);
 			
 			output = gson.toJson(dto);
 			writer.println(output);
 			
 			System.out.println(TAG + "playerRoll 실행");
-			move(newBoardNum);
+			move(newPlayerTile);
 		}
 		
-		private void move(int newBoardNum) {
+		private void move(int newPlayerTile) {
 			
 			dto.setId(id);
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.MOVE);
-			dto.setNewBoardNum(newBoardNum);
+			dto.setNewPlayerTile(newPlayerTile);
+			nowPlayerTile = newPlayerTile;
 			
-			if (newBoardNum == 0) {
-				dto.setNewX(240);
-				dto.setNewY(240);
-			} else if (newBoardNum == 1) {
-				dto.setNewX(132);
-				dto.setNewY(240);
-			} else if (newBoardNum == 2) {
-				dto.setNewX(26);
-				dto.setNewY(240);
-			} else if (newBoardNum == 3) {
-				dto.setNewX(26);
-				dto.setNewY(131);
-			} else if (newBoardNum == 4) {
-				dto.setNewX(26);
-				dto.setNewY(26);
-			} else if (newBoardNum == 5) {
-				dto.setNewX(132);
-				dto.setNewY(26);
-			} else if (newBoardNum == 6) {
-				dto.setNewX(240);
-				dto.setNewY(26);
-			} else if (newBoardNum == 7) {
-				dto.setNewX(240);
-				dto.setNewY(131);
+			if (newPlayerTile == 0) {
+				dto.setNewPlayerX(240);
+				dto.setNewPlayerY(240);
+			} else if (newPlayerTile == 1) {
+				dto.setNewPlayerX(132);
+				dto.setNewPlayerY(240);
+			} else if (newPlayerTile == 2) {
+				dto.setNewPlayerX(26);
+				dto.setNewPlayerY(240);
+			} else if (newPlayerTile == 3) {
+				dto.setNewPlayerX(26);
+				dto.setNewPlayerY(131);
+			} else if (newPlayerTile == 4) {
+				dto.setNewPlayerX(26);
+				dto.setNewPlayerY(26);
+			} else if (newPlayerTile == 5) {
+				dto.setNewPlayerX(132);
+				dto.setNewPlayerY(26);
+			} else if (newPlayerTile == 6) {
+				dto.setNewPlayerX(240);
+				dto.setNewPlayerY(26);
+			} else if (newPlayerTile == 7) {
+				dto.setNewPlayerX(240);
+				dto.setNewPlayerY(131);
 			}
 			output = gson.toJson(dto);
 			writer.println(output);
 			System.out.println(TAG + "MOVE 실행됨");
+			
+			if(nowPlayerTile == 3 || nowPlayerTile == 5) {
+				System.out.println("섬 타일입니다.");
+				new DiallogIsland(id);
+			}else if(nowPlayerTile == 1 || nowPlayerTile == 2 || nowPlayerTile == 6) {
+				System.out.println("시티 타일입니다.");
+				new DiallogCity(id);
+			}else if(nowPlayerTile == 4 || nowPlayerTile == 7) {
+				System.out.println("스페셜 타일입니다.");
+				new DiallogSpecial(id);
+			}else if(nowPlayerTile == 0){
+				System.out.println("출발 타일입니다.");
+				new DiallogStart(id);
+			}
 		}
 	}
 	
@@ -270,7 +285,9 @@ public class MarbleClient extends JFrame implements JFrameSet{
 					}
 					
 					if (dto.getType().equals(Protocol.MOVE)) {
-						player1.moveAnimation(dto.getNewX(), dto.getNewY());
+						player1.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+						nowPlayerTile = dto.getNewPlayerTile();
+						System.out.println(id + "의 nowPlayerTile은 :" + nowPlayerTile);
 						System.out.println(dto.getId() + "MOVE 받음");
 					}
 				}

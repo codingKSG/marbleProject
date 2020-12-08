@@ -17,12 +17,12 @@ public class RequestDto {
 	private int dice2;
 	
 	// 이동전 현재 위치값
-	private int nowBoardNum;
-	private int nowX;
-	private int nowY;
+	private int nowPlayerTile;
+	private int nowPlayerX;
+	private int nowPlayerY;
 	
 	// 이동시 변경 위치값
-	private int newBoardNum;
-	private int newX;
-	private int newY;
+	private int newPlayerTile;
+	private int newPlayerX;
+	private int newPlayerY;
 }

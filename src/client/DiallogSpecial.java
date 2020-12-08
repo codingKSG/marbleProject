@@ -1,4 +1,4 @@
-package test;
+package client;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -10,13 +10,15 @@ import protocol.JFrameSet;
 
 public class DiallogSpecial extends JFrame implements JFrameSet {
 	private JLabel textLabel;
+	private String id;
 
-	public DiallogSpecial() {
+	public DiallogSpecial(String id) {
+		this.id = id;
+		
 		init();
 		setting();
 		batch();
 		listener();
-		
 		
 		setVisible(true);
 	}
@@ -28,7 +30,7 @@ public class DiallogSpecial extends JFrame implements JFrameSet {
 
 	@Override
 	public void setting() {
-		setTitle("胶其既 鸥老");
+		setTitle(id + ": 胶其既 鸥老");
 		setSize(200,200);
 		setLayout(new FlowLayout());
 	}
@@ -41,7 +43,6 @@ public class DiallogSpecial extends JFrame implements JFrameSet {
 
 	@Override
 	public void listener() {
-		// TODO Auto-generated method stub
 
 	}
 

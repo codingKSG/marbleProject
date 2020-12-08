@@ -110,8 +110,10 @@ public class MarbleServer {
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.MOVE);
 				tempDto.setId(dto.getId());
-				tempDto.setNewX(dto.getNewX());
-				tempDto.setNewY(dto.getNewY());
+				tempDto.setNewPlayerX(dto.getNewPlayerX());
+				tempDto.setNewPlayerY(dto.getNewPlayerY());
+				tempDto.setNewPlayerTile(dto.getNewPlayerTile());
+				System.out.println(TAG + ":" + dto.getNewPlayerTile());
 				output = gson.toJson(tempDto);
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(output);
