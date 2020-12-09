@@ -30,7 +30,7 @@ public class Player extends JLabel {
 		
 		icPlayer = new ImageIcon("images/img_player01.png");
 		setIcon(icPlayer); // 기본이미지(오른쪽)
-		setSize(50, 50); // 크기설정
+		setSize(30, 30); // 크기설정
 		setLocation(playerX, playerY); // 시작좌표 설정
 	}
 

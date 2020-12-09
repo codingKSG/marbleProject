@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,7 +87,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	public void setting() {
 		
 		setTitle("Marble Client" + " : " + id);
-		setSize(330,330);
+		setSize(3300,3300); //////////////
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
