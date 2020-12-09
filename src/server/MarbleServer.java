@@ -27,6 +27,7 @@ public class MarbleServer {
 	private int dice1 ; // 주사위 값을 보여주기 위한 것
 	private int dice2 ; // 주사위 값을 보여주기 위한 것
 	private int countPlayer ; // 현재 생존 플레이어 수
+	private String player1, player2, player3, player4; // 플레이어 ID를 담아놓는 변수
 
 	void initSequence() {} // 시작 전 순서 정하기
 	void sequenceFlow() {} // 턴 넘기기(다음 턴 플레이어의 isTurn을 true로 변경
@@ -88,9 +89,61 @@ public class MarbleServer {
 			Gson gson = new Gson();
 			String output = "";
 			RequestDto tempDto = new RequestDto();
-			
+			// ID 설정
 			if (dto.getType().equals(Protocol.IDSET)) {
 				playerThread.id = dto.getId();
+				if ("".equals(player1)) {
+					player1 = dto.getId();
+				} else if ("".equals(player2)) {
+					player2 = dto.getId();
+				} else if ("".equals(player3)) {
+					player3 = dto.getId();
+				} else if ("".equals(player4)) {
+					player4 = dto.getId();
+				}
+//			이미 존재하는 ID면 ID를 변경하게 함.
+//				if (playerList.size() != 0) {
+//					for (int i = 0; i < playerList.size(); i++) {
+//						if (playerList.get(playerList.size()-1).id.equals(dto.getId())) {
+//							tempDto.setType(Protocol.IDCHECK);
+//							playerList.get(i).writer.println(gson.toJson(tempDto));
+//						}
+//					}
+//				}
+			}
+
+			// 4명 이상 이미 플레이중이면 더이상 새로운 플레이어가 참가할 수 없게 함.
+			if (dto.getType().equals(Protocol.PLAYERNUMCHECK) && (playerList.size() != 0)) {
+				if (playerList.size() > 4) {
+					tempDto.setType(Protocol.PLAYERNUMCHECK);
+					tempDto.setPlayerNum(4);
+					for (int i = 0; i < playerList.size(); i++) {
+						if (playerList.get(i).id.equals(dto.getId())) {
+							playerList.get(i).writer.println(gson.toJson(tempDto));
+						}
+					}
+				}
+			}
+			
+			// 캐릭터 생성 요청 받아서 처리
+			if (dto.getType().equals(Protocol.MAKEPLAYER)) {
+				int makePlayerNum = 10;
+				for (int i = 0; i < playerList.size(); i++) {
+					if (playerList.get(i).id.equals(dto.getId())) {
+						makePlayerNum = i;
+					}
+				}
+				tempDto.setGubun(Protocol.GAME);
+				tempDto.setType(Protocol.MAKEPLAYER);
+				tempDto.setId(dto.getId());
+				tempDto.setNowPlayerX(initPlayerX(makePlayerNum));
+				tempDto.setNowPlayerY(initPlayerY(makePlayerNum));
+				tempDto.setPlayerImgSource(initPlayerImg(makePlayerNum));
+				String makePlayer = gson.toJson(tempDto);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(makePlayer);
+				}
+				System.out.println(TAG + tempDto);
 			}
 			
 			if (dto.getType().equals(Protocol.DICEROLL)) {
@@ -117,8 +170,53 @@ public class MarbleServer {
 					playerList.get(i).writer.println(output);
 				}
 			}
-		}
+		} // end of router
 		
+	} // end of thread
+	
+	int initPlayerX(int PlayerNum) {
+		int result = 0;
+		switch (PlayerNum) {
+			case 0: result = 210;
+				break;
+			case 1: result = 210;
+				break;
+			case 2: result = 240;
+				break;
+			case 3: result = 240;
+				break;
+		}
+		return result;
+	}
+	
+	int initPlayerY(int PlayerNum) {
+		int result = 0;
+		switch (PlayerNum) {
+			case 0: result = 210;
+				break;
+			case 1: result = 240;
+				break;
+			case 2: result = 210;
+				break;
+			case 3: result = 240;
+				break;
+		}
+		return result;
+	}
+	
+	String initPlayerImg(int PlayerNum) {
+		String result = "";
+		switch (PlayerNum) {
+			case 0: result = "images/img_player01.png";
+				break;
+			case 1: result = "images/img_player02.png";
+				break;
+			case 2: result = "images/img_player03.png";
+				break;
+			case 3: result = "images/img_player04.png";
+				break;
+		}
+		return result;
 	}
 	
 }

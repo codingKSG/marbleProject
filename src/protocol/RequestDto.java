@@ -7,6 +7,12 @@ public class RequestDto {
 	private String gubun;
 	private String nowPlayer;
 	
+	// 현재 플레이어 인원
+	private int playerNum;
+	
+	// 플레이어별 캐릭터 생성 이미지
+	private String playerImgSource;
+	
 	// 채팅에 필요한 프로토콜
 	private String id;
 	private String text;

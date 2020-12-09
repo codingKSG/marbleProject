@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
@@ -24,10 +25,10 @@ import protocol.Protocol;
 import protocol.RequestDto;
 
 public class MarbleClient extends JFrame implements JFrameSet{
-	
+
 	private MarbleClient marbleClient = this;
 	private final static String TAG = "MarbleClient : ";
-	
+
 	private ClientPlayerThread cpt;
 	private Socket socket;
 	private String id;
@@ -36,36 +37,37 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private int nowPlayerTile = 0;
 	private int playerX = 240;
 	private int playerY = 240;
+	private String playerImageSource;
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
-	
+
 	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7;
 	private Container c;
 	private JButton btnDiceRoll;
-	private Player player1;
+	private Player player1, player2, player3, player4;
 	private JLabel laDice;
-	
+
 	Random dice = new Random();
-	
+
 	public MarbleClient(String id) {
 		this.id = id;
-		
+
 		connect();
-		
+
 		init();
-		
+
 		setting();
-		
+
 		batch();
-		
+
 		listener();
-		
+
 		setVisible(true);
 	}
 
 	@Override
 	public void init() {
-		
+
 		board0 = new JLayeredPane();
 		board1 = new JLayeredPane();
 		board2 = new JLayeredPane();
@@ -76,19 +78,18 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board7 = new JLayeredPane();
 		laDice = new JLabel("");
 		btnDiceRoll = new JButton("주사위 굴리기");
-		player1 = new Player(playerX, playerY, id);
 		c = getContentPane();
-		
+
 	}
 
 	@Override
 	public void setting() {
-		
+
 		setTitle("Marble Client" + " : " + id);
 		setSize(330,330);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		
+
 		board0.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board2.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -97,11 +98,9 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board5.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board6.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board7.setBorder(new LineBorder(new Color(0, 0, 0)));
-		player1.setBorder(new LineBorder(new Color(255, 0, 0)));
-		
+
 		c.setLayout(null);
-		player1.setLayout(null);
-		
+
 		laDice.setBounds(124, 143, 57, 15);
 
 		btnDiceRoll.setBounds(100, 110, 100, 23);
@@ -143,7 +142,6 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		add(board6);
 		add(board7);
 		add(btnDiceRoll);
-		add(player1);
 		add(laDice);
 	}
 
@@ -175,10 +173,26 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			try {
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				writer = new PrintWriter(socket.getOutputStream(), true);
+				
+				// 아이디 설정 -> 서버에 해당 클라이언트의 ID값을 넘겨줌 
 				dto.setType(Protocol.IDSET);
 				dto.setId(this.id);
 				String idSet = gson.toJson(dto);
 				writer.println(idSet);
+				
+				// 서버의 playerList의 크기가 4명 이상이면 서버 연결이 되지 않게 함.
+				dto.setType(Protocol.PLAYERNUMCHECK);
+				dto.setId(this.id);
+				String playerNumCheck = gson.toJson(dto);
+				writer.println(playerNumCheck);
+				
+				// 위에서 문제가 없으면 -> 캐릭터를 NEW하게끔 요청.
+				dto.setType(Protocol.MAKEPLAYER);
+				dto.setId(this.id);
+				dto.setNowPlayer(this.id);
+				String makePlayer = gson.toJson(dto);
+				writer.println(makePlayer);
+				
 				new Thread(new ClientPlayerReader(reader, writer)).start();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -275,6 +289,32 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				RequestDto dto = new RequestDto();
 				while ((text = reader.readLine()) != null) {
 					dto = gson.fromJson(text, RequestDto.class);
+					// 이미 존재하는 ID면 ID를 변경하게 함.
+//					if (dto.getType().equals(Protocol.IDCHECK)) {
+//						JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
+//						System.exit(0);
+//						setVisible(false);
+//					}
+					
+					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
+						if (dto.getPlayerNum() == 4) {
+							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많습니다.\n 나중에 시도해주세요.");
+							System.exit(0);
+							setDaemon(false);
+						}
+					}
+					
+					if (dto.getType().equals(Protocol.MAKEPLAYER)) {
+						playerX = dto.getNowPlayerX();
+						playerY = dto.getNowPlayerY();
+						playerImageSource = dto.getPlayerImgSource();
+						if (dto.getId().equals(id)) {
+							player1 = new Player(playerX, playerY, playerImageSource);
+							player1.setLayout(null);
+							add(player1);
+						}
+					}
+					
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						laDice.setText(dto.getId() + ": " + dto.getDice1() + "," + dto.getDice2());
 						System.out.println(dto.getId() + "DICEROLL 받음");
