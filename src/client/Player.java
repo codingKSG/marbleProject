@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import lombok.Data;
-import object.isLandTile;
+import object.IsLandTile;
 
 @Data
 public class Player extends JLabel {
@@ -21,7 +21,7 @@ public class Player extends JLabel {
 	private String id;
 	int money; // 보유 현금
 	int asset; // 보유 총자산 // 건물 + 현금
-	Vector<isLandTile> playerCity; // 보유한 건물
+	Vector<IsLandTile> playerCity; // 보유한 건물
 	
 	public Player(int x, int y, String id) {
 		this.playerX = x;
