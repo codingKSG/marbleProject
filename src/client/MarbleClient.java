@@ -80,6 +80,10 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		laDice = new JLabel("");
 		btnDiceRoll = new JButton("주사위 굴리기");
 		c = getContentPane();
+		player1 = new Player(210, 210, "images/img_player01.png");
+		player2 = new Player(210, 240, "images/img_player02.png");
+		player3 = new Player(240, 210, "images/img_player03.png");
+		player4 = new Player(240, 240, "images/img_player04.png");
 
 	}
 
@@ -144,6 +148,10 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		add(board7);
 		add(btnDiceRoll);
 		add(laDice);
+		add(player1);
+		add(player2);
+		add(player3);
+		add(player4);
 	}
 
 	@Override
@@ -191,12 +199,6 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				dto.setId(this.id);
 				String playerNumCheck = gson.toJson(dto);
 				writer.println(playerNumCheck);
-				
-				// 위에서 문제가 없으면 -> 캐릭터를 NEW하게끔 요청.
-				dto.setType(Protocol.MAKEPLAYER);
-				dto.setId(this.id);
-				String makePlayer = gson.toJson(dto);
-				writer.println(makePlayer);
 				
 				new Thread(new ClientPlayerReader(reader, writer)).start();
 			} catch (IOException e) {
@@ -301,21 +303,25 @@ public class MarbleClient extends JFrame implements JFrameSet{
 //						setVisible(false);
 //					}
 					
-					// 클라이언트 내 플레이어 객체에 ID값 넣기
-//					if (dto.getType().equals(Protocol.PLAYERSET)) {
-//						if (dto.getPlayer1() != null) {
-//							player1.setId(dto.getPlayer1());
-//						}
-//						if (dto.getPlayer2() != null) {
-//							player2.setId(dto.getPlayer2());
-//						}
-//						if (dto.getPlayer3() != null) {
-//							player3.setId(dto.getPlayer3());
-//						}
-//						if (dto.getPlayer4() != null) {
-//							player4.setId(dto.getPlayer4());
-//						}
-//					}
+//					 클라이언트 내 플레이어 객체에 ID값 넣기
+					if (dto.getType().equals(Protocol.PLAYERSET)) {
+						if (dto.getPlayer1() != null) {
+							player1.setId(dto.getPlayer1());
+							player1.setOpaque(true);
+						}
+						if (dto.getPlayer2() != null) {
+							player2.setId(dto.getPlayer2());
+							player2.setVisible(true);
+						}
+						if (dto.getPlayer3() != null) {
+							player3.setId(dto.getPlayer3());
+							player3.setVisible(true);
+						}
+						if (dto.getPlayer4() != null) {
+							player4.setId(dto.getPlayer4());
+							player4.setVisible(true);
+						}
+					}
 					
 					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
 						if (dto.getPlayerNum() == 4) {
@@ -325,39 +331,32 @@ public class MarbleClient extends JFrame implements JFrameSet{
 						}
 					}
 					
-					if (dto.getType().equals(Protocol.MAKEPLAYER)) {
-						playerNum = dto.getPlayerNum();
-						playerX = dto.getNowPlayerX();
-						playerY = dto.getNowPlayerY();
-						playerImageSource = dto.getPlayerImgSource();
-						if (dto.getPlayerNum() == 1) {
-							player1 = new Player(playerX, playerY, playerImageSource);
-							player1.setLayout(null);
-							add(player1);
-						} else if (dto.getPlayerNum() == 2) {
-							player2 = new Player(playerX, playerY, playerImageSource);
-							player2.setLayout(null);
-							add(player2);
-						} else if (dto.getPlayerNum() == 3) {
-							player3 = new Player(playerX, playerY, playerImageSource);
-							player3.setLayout(null);
-							add(player3);
-						} else if (dto.getPlayerNum() == 4) {
-							player4 = new Player(playerX, playerY, playerImageSource);
-							player4.setLayout(null);
-							add(player4);
-						}
-					}
-					
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						laDice.setText(dto.getId() + ": " + dto.getDice1() + "," + dto.getDice2());
 						System.out.println(dto.getId() + "DICEROLL 받음");
 					}
 					
 					if (dto.getType().equals(Protocol.MOVE)) {
-						player1.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+						if (dto.getId().equals(player1.getId())) {
+							player1.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+							nowPlayerTile = dto.getNewPlayerTile();
+							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
+							System.out.println(dto.getId() + "MOVE 받음");
+						}
+					} else if (dto.getId().equals(player2.getId())) {
+						player2.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
 						nowPlayerTile = dto.getNewPlayerTile();
-						System.out.println(id + "의 nowPlayerTile은 :" + nowPlayerTile);
+						System.out.println(player2.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
+						System.out.println(dto.getId() + "MOVE 받음");
+					} else if (dto.getId().equals(player3.getId())) {
+						player3.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+						nowPlayerTile = dto.getNewPlayerTile();
+						System.out.println(player3.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
+						System.out.println(dto.getId() + "MOVE 받음");
+					} else if (dto.getId().equals(player4.getId())) {
+						player4.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+						nowPlayerTile = dto.getNewPlayerTile();
+						System.out.println(player4.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
 						System.out.println(dto.getId() + "MOVE 받음");
 					}
 				}

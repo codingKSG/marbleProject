@@ -49,8 +49,8 @@ public class MarbleServer {
 				// 유저 스레드 생성
 				PlayerThread pt = new PlayerThread(socket);
 				Thread newPlayer = new Thread(pt);
-				newPlayer.start();
 				playerList.add(pt);
+				newPlayer.start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,6 +78,16 @@ public class MarbleServer {
 				String text = "";
 				RequestDto dto = new RequestDto();
 				Gson gson = new Gson();
+				if (playerList.size() == 4) {
+					dto.setType(Protocol.PLAYERSET);
+					dto.setPlayer1(playerList.get(0).id);
+					dto.setPlayer2(playerList.get(1).id);
+					dto.setPlayer3(playerList.get(2).id);
+					dto.setPlayer4(playerList.get(3).id);
+					for (int i = 0; i < playerList.size(); i++) {
+						playerList.get(i).writer.println(gson.toJson(dto));
+					}
+				}
 				while ((text = reader.readLine()) != null) {
 					dto = gson.fromJson(text, RequestDto.class);
 					System.out.println(TAG + id + " : " + dto);
@@ -108,27 +118,6 @@ public class MarbleServer {
 //				}
 			}
 			
-//			if (dto.getType().equals(Protocol.PLAYERSET)) {
-//				tempDto.setType(Protocol.PLAYERSET);
-//				if ("".equals(player1)) {
-//					player1 = dto.getId();
-//					System.out.println("PLAYERSET Player1 : " + player1);
-//					tempDto.setPlayer1(player1);
-//				} else if ("".equals(player2)) {
-//					player2 = dto.getId();
-//					tempDto.setPlayer2(player2);
-//				} else if ("".equals(player3)) {
-//					player3 = dto.getId();
-//					tempDto.setPlayer3(player3);
-//				} else if ("".equals(player4)) {
-//					player4 = dto.getId();
-//					tempDto.setPlayer4(player4);
-//				}
-//				for (int i = 0; i < playerList.size(); i++) {
-//					playerList.get(i).writer.println(gson.toJson(tempDto));
-//				}
-//			}
-			
 			// 4명 이상 이미 플레이중이면 더이상 새로운 플레이어가 참가할 수 없게 함.
 			if (dto.getType().equals(Protocol.PLAYERNUMCHECK) && (playerList.size() != 0)) {
 				if (playerList.size() > 4) {
@@ -140,45 +129,6 @@ public class MarbleServer {
 						}
 					}
 				}
-			}
-			
-			// 캐릭터 생성 요청 받아서 처리
-			if (dto.getType().equals(Protocol.MAKEPLAYER)) {
-				int makePlayerNum = 10;
-				for (int i = 0; i < playerList.size(); i++) {
-					if (playerList.get(i).id.equals(dto.getId())) {
-						makePlayerNum = i;
-					}
-				}
-				tempDto.setGubun(Protocol.GAME);
-				tempDto.setType(Protocol.MAKEPLAYER);
-				System.out.println("getID:" + dto.getId());
-				System.out.println("player1:" + player1);
-				System.out.println("player2:" + player2);
-				System.out.println("player3:" + player3);
-				System.out.println("player4:" + player4);
-				if (player1.equals(dto.getId())) {
-					tempDto.setNowPlayer(player1);
-					tempDto.setPlayerNum(makePlayerNum + 1);
-				} else if (player2.equals(dto.getId())) {
-					tempDto.setNowPlayer(player2);
-					tempDto.setPlayerNum(makePlayerNum + 1);
-				} else if (player3.equals(dto.getId())) {
-					tempDto.setNowPlayer(player3);
-					tempDto.setPlayerNum(makePlayerNum + 1);
-				} else if (player4.equals(dto.getId())) {
-					tempDto.setNowPlayer(player4);
-					tempDto.setPlayerNum(makePlayerNum + 1);
-				}
-				System.out.println(TAG + tempDto.getNowPlayer());
-				tempDto.setNowPlayerX(initPlayerX(makePlayerNum));
-				tempDto.setNowPlayerY(initPlayerY(makePlayerNum));
-				tempDto.setPlayerImgSource(initPlayerImg(makePlayerNum));
-				String makePlayer = gson.toJson(tempDto);
-				for (int i = 0; i < playerList.size(); i++) {
-					playerList.get(i).writer.println(makePlayer);
-				}
-				System.out.println(TAG + tempDto);
 			}
 			
 			if (dto.getType().equals(Protocol.DICEROLL)) {
@@ -208,50 +158,4 @@ public class MarbleServer {
 		} // end of router
 		
 	} // end of thread
-	
-	int initPlayerX(int PlayerNum) {
-		int result = 0;
-		switch (PlayerNum) {
-			case 0: result = 210;
-				break;
-			case 1: result = 210;
-				break;
-			case 2: result = 240;
-				break;
-			case 3: result = 240;
-				break;
-		}
-		return result;
-	}
-	
-	int initPlayerY(int PlayerNum) {
-		int result = 0;
-		switch (PlayerNum) {
-			case 0: result = 210;
-				break;
-			case 1: result = 240;
-				break;
-			case 2: result = 210;
-				break;
-			case 3: result = 240;
-				break;
-		}
-		return result;
-	}
-	
-	String initPlayerImg(int PlayerNum) {
-		String result = "";
-		switch (PlayerNum) {
-			case 0: result = "images/img_player01.png";
-				break;
-			case 1: result = "images/img_player02.png";
-				break;
-			case 2: result = "images/img_player03.png";
-				break;
-			case 3: result = "images/img_player04.png";
-				break;
-		}
-		return result;
-	}
-	
 }
