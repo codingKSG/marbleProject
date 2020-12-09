@@ -45,6 +45,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private Container c;
 	private JButton btnDiceRoll;
 	private Player player1, player2, player3, player4;
+	private int playerNum;
 	private JLabel laDice;
 
 	Random dice = new Random();
@@ -180,6 +181,11 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				String idSet = gson.toJson(dto);
 				writer.println(idSet);
 				
+//				dto.setType(Protocol.PLAYERSET);
+//				dto.setId(this.id);
+//				String playerSet = gson.toJson(dto);
+//				writer.println(playerSet);
+				
 				// 서버의 playerList의 크기가 4명 이상이면 서버 연결이 되지 않게 함.
 				dto.setType(Protocol.PLAYERNUMCHECK);
 				dto.setId(this.id);
@@ -189,7 +195,6 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				// 위에서 문제가 없으면 -> 캐릭터를 NEW하게끔 요청.
 				dto.setType(Protocol.MAKEPLAYER);
 				dto.setId(this.id);
-				dto.setNowPlayer(this.id);
 				String makePlayer = gson.toJson(dto);
 				writer.println(makePlayer);
 				
@@ -296,6 +301,22 @@ public class MarbleClient extends JFrame implements JFrameSet{
 //						setVisible(false);
 //					}
 					
+					// 클라이언트 내 플레이어 객체에 ID값 넣기
+//					if (dto.getType().equals(Protocol.PLAYERSET)) {
+//						if (dto.getPlayer1() != null) {
+//							player1.setId(dto.getPlayer1());
+//						}
+//						if (dto.getPlayer2() != null) {
+//							player2.setId(dto.getPlayer2());
+//						}
+//						if (dto.getPlayer3() != null) {
+//							player3.setId(dto.getPlayer3());
+//						}
+//						if (dto.getPlayer4() != null) {
+//							player4.setId(dto.getPlayer4());
+//						}
+//					}
+					
 					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
 						if (dto.getPlayerNum() == 4) {
 							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많습니다.\n 나중에 시도해주세요.");
@@ -305,13 +326,26 @@ public class MarbleClient extends JFrame implements JFrameSet{
 					}
 					
 					if (dto.getType().equals(Protocol.MAKEPLAYER)) {
+						playerNum = dto.getPlayerNum();
 						playerX = dto.getNowPlayerX();
 						playerY = dto.getNowPlayerY();
 						playerImageSource = dto.getPlayerImgSource();
-						if (dto.getId().equals(id)) {
+						if (dto.getPlayerNum() == 1) {
 							player1 = new Player(playerX, playerY, playerImageSource);
 							player1.setLayout(null);
 							add(player1);
+						} else if (dto.getPlayerNum() == 2) {
+							player2 = new Player(playerX, playerY, playerImageSource);
+							player2.setLayout(null);
+							add(player2);
+						} else if (dto.getPlayerNum() == 3) {
+							player3 = new Player(playerX, playerY, playerImageSource);
+							player3.setLayout(null);
+							add(player3);
+						} else if (dto.getPlayerNum() == 4) {
+							player4 = new Player(playerX, playerY, playerImageSource);
+							player4.setLayout(null);
+							add(player4);
 						}
 					}
 					

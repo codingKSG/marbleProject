@@ -21,13 +21,16 @@ public class MarbleServer {
 	private ServerSocket serverSocket;
 	private Socket socket;
 	private Vector<PlayerThread> playerList; // 플레이어 객체가 담긴 벡터
+	private String player1 = "";
+	private String player2 = "";
+	private String player3 = "";
+	private String player4 = ""; // 플레이어 ID가 담긴 변수
 	
 	private String nowPlayer ; // 현재 차례인 플레이어
 	private int countTurn ; // 현재 진행 턴 수
 	private int dice1 ; // 주사위 값을 보여주기 위한 것
 	private int dice2 ; // 주사위 값을 보여주기 위한 것
 	private int countPlayer ; // 현재 생존 플레이어 수
-	private String player1, player2, player3, player4; // 플레이어 ID를 담아놓는 변수
 
 	void initSequence() {} // 시작 전 순서 정하기
 	void sequenceFlow() {} // 턴 넘기기(다음 턴 플레이어의 isTurn을 true로 변경
@@ -89,18 +92,11 @@ public class MarbleServer {
 			Gson gson = new Gson();
 			String output = "";
 			RequestDto tempDto = new RequestDto();
-			// ID 설정
+			// ID 설정 + 클라이언트 내 플레이어 객체에 ID값 넣기
 			if (dto.getType().equals(Protocol.IDSET)) {
 				playerThread.id = dto.getId();
-				if ("".equals(player1)) {
-					player1 = dto.getId();
-				} else if ("".equals(player2)) {
-					player2 = dto.getId();
-				} else if ("".equals(player3)) {
-					player3 = dto.getId();
-				} else if ("".equals(player4)) {
-					player4 = dto.getId();
-				}
+				
+				
 //			이미 존재하는 ID면 ID를 변경하게 함.
 //				if (playerList.size() != 0) {
 //					for (int i = 0; i < playerList.size(); i++) {
@@ -111,7 +107,28 @@ public class MarbleServer {
 //					}
 //				}
 			}
-
+			
+//			if (dto.getType().equals(Protocol.PLAYERSET)) {
+//				tempDto.setType(Protocol.PLAYERSET);
+//				if ("".equals(player1)) {
+//					player1 = dto.getId();
+//					System.out.println("PLAYERSET Player1 : " + player1);
+//					tempDto.setPlayer1(player1);
+//				} else if ("".equals(player2)) {
+//					player2 = dto.getId();
+//					tempDto.setPlayer2(player2);
+//				} else if ("".equals(player3)) {
+//					player3 = dto.getId();
+//					tempDto.setPlayer3(player3);
+//				} else if ("".equals(player4)) {
+//					player4 = dto.getId();
+//					tempDto.setPlayer4(player4);
+//				}
+//				for (int i = 0; i < playerList.size(); i++) {
+//					playerList.get(i).writer.println(gson.toJson(tempDto));
+//				}
+//			}
+			
 			// 4명 이상 이미 플레이중이면 더이상 새로운 플레이어가 참가할 수 없게 함.
 			if (dto.getType().equals(Protocol.PLAYERNUMCHECK) && (playerList.size() != 0)) {
 				if (playerList.size() > 4) {
@@ -135,7 +152,25 @@ public class MarbleServer {
 				}
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.MAKEPLAYER);
-				tempDto.setId(dto.getId());
+				System.out.println("getID:" + dto.getId());
+				System.out.println("player1:" + player1);
+				System.out.println("player2:" + player2);
+				System.out.println("player3:" + player3);
+				System.out.println("player4:" + player4);
+				if (player1.equals(dto.getId())) {
+					tempDto.setNowPlayer(player1);
+					tempDto.setPlayerNum(makePlayerNum + 1);
+				} else if (player2.equals(dto.getId())) {
+					tempDto.setNowPlayer(player2);
+					tempDto.setPlayerNum(makePlayerNum + 1);
+				} else if (player3.equals(dto.getId())) {
+					tempDto.setNowPlayer(player3);
+					tempDto.setPlayerNum(makePlayerNum + 1);
+				} else if (player4.equals(dto.getId())) {
+					tempDto.setNowPlayer(player4);
+					tempDto.setPlayerNum(makePlayerNum + 1);
+				}
+				System.out.println(TAG + tempDto.getNowPlayer());
 				tempDto.setNowPlayerX(initPlayerX(makePlayerNum));
 				tempDto.setNowPlayerY(initPlayerY(makePlayerNum));
 				tempDto.setPlayerImgSource(initPlayerImg(makePlayerNum));

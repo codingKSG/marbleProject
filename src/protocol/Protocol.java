@@ -13,6 +13,9 @@ public interface Protocol {
 	// 초기 ID 셋팅
 	String IDSET = "IDSET";
 	
+	// 초기 PLAYER번호 지정
+	String PLAYERNUM = "PLAYERNUM";
+	
 	// 이미 존재하는 ID인지 체크
 	String IDCHECK = "IDCHECK";
 	
