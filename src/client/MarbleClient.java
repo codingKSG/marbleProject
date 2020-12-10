@@ -46,15 +46,20 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
 
-	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7;
+	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10, board11, board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22, board23;
 	private Container c;
+	// 주사위굴리기 버튼, 시작버튼
 	private JButton btnDiceRoll, btnStart;
+	// 오른쪽 플레이어창
 	private JPanel player1Info, player2Info, player3Info, player4Info, playerChatPanel;
+	// 오른쪽 채팅창
 	private ScrollPane scChatList;
 	private JTextArea playerChatList;
 	private JTextField playerChatField;
+	// 플레이어(유저) 이미지 객체 - 플레잉중이 아니면 안보임
 	private Player player1, player2, player3, player4;
 	private int playerNum;
+	// 주사위 값 띄우는 라벨
 	private JLabel laDice;
 
 	Random dice = new Random();
@@ -77,7 +82,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 
 	@Override
 	public void init() {
-
+		// 발판 new
 		board0 = new JLayeredPane();
 		board1 = new JLayeredPane();
 		board2 = new JLayeredPane();
@@ -86,18 +91,40 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board5 = new JLayeredPane();
 		board6 = new JLayeredPane();
 		board7 = new JLayeredPane();
+		board8 = new JLayeredPane();
+		board9 = new JLayeredPane();
+		board10 = new JLayeredPane();
+		board11 = new JLayeredPane();
+		board12 = new JLayeredPane();
+		board13 = new JLayeredPane();
+		board14 = new JLayeredPane();
+		board15 = new JLayeredPane();
+		board16 = new JLayeredPane();
+		board17 = new JLayeredPane();
+		board18 = new JLayeredPane();
+		board19 = new JLayeredPane();
+		board20 = new JLayeredPane();
+		board21 = new JLayeredPane();
+		board22 = new JLayeredPane();
+		board23 = new JLayeredPane();
+		// 주사위 눈 수 => 이미지로 변경 예정
 		laDice = new JLabel("");
+		// 주사위 버튼, 시작 버튼
 		btnDiceRoll = new JButton("주사위 굴리기");
 		btnStart = new JButton("게임 시작");
+		// 메인 컨텐트
 		c = getContentPane();
+		// 플레이어 객체 이미지
 		player1 = new Player(210, 210, "images/img_player01.png");
 		player2 = new Player(210, 240, "images/img_player02.png");
 		player3 = new Player(240, 210, "images/img_player03.png");
 		player4 = new Player(240, 240, "images/img_player04.png");
+		// 오른쪽 플레이어 정보창
 		player1Info = new JPanel();
 		player2Info = new JPanel();
 		player3Info = new JPanel();
 		player4Info = new JPanel();
+		// 오른쪽 채팅창
 		playerChatPanel = new JPanel();
 		scChatList = new ScrollPane();
 		playerChatList = new JTextArea();
@@ -109,7 +136,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	public void setting() {
 
 		setTitle("Marble Client" + " : " + id);
-		setSize(1000,800);
+		setSize(1000,840);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
@@ -121,49 +148,87 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board5.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board6.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board7.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board8.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board9.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board10.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board11.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board12.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board13.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board14.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board15.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board16.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board17.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board18.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board19.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board20.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board21.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board22.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board23.setBorder(new LineBorder(new Color(0, 0, 0)));
+		
+		// 오른쪽 플레이어창
 		player1Info.setBorder(new LineBorder(new Color(0, 0, 0)));
 		player2Info.setBorder(new LineBorder(new Color(0, 0, 0)));
 		player3Info.setBorder(new LineBorder(new Color(0, 0, 0)));
 		player4Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+		// 오른쪽 채팅창
 		playerChatPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		playerChatPanel.setLayout(new BorderLayout());
 		playerChatList.setEditable(false);
 
 		c.setLayout(null);
-
+		// 오른쪽 플레이어창
 		player1Info.setBounds(800, 0, 200, 100);
-		player2Info.setBounds(800, 100, 200, 100);
-		player3Info.setBounds(800, 200, 200, 100);
-		player4Info.setBounds(800, 300, 200, 100);
+		player1Info.setBackground(new Color(153, 102, 255));
 		
-		playerChatPanel.setBounds(800, 400, 200, 362);
-		scChatList.setSize(180, 340);
+		player2Info.setBounds(800, 100, 200, 100);
+		player2Info.setBackground(new Color(153, 153, 255));
+		
+		player3Info.setBounds(800, 200, 200, 100);
+		player3Info.setBackground(new Color(153, 255, 255));
+		
+		player4Info.setBounds(800, 300, 200, 100);
+		player4Info.setBackground(new Color(102, 255, 51));
+		// 오른쪽 채팅창
+		playerChatPanel.setBounds(800, 400, 200, 400);
+		scChatList.setSize(180, 370);
 		playerChatField.setSize(200, 30);
 		
 		laDice.setBounds(124, 143, 57, 15);
-
+		// 주사위 굴리기 버튼
 		btnDiceRoll.setBounds(100, 110, 100, 23);
 		btnDiceRoll.setVisible(false);
-		
+		// 시작버튼
 		btnStart.setBounds(100, 110, 100, 23);
 		System.out.println("START버튼 숨겨짐");
 		btnStart.setVisible(false);
-		
-		board0.setBounds(200, 200, 100, 100);
-		
-		board1.setBounds(0, 0, 100, 100);
-		
-		board2.setBounds(0, 100, 100, 100);
-		
-		board3.setBounds(0, 200, 100, 100);
-		
-		board4.setBounds(100, 200, 100, 100);
-		
-		board5.setBounds(100, 0, 100, 100);
-		
-		board6.setBounds(200, 0, 100, 100);
-		
-		board7.setBounds(200, 100, 100, 100);
+		// 시작발판 ~ 무인도
+		board0.setBounds(650, 650, 150, 150); // 시작발판
+		board1.setBounds(550, 650, 100, 150);
+		board2.setBounds(450, 650, 100, 150);
+		board3.setBounds(350, 650, 100, 150);
+		board4.setBounds(250, 650, 100, 150);
+		board5.setBounds(150, 650, 100, 150);
+		board6.setBounds(0, 650, 150, 150); // 무인도
+		// 무인도 ~ 올림픽
+		board7.setBounds(0, 550, 150, 100);
+		board8.setBounds(0, 450, 150, 100);
+		board9.setBounds(0, 350, 150, 100);
+		board10.setBounds(0, 250, 150, 100);
+		board11.setBounds(0, 150, 150, 100);
+		board12.setBounds(0, 0, 150, 150); // 올림픽
+		// 올림픽 ~ 세계여행
+		board13.setBounds(150, 0, 100, 150);
+		board14.setBounds(250, 0, 100, 150);
+		board15.setBounds(350, 0, 100, 150);
+		board16.setBounds(450, 0, 100, 150);
+		board17.setBounds(550, 0, 100, 150);
+		board18.setBounds(650, 0, 150, 150); // 세계여행
+		// 세계여행 ~ 시작발판 이전
+		board19.setBounds(650, 150, 150, 100);
+		board20.setBounds(650, 250, 150, 100);
+		board21.setBounds(650, 350, 150, 100);
+		board22.setBounds(650, 450, 150, 100);
+		board23.setBounds(650, 550, 150, 100); // 시작발판 바로 윗칸
 		
 		player1.setVisible(false);
 		player2.setVisible(false);
@@ -173,6 +238,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 
 	@Override
 	public void batch() {
+		// 발판 배치
 		add(board0);
 		add(board1);
 		add(board2);
@@ -181,31 +247,44 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		add(board5);
 		add(board6);
 		add(board7);
+		add(board8);
+		add(board9);
+		add(board10);
+		add(board11);
+		add(board12);
+		add(board13);
+		add(board14);
+		add(board15);
+		add(board16);
+		add(board17);
+		add(board18);
+		add(board19);
+		add(board20);
+		add(board21);
+		add(board22);
+		add(board23);
+		// 주사위 굴리기, 시작 버튼 배치
 		add(btnDiceRoll);
 		add(btnStart);
+		// 주사위 값 배치 => 이미지 변경 예정
 		add(laDice);
+		// 캐릭터 이미지 배치
 		add(player1);
 		add(player2);
 		add(player3);
 		add(player4);
+		// 오른쪽 플레이어창
 		add(player1Info);
 		add(player2Info);
 		add(player3Info);
 		add(player4Info);
+		// 오른쪽 채팅창
 		add(scChatList);
 		add(playerChatPanel);
 		playerChatPanel.add(scChatList, BorderLayout.CENTER);
 		scChatList.add(playerChatList);
 		playerChatPanel.add(playerChatField, BorderLayout.SOUTH);
 		
-		getContentPane().add(board0);
-		getContentPane().add(board1);
-		getContentPane().add(board2);
-		getContentPane().add(board3);
-		getContentPane().add(board4);
-		getContentPane().add(board5);
-		getContentPane().add(board6);
-		getContentPane().add(board7);
 	}
 
 	@Override
@@ -444,6 +523,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 					
 					if (dto.getType().equals(Protocol.CHAT)) {
 						playerChatList.append(dto.getText());
+						scChatList.getVAdjustable().setValue(scChatList.getVAdjustable().getMaximum());
 					}
 					
 				}

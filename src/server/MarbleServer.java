@@ -46,12 +46,12 @@ public class MarbleServer {
 		// 입장한 유저가 Vector에 담김
 		playerList = new Vector<>();
 		Tile T0 = new SpecialTile("시작", 0, 0, 240, 240);
-		CityTile T1 = new CityTile("홍공", 1, 1, 132, 240, null, 0, arrayinit, 20, 30, 50, 70, 0);
+		CityTile T1 = new CityTile("홍콩", 1, 1, 132, 240, null, 0, arrayinit, 20, 30, 50, 70, 0);
 		CityTile T2 = new CityTile("싱가폴", 2, 1, 26, 240, null, 0, arrayinit, 30, 50, 70, 80, 0);
 		IsLandTile T3 = new IsLandTile("제주도", 3, 2, 26, 131, null, 0, arrayinit, 50);
 		SpecialTile T4 = new SpecialTile("무인도", 4, 3, 26, 26);
 		IsLandTile T5 = new IsLandTile("독도", 5, 2, 132, 26, null, 0, arrayinit, 70);
-		CityTile T6 = new CityTile("뉴옥", 6, 1, 240, 26, null, 0, arrayinit, 50, 60, 80, 100, 0);
+		CityTile T6 = new CityTile("뉴욕", 6, 1, 240, 26, null, 0, arrayinit, 50, 60, 80, 100, 0);
 		SpecialTile T7 = new SpecialTile("올림픽", 7, 3, 240, 131);
 		try {
 			serverSocket = new ServerSocket(Protocol.PORT);
@@ -209,9 +209,19 @@ public class MarbleServer {
 			if (dto.getType().equals(Protocol.CHAT)) {
 				String chatText = dto.getId() + " : " + dto.getText() + "\n";
 				tempDto.setType(Protocol.CHAT);
-				tempDto.setText(chatText);
-				for (int i = 0; i < playerList.size(); i++) {
-					playerList.get(i).writer.println(gson.toJson(tempDto));
+				if (dto.getText().equals("")) {
+					chatText = "[공지] 내용을 입력해주세요.\n";
+					tempDto.setText(chatText);
+					for (int i = 0; i < playerList.size(); i++) {
+						if (playerList.get(i).id.equals(dto.getId())) {
+							playerList.get(i).writer.println(gson.toJson(tempDto));
+						}
+					}
+				} else {
+					tempDto.setText(chatText);
+					for (int i = 0; i < playerList.size(); i++) {
+						playerList.get(i).writer.println(gson.toJson(tempDto));
+					}
 				}
 			}
 		} // end of router

@@ -1,6 +1,7 @@
 package protocol;
 
 import lombok.Data;
+import object.CityTile;
 
 @Data
 public class RequestDto {
