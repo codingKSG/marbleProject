@@ -93,6 +93,13 @@ public class MarbleServer {
 				RequestDto dto = new RequestDto();
 				Gson gson = new Gson();
 				
+				if (playerList.size() == 2) {
+					RequestDto hostDto = new RequestDto();
+					hostDto.setType(Protocol.GAMEHOST);
+					playerList.get(0).writer.println(gson.toJson(hostDto));
+					System.out.println(TAG + "GAMEHOST지정");
+				}
+				
 				while ((text = reader.readLine()) != null) {
 					dto = gson.fromJson(text, RequestDto.class);
 					System.out.println(TAG + id + " : " + dto);
@@ -116,7 +123,6 @@ public class MarbleServer {
 			// ID 설정 + 클라이언트 내 플레이어 객체에 ID값 넣기
 			if (dto.getType().equals(Protocol.IDSET)) {
 				playerThread.id = dto.getId();
-				
 				
 //			이미 존재하는 ID면 ID를 변경하게 함.
 //				if (playerList.size() != 0) {
@@ -164,6 +170,13 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
+				
+				String notice = "[공지] 게임을 시작합니다.\n";
+				tempDto.setType(Protocol.CHAT);
+				tempDto.setText(notice);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
 			}
 			
 			if (dto.getType().equals(Protocol.DICEROLL)) {
@@ -190,6 +203,15 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(output);
 					System.out.println(TAG + "MOVE 받아서 보냄");
+				}
+			}
+			
+			if (dto.getType().equals(Protocol.CHAT)) {
+				String chatText = dto.getId() + " : " + dto.getText() + "\n";
+				tempDto.setType(Protocol.CHAT);
+				tempDto.setText(chatText);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
 		} // end of router

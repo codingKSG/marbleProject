@@ -1,7 +1,9 @@
 package client;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -16,6 +18,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
@@ -44,6 +49,10 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7;
 	private Container c;
 	private JButton btnDiceRoll, btnStart;
+	private JPanel player1Info, player2Info, player3Info, player4Info, playerChatPanel;
+	private ScrollPane scChatList;
+	private JTextArea playerChatList;
+	private JTextField playerChatField;
 	private Player player1, player2, player3, player4;
 	private int playerNum;
 	private JLabel laDice;
@@ -85,6 +94,14 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		player2 = new Player(210, 240, "images/img_player02.png");
 		player3 = new Player(240, 210, "images/img_player03.png");
 		player4 = new Player(240, 240, "images/img_player04.png");
+		player1Info = new JPanel();
+		player2Info = new JPanel();
+		player3Info = new JPanel();
+		player4Info = new JPanel();
+		playerChatPanel = new JPanel();
+		scChatList = new ScrollPane();
+		playerChatList = new JTextArea();
+		playerChatField = new JTextField(20);
 
 	}
 
@@ -92,7 +109,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	public void setting() {
 
 		setTitle("Marble Client" + " : " + id);
-		setSize(330,330);
+		setSize(1000,800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
@@ -104,39 +121,49 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board5.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board6.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board7.setBorder(new LineBorder(new Color(0, 0, 0)));
+		player1Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+		player2Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+		player3Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+		player4Info.setBorder(new LineBorder(new Color(0, 0, 0)));
+		playerChatPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		playerChatPanel.setLayout(new BorderLayout());
+		playerChatList.setEditable(false);
 
 		c.setLayout(null);
 
+		player1Info.setBounds(800, 0, 200, 100);
+		player2Info.setBounds(800, 100, 200, 100);
+		player3Info.setBounds(800, 200, 200, 100);
+		player4Info.setBounds(800, 300, 200, 100);
+		
+		playerChatPanel.setBounds(800, 400, 200, 362);
+		scChatList.setSize(180, 340);
+		playerChatField.setSize(200, 30);
+		
 		laDice.setBounds(124, 143, 57, 15);
 
 		btnDiceRoll.setBounds(100, 110, 100, 23);
 		btnDiceRoll.setVisible(false);
 		
 		btnStart.setBounds(100, 110, 100, 23);
+		System.out.println("START버튼 숨겨짐");
+		btnStart.setVisible(false);
 		
 		board0.setBounds(200, 200, 100, 100);
-		getContentPane().add(board0);
 		
 		board1.setBounds(0, 0, 100, 100);
-		getContentPane().add(board1);
 		
 		board2.setBounds(0, 100, 100, 100);
-		getContentPane().add(board2);
 		
 		board3.setBounds(0, 200, 100, 100);
-		getContentPane().add(board3);
 		
 		board4.setBounds(100, 200, 100, 100);
-		getContentPane().add(board4);
 		
 		board5.setBounds(100, 0, 100, 100);
-		getContentPane().add(board5);
 		
 		board6.setBounds(200, 0, 100, 100);
-		getContentPane().add(board6);
 		
 		board7.setBounds(200, 100, 100, 100);
-		getContentPane().add(board7);
 		
 		player1.setVisible(false);
 		player2.setVisible(false);
@@ -161,6 +188,24 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		add(player2);
 		add(player3);
 		add(player4);
+		add(player1Info);
+		add(player2Info);
+		add(player3Info);
+		add(player4Info);
+		add(scChatList);
+		add(playerChatPanel);
+		playerChatPanel.add(scChatList, BorderLayout.CENTER);
+		scChatList.add(playerChatList);
+		playerChatPanel.add(playerChatField, BorderLayout.SOUTH);
+		
+		getContentPane().add(board0);
+		getContentPane().add(board1);
+		getContentPane().add(board2);
+		getContentPane().add(board3);
+		getContentPane().add(board4);
+		getContentPane().add(board5);
+		getContentPane().add(board6);
+		getContentPane().add(board7);
 	}
 
 	@Override
@@ -182,6 +227,13 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				cpt.writer.println(gameStart);
 			}
 		});
+		
+		playerChatField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sendChat();
+			}
+		});
 	}
 	
 	class ClientPlayerThread extends Thread {
@@ -193,7 +245,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		private String output;
 		private RequestDto dto;
 		private String id;
-		
+		// 서버로 보내는 스레드 실행
 		public ClientPlayerThread(Socket socket, String id) {
 			this.socket = socket;
 			this.id = id;
@@ -220,6 +272,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				String playerNumCheck = gson.toJson(dto);
 				writer.println(playerNumCheck);
 				
+				// 서버 값 불러오는 리더 스레드 실행
 				new Thread(new ClientPlayerReader(reader, writer)).start();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -316,6 +369,12 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				RequestDto dto = new RequestDto();
 				while ((text = reader.readLine()) != null) {
 					dto = gson.fromJson(text, RequestDto.class);
+					
+					if (dto.getType().equals(Protocol.GAMEHOST)) {
+						System.out.println(TAG + "GAMEHOST 받음");
+						btnStart.setVisible(true);
+					}
+					
 					// 이미 존재하는 ID면 ID를 변경하게 함.
 //					if (dto.getType().equals(Protocol.IDCHECK)) {
 //						JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
@@ -345,20 +404,20 @@ public class MarbleClient extends JFrame implements JFrameSet{
 						btnStart.setVisible(false);
 						btnDiceRoll.setVisible(true);
 					}
-					
+					// 플레이중이거나 4명 초과하면 프로그램 종료.(참여불가)
 					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
 						if (dto.getPlayerNum() == 4) {
-							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많거나 이미 플레이중입니다.\n 나중에 시도해주세요.");
+							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많거나 게임이 이미 플레이중입니다.\n 나중에 시도해주세요.");
 							System.exit(0);
 							setDaemon(false);
 						}
 					}
-					
+					// 주사위굴리기 구현
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						laDice.setText(dto.getId() + ": " + dto.getDice1() + "," + dto.getDice2());
 						System.out.println(dto.getId() + "DICEROLL 받음");
 					}
-					
+					// 움직이기 구현
 					if (dto.getType().equals(Protocol.MOVE)) {
 						System.out.println(dto.getId() + "MOVE 받음");
 						if (dto.getId().equals(player1.getId())) {
@@ -382,6 +441,11 @@ public class MarbleClient extends JFrame implements JFrameSet{
 							System.out.println(dto.getId() + "MOVE 받음");
 						}
 					}
+					
+					if (dto.getType().equals(Protocol.CHAT)) {
+						playerChatList.append(dto.getText());
+					}
+					
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -401,6 +465,16 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			System.out.println(TAG + id + "연결 실패");
 			
 		}
+	}
+	
+	private void sendChat() {
+		String playerChat = playerChatField.getText();
+		cpt.dto.setGubun(Protocol.CHAT);
+		cpt.dto.setType(Protocol.CHAT);
+		cpt.dto.setText(playerChat);
+		cpt.dto.setId(id);
+		cpt.writer.println(cpt.gson.toJson(cpt.dto));
+		playerChatField.setText("");
 	}
 	
 	public static void main(String[] args) {
