@@ -43,7 +43,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 
 	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7;
 	private Container c;
-	private JButton btnDiceRoll;
+	private JButton btnDiceRoll, btnStart;
 	private Player player1, player2, player3, player4;
 	private int playerNum;
 	private JLabel laDice;
@@ -79,6 +79,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board7 = new JLayeredPane();
 		laDice = new JLabel("");
 		btnDiceRoll = new JButton("주사위 굴리기");
+		btnStart = new JButton("게임 시작");
 		c = getContentPane();
 		player1 = new Player(210, 210, "images/img_player01.png");
 		player2 = new Player(210, 240, "images/img_player02.png");
@@ -109,6 +110,9 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		laDice.setBounds(124, 143, 57, 15);
 
 		btnDiceRoll.setBounds(100, 110, 100, 23);
+		btnDiceRoll.setVisible(false);
+		
+		btnStart.setBounds(100, 110, 100, 23);
 		
 		board0.setBounds(200, 200, 100, 100);
 		getContentPane().add(board0);
@@ -133,7 +137,11 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		
 		board7.setBounds(200, 100, 100, 100);
 		getContentPane().add(board7);
-
+		
+		player1.setVisible(false);
+		player2.setVisible(false);
+		player3.setVisible(false);
+		player4.setVisible(false);
 	}
 
 	@Override
@@ -147,6 +155,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		add(board6);
 		add(board7);
 		add(btnDiceRoll);
+		add(btnStart);
 		add(laDice);
 		add(player1);
 		add(player2);
@@ -160,6 +169,17 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cpt.playerRoll();
+			}
+		});
+		
+		btnStart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnStart.setVisible(false);
+				cpt.dto.setGubun(Protocol.GAME);
+				cpt.dto.setType(Protocol.GAMESTART);
+				String gameStart = cpt.gson.toJson(cpt.dto);
+				cpt.writer.println(gameStart);
 			}
 		});
 	}
@@ -307,7 +327,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 					if (dto.getType().equals(Protocol.PLAYERSET)) {
 						if (dto.getPlayer1() != null) {
 							player1.setId(dto.getPlayer1());
-							player1.setOpaque(true);
+							player1.setVisible(true);
 						}
 						if (dto.getPlayer2() != null) {
 							player2.setId(dto.getPlayer2());
@@ -321,11 +341,14 @@ public class MarbleClient extends JFrame implements JFrameSet{
 							player4.setId(dto.getPlayer4());
 							player4.setVisible(true);
 						}
+						
+						btnStart.setVisible(false);
+						btnDiceRoll.setVisible(true);
 					}
 					
 					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
 						if (dto.getPlayerNum() == 4) {
-							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많습니다.\n 나중에 시도해주세요.");
+							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많거나 이미 플레이중입니다.\n 나중에 시도해주세요.");
 							System.exit(0);
 							setDaemon(false);
 						}
@@ -337,27 +360,27 @@ public class MarbleClient extends JFrame implements JFrameSet{
 					}
 					
 					if (dto.getType().equals(Protocol.MOVE)) {
+						System.out.println(dto.getId() + "MOVE 받음");
 						if (dto.getId().equals(player1.getId())) {
 							player1.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
-							nowPlayerTile = dto.getNewPlayerTile();
-							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
+							player1.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + player1.getNowPlayerTile());
+						} else if (dto.getId().equals(player2.getId())) {
+							player2.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+							player2.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player2.getId() + "의 nowPlayerTile은 :" + player2.getNowPlayerTile());
+							System.out.println(dto.getId() + "MOVE 받음");
+						} else if (dto.getId().equals(player3.getId())) {
+							player3.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+							player3.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player3.getId() + "의 nowPlayerTile은 :" + player3.getNowPlayerTile());
+							System.out.println(dto.getId() + "MOVE 받음");
+						} else if (dto.getId().equals(player4.getId())) {
+							player4.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
+							player4.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player4.getId() + "의 nowPlayerTile은 :" + player4.getNowPlayerTile());
 							System.out.println(dto.getId() + "MOVE 받음");
 						}
-					} else if (dto.getId().equals(player2.getId())) {
-						player2.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
-						nowPlayerTile = dto.getNewPlayerTile();
-						System.out.println(player2.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
-						System.out.println(dto.getId() + "MOVE 받음");
-					} else if (dto.getId().equals(player3.getId())) {
-						player3.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
-						nowPlayerTile = dto.getNewPlayerTile();
-						System.out.println(player3.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
-						System.out.println(dto.getId() + "MOVE 받음");
-					} else if (dto.getId().equals(player4.getId())) {
-						player4.moveAnimation(dto.getNewPlayerX(), dto.getNewPlayerY(), dto.getNewPlayerTile());
-						nowPlayerTile = dto.getNewPlayerTile();
-						System.out.println(player4.getId() + "의 nowPlayerTile은 :" + nowPlayerTile);
-						System.out.println(dto.getId() + "MOVE 받음");
 					}
 				}
 			} catch (IOException e) {

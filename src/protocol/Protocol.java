@@ -7,6 +7,12 @@ public interface Protocol {
 	String CHAT = "CHAT";
 	String GAME = "GAME";
 	
+	// 게임 스타트 알림
+	String GAMESTART = "GAMESTART";
+	
+	// 입장거절
+	String REJECTENTER = "REJECTENTER";
+	
 	// 서버 플레이어 수 체크
 	String PLAYERNUMCHECK = "PLAYERNUMCHECK";
 	
