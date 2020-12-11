@@ -2,8 +2,10 @@ package object;
 
 public class SpecialTile extends Tile implements SpecialInterface{
 
-	public SpecialTile(int tileType, String tileName, int tileNum, int tileX, int tileY) {
-		super(tileType, tileName, tileNum, tileX, tileY);
+	
+
+	public SpecialTile(String tileName, int tileNum, int tileType, int tileX, int tileY) {
+		super(tileName, tileNum, tileType, tileX, tileY);
 	}
 
 	@Override

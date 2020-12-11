@@ -1,11 +1,24 @@
 package protocol;
 
 import lombok.Data;
+import object.CityTile;
 
 @Data
 public class RequestDto {
 	private String gubun;
 	private String nowPlayer;
+	
+	// 현재 플레이어 인원
+	private int playerNum;
+	
+	// 플레이어별 캐릭터 생성 이미지
+	private String playerImgSource;
+	
+	// 클라이언트 내 플레이어 객체에 아이디를 넣기 위함(서버 -> 클라이언트)
+	private String player1;
+	private String player2;
+	private String player3;
+	private String player4;
 	
 	// 채팅에 필요한 프로토콜
 	private String id;

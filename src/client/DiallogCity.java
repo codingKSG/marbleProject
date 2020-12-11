@@ -2,14 +2,11 @@ package client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -17,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import object.CityTile;
 import protocol.JFrameSet;
 
 public class DiallogCity extends JFrame implements JFrameSet {
@@ -24,10 +22,10 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	private final static String TAG = "DiallogCity : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
-
+	
 	private JLabel textLabel, allLa, landLa, houseLa, buildingLa, hotelLa;
 	private JPanel purchasedMenu, menuPanel, btnPanel, landPanel, housePanel, buildingPanel, hotelPanel;
-	private JButton purchasedBtn, cancelBtn;
+	private JButton btnPurchased, btnCancel;
 	private JCheckBox landCheck, houseCheck, buildingCheck, hotelCheck;
 
 	private MyItemListener myItemListener;
@@ -37,26 +35,29 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	// 식별된 Tile의 상태 값을 받아온다.
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
-	private String tileName; // 해당 타일의 이름
-	private int tileNum; // 해당 타일의 번호
+//	private String tileName; // 해당 타일의 이름
+//	private int tileNum; // 해당 타일의 번호
 	
 	// 다이얼 로그가 CityTile에게 받아서 출력해야할 값들
 
 	// 구매시 필요한 값
-	private int isPurchased; // 땅/ 집/ 빌딩/ 호텔 샀는지
+	private int[] isPurchased = {0, 0, 0, 0}; // 땅/ 집/ 빌딩/ 호텔 샀는지
+	
+	
 
 	private int priceAll; // 전체 구매 비용
-	private int priceLand; // 땅값
-	private int priceHouse; // 집값
-	private int priceBuilding; // 빌딩값
-	private int priceHotel; // 호텔값
+//	private int priceLand; // 땅값
+//	private int priceHouse; // 집값
+//	private int priceBuilding; // 빌딩값
+//	private int priceHotel; // 호텔값
 
 	// 벌금시 필요한 값
-	private String landOwner; // 소유한 플레이어
-	private int fine; // 통행료 priceAll * 1.2
+//	private String landOwner; // 소유한 플레이어
+//	private int fine; // 통행료 priceAll * 1.2
 
-	public DiallogCity(String id) {
+	public DiallogCity(String id, CityTile cityTile) {
 		this.id = id;
+		MarbleClient.cityTile = cityTile;
 
 		init();
 		setting();
@@ -75,15 +76,15 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		buildingCheck = new JCheckBox();
 		hotelCheck = new JCheckBox();
 
-		textLabel = new JLabel(tileName + " 시티");
-		landLa = new JLabel(priceLand + "");
-		houseLa = new JLabel(priceHouse + "");
-		buildingLa = new JLabel(priceBuilding + "");
-		hotelLa = new JLabel(priceHotel + "");
+		textLabel = new JLabel(MarbleClient.cityTile.getTileName() + " 시티");
+		landLa = new JLabel(MarbleClient.cityTile.getPriceLand() + "");
+		houseLa = new JLabel(MarbleClient.cityTile.getPriceHouse() + "");
+		buildingLa = new JLabel(MarbleClient.cityTile.getPriceBuilding() + "");
+		hotelLa = new JLabel(MarbleClient.cityTile.getPriceHotel() + "");
 		allLa = new JLabel("총 구입 가격은 : 0원 입니다.");
 
-		purchasedBtn = new JButton("구입하기");
-		cancelBtn = new JButton("취소하기");
+		btnPurchased = new JButton("구입하기");
+		btnCancel = new JButton("취소하기");
 
 		landPanel = new JPanel();
 		housePanel = new JPanel();
@@ -117,12 +118,14 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		buildingLa.setHorizontalAlignment(JLabel.CENTER);
 		hotelLa.setHorizontalAlignment(JLabel.CENTER);
 		allLa.setHorizontalAlignment(JLabel.CENTER);
+		
+		
 	}
 
 	@Override
 	public void batch() {		
-		btnPanel.add(purchasedBtn);
-		btnPanel.add(cancelBtn);
+		btnPanel.add(btnPurchased);
+		btnPanel.add(btnCancel);
 
 		landPanel.add(landLa);
 		landPanel.add(landCheck);
@@ -158,18 +161,27 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	public void listener() {
 
 		//
-		purchasedBtn.addActionListener(new ActionListener() {
+		btnPurchased.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				MarbleClient.cityTile.setPriceAll(priceAll);
+				MarbleClient.cityTile.setLandOwner(id);
+				MarbleClient.cityTile.setIsPurchased(isPurchased);
 				
+				setVisible(false);
 				
-				landOwner = id;
+				System.out.println(MarbleClient.cityTile.getPriceAll());
+				System.out.println(MarbleClient.cityTile.getLandOwner());
+				System.out.println(MarbleClient.cityTile.getIsPurchased()[0]);
+				System.out.println(MarbleClient.cityTile.getIsPurchased()[1]);
+				System.out.println(MarbleClient.cityTile.getIsPurchased()[2]);
+				System.out.println(MarbleClient.cityTile.getIsPurchased()[3]);
 			}
 		});
 
 		// 구입안하고 다이얼로그창 끄기
-		cancelBtn.addActionListener(new ActionListener() {
+		btnCancel.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -184,29 +196,54 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				if (e.getItem() == landCheck)
-					priceAll = priceAll + priceLand;
-				else if (e.getItem() == houseCheck)
-					priceAll = priceAll + priceHouse;
-				else if (e.getItem() == buildingCheck)
-					priceAll = priceAll + priceBuilding;
-				else
-					priceAll = priceAll + priceHotel;
+				if (e.getItem() == landCheck) {
+					priceAll = priceAll + MarbleClient.cityTile.getPriceLand();
+					isPurchased[0] = 1;
+				}
+				else if (e.getItem() == houseCheck) {
+					priceAll = priceAll + MarbleClient.cityTile.getPriceHouse();
+					isPurchased[1] = 1;
+				}
+				else if (e.getItem() == buildingCheck) {
+					priceAll = priceAll + MarbleClient.cityTile.getPriceBuilding();
+					isPurchased[2] = 1;
+				}
+				else {
+					priceAll = priceAll + MarbleClient.cityTile.getPriceHotel();
+					isPurchased[3] = 1;
+				}
 			} else {
-				if (e.getItem() == landCheck)
-					priceAll = priceAll - priceLand;
-				else if (e.getItem() == houseCheck)
-					priceAll = priceAll - priceHouse;
-				else if (e.getItem() == buildingCheck)
-					priceAll = priceAll - priceBuilding;
-				else
-					priceAll = priceAll - priceHotel;
+				if (e.getItem() == landCheck) {
+					priceAll = priceAll - MarbleClient.cityTile.getPriceLand();
+					isPurchased[0] = 0;
+				}
+				else if (e.getItem() == houseCheck) {
+					priceAll = priceAll - MarbleClient.cityTile.getPriceHouse();
+					isPurchased[1] = 0;
+				}
+				else if (e.getItem() == buildingCheck) {
+					priceAll = priceAll - MarbleClient.cityTile.getPriceBuilding();
+					isPurchased[2] = 0;
+				}
+				else {
+					priceAll = priceAll - MarbleClient.cityTile.getPriceHotel();
+					isPurchased[3] = 0;
+				}
 			}
-			allLa.setText("총 구입 가격은 : " + priceAll + "원 입니다.");
+			allLa.setText(",총 구입 가격은 : " + priceAll + "원 입니다.");
 		}
 	}
-
-	public static void main(String[] args) {
-		new DiallogCity("test");
+	
+	void checkDisable() {
+		if(MarbleClient.cityTile.getIsPurchased()[0] == 1) {
+			landCheck.setEnabled(false);
+		}
 	}
+	
+	public static void main(String[] args) {		
+		new DiallogCity("test", MarbleClient.cityTile);
+		
+	}
+
+	
 }

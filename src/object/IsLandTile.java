@@ -1,8 +1,8 @@
 package object;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class IsLandTile extends Tile implements IslandInterface {
 
 	String landOwner; // 소유한 플레이어
@@ -22,8 +22,4 @@ public class IsLandTile extends Tile implements IslandInterface {
 		this.isPurchased = isPurchased;
 		this.priceLand = priceLand;
 	}// 타일의 정보를 호출
-	
-	
-	
-	
 }
