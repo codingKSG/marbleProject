@@ -2,6 +2,7 @@ package object;
 
 import lombok.Data;
 
+
 @Data
 public class CityTile extends IsLandTile implements CityInterface{	
 	int priceHouse; //Áý°ª
