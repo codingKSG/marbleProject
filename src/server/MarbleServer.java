@@ -25,6 +25,7 @@ public class MarbleServer {
 	private ServerSocket serverSocket;
 	private Socket socket;
 	private Vector<PlayerThread> playerList; // 플레이어 객체가 담긴 벡터
+	private Vector<Tile> tileList; // 타일 객체가 담긴 벡터
 	private String player1 = "";
 	private String player2 = "";
 	private String player3 = "";
@@ -43,16 +44,9 @@ public class MarbleServer {
 	void sequenceFlow() {} // 턴 넘기기(다음 턴 플레이어의 isTurn을 true로 변경
 	
 	public MarbleServer() {
-		// 입장한 유저가 Vector에 담김
-		playerList = new Vector<>();
-		Tile T0 = new SpecialTile("시작", 0, 0, 240, 240);
-		CityTile T1 = new CityTile("홍콩", 1, 1, 132, 240, null, 0, arrayinit, 20, 30, 50, 70, 0);
-		CityTile T2 = new CityTile("싱가폴", 2, 1, 26, 240, null, 0, arrayinit, 30, 50, 70, 80, 0);
-		IsLandTile T3 = new IsLandTile("제주도", 3, 2, 26, 131, null, 0, arrayinit, 50);
-		SpecialTile T4 = new SpecialTile("무인도", 4, 3, 26, 26);
-		IsLandTile T5 = new IsLandTile("독도", 5, 2, 132, 26, null, 0, arrayinit, 70);
-		CityTile T6 = new CityTile("뉴욕", 6, 1, 240, 26, null, 0, arrayinit, 50, 60, 80, 100, 0);
-		SpecialTile T7 = new SpecialTile("올림픽", 7, 3, 240, 131);
+		
+		initSetting();
+		
 		try {
 			serverSocket = new ServerSocket(Protocol.PORT);
 			System.out.println(TAG + "플레이어 접속 대기중....");
@@ -92,12 +86,11 @@ public class MarbleServer {
 				String text = "";
 				RequestDto dto = new RequestDto();
 				Gson gson = new Gson();
-				
+				// 2명 이상 접속하면 첫번째 플레이어에게 시작버튼 활성화
 				if (playerList.size() == 2) {
 					RequestDto hostDto = new RequestDto();
 					hostDto.setType(Protocol.GAMEHOST);
 					playerList.get(0).writer.println(gson.toJson(hostDto));
-					System.out.println(TAG + "GAMEHOST지정");
 				}
 				
 				while ((text = reader.readLine()) != null) {
@@ -124,6 +117,7 @@ public class MarbleServer {
 			if (dto.getType().equals(Protocol.IDSET)) {
 				playerThread.id = dto.getId();
 				
+				// 오른쪽 플레이어 창에 아이디 띄우기
 //			이미 존재하는 ID면 ID를 변경하게 함.
 //				if (playerList.size() != 0) {
 //					for (int i = 0; i < playerList.size(); i++) {
@@ -135,6 +129,17 @@ public class MarbleServer {
 //				}
 			}
 			
+//			if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
+//				tempDto.setGubun(Protocol.CHAT);
+//				tempDto.setType(Protocol.CHAT);
+//				tempDto.setId(dto.getId());
+//				tempDto.setText("[공지] " + dto.getId() + "님이 입장하셨습니다.\n");
+//				for (int i = 0; i < playerList.size(); i++) {
+//					System.out.println(playerList.get(i).writer);
+//					playerList.get(i).writer.println(gson.toJson(tempDto));
+//				}
+//			}
+			
 			// 4명 이상 이미 플레이중이면 더이상 새로운 플레이어가 참가할 수 없게 함.
 			if (dto.getType().equals(Protocol.PLAYERNUMCHECK) && (playerList.size() != 0)) {
 				if ((isPlaying == true) || playerList.size() > 4) {
@@ -145,7 +150,7 @@ public class MarbleServer {
 							playerList.get(i).writer.println(gson.toJson(tempDto));
 						}
 					}
-				}
+				} 
 			}
 			
 			if (dto.getType().equals(Protocol.GAMESTART)) {
@@ -193,11 +198,18 @@ public class MarbleServer {
 			}
 			
 			if (dto.getType().equals(Protocol.MOVE)) {
+				for (int i = 0; i < tileList.size(); i++) {
+					if (tileList.get(i).getTileNum() == dto.getNewPlayerTile()) {
+						tempDto.setNewPlayerX(tileList.get(i).getTileX());
+						tempDto.setNewPlayerY(tileList.get(i).getTileY());
+						break;
+					}
+				}
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.MOVE);
 				tempDto.setId(dto.getId());
-				tempDto.setNewPlayerX(dto.getNewPlayerX());
-				tempDto.setNewPlayerY(dto.getNewPlayerY());
+				tempDto.setDice1(dto.getDice1());
+				tempDto.setDice2(dto.getDice2());
 				tempDto.setNewPlayerTile(dto.getNewPlayerTile());
 				output = gson.toJson(tempDto);
 				for (int i = 0; i < playerList.size(); i++) {
@@ -227,4 +239,59 @@ public class MarbleServer {
 		} // end of router
 		
 	} // end of thread
+	
+	private void initSetting() {
+		playerList = new Vector<>(); // 입장한 유저가 Vector에 담김
+		tileList = new Vector<>();
+		SpecialTile T0 = new SpecialTile("시작", 0, 0, 650, 650);
+	    CityTile T1 = new CityTile("홍콩", 1, 1, 550, 650, null, 0, arrayinit, 20, 24, 30, 36, 0);
+	    SpecialTile T2 = new SpecialTile("스페셜", 2, 3, 450, 650);
+	    CityTile T3 = new CityTile("도쿄", 3, 1, 350, 650, null, 0, arrayinit, 24, 28, 34, 40, 0);
+	    IsLandTile T4 = new IsLandTile("제주도", 4, 2, 250, 650, null, 0, arrayinit, 45);
+	    CityTile T5 = new CityTile("카이로", 5, 1, 150, 650, null, 0, arrayinit, 27, 35, 41, 48, 0);
+	    SpecialTile T6 = new SpecialTile("무인도", 6, 3, 0, 650);
+	    IsLandTile T7 = new IsLandTile("하와이", 7, 2, 0, 550, null, 0, arrayinit, 65);
+	    CityTile T8 = new CityTile("시드니", 8, 1, 0, 450, null, 0, arrayinit, 30, 38, 45, 52, 0);
+	    CityTile T9 = new CityTile("상파울로", 9, 1, 0, 350, null, 0, arrayinit, 32, 40, 47, 55, 0);
+	    SpecialTile T10 = new SpecialTile("스페셜", 10, 3, 0, 250);
+	    CityTile T11 = new CityTile("퀘벡", 11, 1, 0, 150, null, 0, arrayinit, 35, 43, 51, 59, 0);
+	    SpecialTile T12 = new SpecialTile("올림픽", 12, 3, 0, 0);
+	    CityTile T13 = new CityTile("모스크바", 13, 1, 150, 0, null, 0, arrayinit, 37, 46, 54, 63, 0);
+	    CityTile T14 = new CityTile("베를린", 14, 1, 250, 0, null, 0, arrayinit, 40, 50, 59, 68, 0);
+	    IsLandTile T15 = new IsLandTile("독도", 15, 2, 350, 0, null, 0, arrayinit, 80);
+	    SpecialTile T16 = new SpecialTile("스페셜", 16, 3, 450, 0);
+	    CityTile T17 = new CityTile("로마", 17, 1, 550, 0, null, 0, arrayinit, 43, 54, 65, 74, 0);
+	    SpecialTile T18 = new SpecialTile("세계여행", 18, 3, 650, 0);
+	    SpecialTile T19 = new SpecialTile("스페셜", 19, 3, 650, 150);
+	    CityTile T20 = new CityTile("런던", 20, 1, 650, 250, null, 0, arrayinit, 45, 58, 70, 79, 0);
+	    CityTile T21 = new CityTile("파리", 21, 1, 650, 350, null, 0, arrayinit, 47, 62, 74, 84, 0);
+	    CityTile T22 = new CityTile("뉴옥", 22, 1, 650, 450, null, 0, arrayinit, 50, 65, 79, 89, 0);
+	    IsLandTile T23 = new IsLandTile("서울", 23, 2, 650, 550, null, 0, arrayinit, 100);
+	    
+	    tileList.add(T0);
+	    tileList.add(T1);
+	    tileList.add(T2);
+	    tileList.add(T3);
+	    tileList.add(T4);
+	    tileList.add(T5);
+	    tileList.add(T6);
+	    tileList.add(T7);
+	    tileList.add(T8);
+	    tileList.add(T9);
+	    tileList.add(T10);
+	    tileList.add(T11);
+	    tileList.add(T12);
+	    tileList.add(T13);
+	    tileList.add(T14);
+	    tileList.add(T15);
+	    tileList.add(T16);
+	    tileList.add(T17);
+	    tileList.add(T18);
+	    tileList.add(T19);
+	    tileList.add(T20);
+	    tileList.add(T21);
+	    tileList.add(T22);
+	    tileList.add(T23);
+	}
+	
 }
