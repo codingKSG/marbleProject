@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,11 +23,10 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	private DiallogCity diallogCity = this;
 	private final static String TAG = "DiallogCity : ";
 	
-	private String id;
+	private String id; // 해당 땅을 밟은 플레이어 id
 
-	private GridBagConstraints gridBagCon;
 	private JLabel textLabel, allLa, landLa, houseLa, buildingLa, hotelLa;
-	private JPanel purchasedMenu, btnPanel, landPanel, housePanel, buildingPanel, hotelPanel;
+	private JPanel purchasedMenu, menuPanel, btnPanel, landPanel, housePanel, buildingPanel, hotelPanel;
 	private JButton purchasedBtn, cancelBtn;
 	private JCheckBox landCheck, houseCheck, buildingCheck, hotelCheck;
 
@@ -36,24 +37,23 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	// 식별된 Tile의 상태 값을 받아온다.
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
-	private int tileType;
-	private String tileName;
-	private int tileNum;
-
+	private String tileName; // 해당 타일의 이름
+	private int tileNum; // 해당 타일의 번호
+	
 	// 다이얼 로그가 CityTile에게 받아서 출력해야할 값들
 
 	// 구매시 필요한 값
-	private int isPurchased;
+	private int isPurchased; // 땅/ 집/ 빌딩/ 호텔 샀는지
 
-	private int priceAll;
-	private int priceLand;
-	private int priceHouse;
-	private int priceBuilding;
-	private int priceHotel;
+	private int priceAll; // 전체 구매 비용
+	private int priceLand; // 땅값
+	private int priceHouse; // 집값
+	private int priceBuilding; // 빌딩값
+	private int priceHotel; // 호텔값
 
 	// 벌금시 필요한 값
-	private String landOwner;
-	private int fine;
+	private String landOwner; // 소유한 플레이어
+	private int fine; // 통행료 priceAll * 1.2
 
 	public DiallogCity(String id) {
 		this.id = id;
@@ -67,11 +67,9 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		
 		setVisible(true);
 	}
-
+	
 	@Override
 	public void init() {
-		gridBagCon = new GridBagConstraints();
-
 		landCheck = new JCheckBox();
 		houseCheck = new JCheckBox();
 		buildingCheck = new JCheckBox();
@@ -91,6 +89,7 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		housePanel = new JPanel();
 		buildingPanel = new JPanel();
 		hotelPanel = new JPanel();
+		menuPanel = new JPanel();
 		purchasedMenu = new JPanel();
 		btnPanel = new JPanel();
 		
@@ -99,13 +98,14 @@ public class DiallogCity extends JFrame implements JFrameSet {
 
 	@Override
 	public void setting() {
-		setTitle(id + ": 시티 타일");
 		setSize(250, 250);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
-		purchasedMenu.setBackground(Color.LIGHT_GRAY);
-		purchasedMenu.setLayout(new GridLayout(5, 1));
+		menuPanel.setBackground(Color.LIGHT_GRAY);
+		
+		menuPanel.setLayout(new BorderLayout());
+		purchasedMenu.setLayout(new GridLayout(4, 1));
 		landPanel.setLayout(new GridLayout(1, 2));
 		housePanel.setLayout(new GridLayout(1, 2));
 		buildingPanel.setLayout(new GridLayout(1, 2));
@@ -145,28 +145,30 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		purchasedMenu.add(housePanel);
 		purchasedMenu.add(buildingPanel);
 		purchasedMenu.add(hotelPanel);
-		purchasedMenu.add(allLa);
+		
+		menuPanel.add(purchasedMenu, BorderLayout.CENTER);
+		menuPanel.add(allLa, BorderLayout.SOUTH);
 
 		add(textLabel, BorderLayout.NORTH);
-		add(purchasedMenu, BorderLayout.CENTER);
+		add(menuPanel, BorderLayout.CENTER);
 		add(btnPanel, BorderLayout.SOUTH);
 	}
 
 	@Override
 	public void listener() {
 
+		//
 		purchasedBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(priceAll);
-				System.out.println(priceLand);
-				System.out.println(priceHouse);
-				System.out.println(priceBuilding);
-				System.out.println(priceHotel);
+				
+				
+				landOwner = id;
 			}
 		});
 
+		// 구입안하고 다이얼로그창 끄기
 		cancelBtn.addActionListener(new ActionListener() {
 
 			@Override

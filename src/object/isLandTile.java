@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 @Getter
 public class isLandTile extends Tile implements IslandInterface{
-
 	int fine; //¹ú±Ý priceAll * 1.2
 	int isPurchased;// ¶¥/Áý/ºôµù/È£ÅÚ »ò´ÂÁö
 	int priceLand; // ¶¥°ª

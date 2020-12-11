@@ -1,6 +1,7 @@
 package server;
 
 import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -10,6 +11,8 @@ import java.util.Vector;
 
 import com.google.gson.Gson;
 
+import client.DiallogIsland;
+import object.isLandTile;
 import protocol.Protocol;
 import protocol.RequestDto;
 
@@ -30,6 +33,7 @@ public class MarbleServer {
 
 	void initSequence() {} // 시작 전 순서 정하기
 	void sequenceFlow() {} // 턴 넘기기(다음 턴 플레이어의 isTurn을 true로 변경
+	
 	
 	public MarbleServer() {
 		// 입장한 유저가 Vector에 담김
