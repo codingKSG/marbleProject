@@ -2,6 +2,7 @@ package protocol;
 
 import lombok.Data;
 import object.CityTile;
+import object.Tile;
 
 @Data
 public class RequestDto {
@@ -38,4 +39,7 @@ public class RequestDto {
 	private int newPlayerTile;
 	private int newPlayerX;
 	private int newPlayerY;
+	
+	private Tile tileInfo;
+	private int tileType;
 }

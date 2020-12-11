@@ -36,4 +36,10 @@ public interface Protocol {
 	
 	// 캐릭터 움직이는 신호
 	String MOVE = "MOVE";
+	
+	// 다이얼로그 정보 요청
+	String DIALOGREQUEST = "DIALOGREQUEST";
+	
+	// 다이얼로그 정보 클라이언트 >> 서버
+	String DIALOGUPDATE = "DIALOGUPDATE";
 }

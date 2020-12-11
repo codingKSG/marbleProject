@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import object.CityTile;
 import protocol.JFrameSet;
 
 public class DiallogCity extends JFrame implements JFrameSet {
@@ -42,8 +41,6 @@ public class DiallogCity extends JFrame implements JFrameSet {
 
 	// 구매시 필요한 값
 	private int[] isPurchased = {0, 0, 0, 0}; // 땅/ 집/ 빌딩/ 호텔 샀는지
-	
-	
 
 	private int priceAll; // 전체 구매 비용
 //	private int priceLand; // 땅값
@@ -55,16 +52,13 @@ public class DiallogCity extends JFrame implements JFrameSet {
 //	private String landOwner; // 소유한 플레이어
 //	private int fine; // 통행료 priceAll * 1.2
 
-	public DiallogCity(String id, CityTile cityTile) {
+	public DiallogCity(String id) {
 		this.id = id;
-		MarbleClient.cityTile = cityTile;
 
 		init();
 		setting();
 		batch();
 		listener();
-
-		
 		
 		setVisible(true);
 	}
@@ -76,11 +70,11 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		buildingCheck = new JCheckBox();
 		hotelCheck = new JCheckBox();
 
-		textLabel = new JLabel(MarbleClient.cityTile.getTileName() + " 시티");
-		landLa = new JLabel(MarbleClient.cityTile.getPriceLand() + "");
-		houseLa = new JLabel(MarbleClient.cityTile.getPriceHouse() + "");
-		buildingLa = new JLabel(MarbleClient.cityTile.getPriceBuilding() + "");
-		hotelLa = new JLabel(MarbleClient.cityTile.getPriceHotel() + "");
+		textLabel = new JLabel(MarbleClient.TILE.getTileName() + " 시티");
+		landLa = new JLabel(MarbleClient.TILE.getPriceLand() + "");
+		houseLa = new JLabel(MarbleClient.TILE.getPriceHouse() + "");
+		buildingLa = new JLabel(MarbleClient.TILE.getPriceBuilding() + "");
+		hotelLa = new JLabel(MarbleClient.TILE.getPriceHotel() + "");
 		allLa = new JLabel("총 구입 가격은 : 0원 입니다.");
 
 		btnPurchased = new JButton("구입하기");
@@ -119,7 +113,7 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		hotelLa.setHorizontalAlignment(JLabel.CENTER);
 		allLa.setHorizontalAlignment(JLabel.CENTER);
 		
-		
+		checkDisable();
 	}
 
 	@Override
@@ -165,18 +159,14 @@ public class DiallogCity extends JFrame implements JFrameSet {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MarbleClient.cityTile.setPriceAll(priceAll);
-				MarbleClient.cityTile.setLandOwner(id);
-				MarbleClient.cityTile.setIsPurchased(isPurchased);
+				MarbleClient.TILE.setPriceAll(priceAll);
+				MarbleClient.TILE.setLandOwner(id);
+				MarbleClient.TILE.setIsPurchased(isPurchased);
+				MarbleClient.TILE.setFine(priceAll * 2); // 임시값
 				
 				setVisible(false);
-				
-				System.out.println(MarbleClient.cityTile.getPriceAll());
-				System.out.println(MarbleClient.cityTile.getLandOwner());
-				System.out.println(MarbleClient.cityTile.getIsPurchased()[0]);
-				System.out.println(MarbleClient.cityTile.getIsPurchased()[1]);
-				System.out.println(MarbleClient.cityTile.getIsPurchased()[2]);
-				System.out.println(MarbleClient.cityTile.getIsPurchased()[3]);
+				MarbleClient.isDialog = true;
+				System.out.println(TAG + MarbleClient.isDialog);
 			}
 		});
 
@@ -197,36 +187,36 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				if (e.getItem() == landCheck) {
-					priceAll = priceAll + MarbleClient.cityTile.getPriceLand();
+					priceAll = priceAll + MarbleClient.TILE.getPriceLand();
 					isPurchased[0] = 1;
 				}
 				else if (e.getItem() == houseCheck) {
-					priceAll = priceAll + MarbleClient.cityTile.getPriceHouse();
+					priceAll = priceAll + MarbleClient.TILE.getPriceHouse();
 					isPurchased[1] = 1;
 				}
 				else if (e.getItem() == buildingCheck) {
-					priceAll = priceAll + MarbleClient.cityTile.getPriceBuilding();
+					priceAll = priceAll + MarbleClient.TILE.getPriceBuilding();
 					isPurchased[2] = 1;
 				}
 				else {
-					priceAll = priceAll + MarbleClient.cityTile.getPriceHotel();
+					priceAll = priceAll + MarbleClient.TILE.getPriceHotel();
 					isPurchased[3] = 1;
 				}
 			} else {
 				if (e.getItem() == landCheck) {
-					priceAll = priceAll - MarbleClient.cityTile.getPriceLand();
+					priceAll = priceAll - MarbleClient.TILE.getPriceLand();
 					isPurchased[0] = 0;
 				}
 				else if (e.getItem() == houseCheck) {
-					priceAll = priceAll - MarbleClient.cityTile.getPriceHouse();
+					priceAll = priceAll - MarbleClient.TILE.getPriceHouse();
 					isPurchased[1] = 0;
 				}
 				else if (e.getItem() == buildingCheck) {
-					priceAll = priceAll - MarbleClient.cityTile.getPriceBuilding();
+					priceAll = priceAll - MarbleClient.TILE.getPriceBuilding();
 					isPurchased[2] = 0;
 				}
 				else {
-					priceAll = priceAll - MarbleClient.cityTile.getPriceHotel();
+					priceAll = priceAll - MarbleClient.TILE.getPriceHotel();
 					isPurchased[3] = 0;
 				}
 			}
@@ -234,16 +224,19 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		}
 	}
 	
-	void checkDisable() {
-		if(MarbleClient.cityTile.getIsPurchased()[0] == 1) {
+	private void checkDisable() {
+		if (MarbleClient.TILE.getIsPurchased()[0] == 1) {
 			landCheck.setEnabled(false);
 		}
+		if (MarbleClient.TILE.getIsPurchased()[1] == 1) {
+			houseCheck.setEnabled(false);
+		}
+		if (MarbleClient.TILE.getIsPurchased()[2] == 1) {
+			buildingCheck.setEnabled(false);
+		}
+		if (MarbleClient.TILE.getIsPurchased()[3] == 1) {
+			hotelCheck.setEnabled(false);
+		}
 	}
-	
-	public static void main(String[] args) {		
-		new DiallogCity("test", MarbleClient.cityTile);
-		
-	}
-
 	
 }

@@ -30,17 +30,17 @@ import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
 
-import object.CityTile;
+import object.Tile;
 import protocol.JFrameSet;
 import protocol.Protocol;
 import protocol.RequestDto;
 
-
-public class MarbleClient extends JFrame implements JFrameSet{
+public class MarbleClient extends JFrame implements JFrameSet {
 
 	private MarbleClient marbleClient = this;
-	private final static String TAG = "MarbleClient : ";	
-	static CityTile cityTile;
+	private final static String TAG = "MarbleClient : ";
+	static Tile TILE;
+	static boolean isDialog = false;
 
 	private ClientPlayerThread cpt;
 	private Socket socket;
@@ -54,7 +54,9 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
 
-	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10, board11, board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22, board23;
+	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10,
+			board11, board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22,
+			board23;
 	private Container c;
 	// 주사위굴리기 버튼, 시작버튼
 	private JButton btnDiceRoll, btnStart;
@@ -73,7 +75,6 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	private Player player1, player2, player3, player4;
 	private int playerNum;
 
-	int[] arrayinit = {0, 0, 0, 0};
 	// 주사위 값 이미지 띄우는 라벨
 	private JLabel laDice1, laDice2;
 
@@ -162,9 +163,6 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		scChatList = new ScrollPane();
 		playerChatList = new JTextArea();
 		playerChatField = new JTextField(20);
-		
-		
-		MarbleClient.cityTile = new CityTile("홍콩", 1, 1, 550, 650, null, 0, arrayinit, 20, 24, 30, 36, 0);
 
 	}
 
@@ -172,7 +170,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 	public void setting() {
 
 		setTitle("Marble Client" + " : " + id);
-		setSize(1000,840);
+		setSize(1000, 840);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
@@ -200,7 +198,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board21.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board22.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board23.setBorder(new LineBorder(new Color(0, 0, 0)));
-		
+
 		// 오른쪽 플레이어창
 		player1Info.setBorder(new LineBorder(new Color(0, 0, 0)));
 		player2Info.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -221,15 +219,15 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		player1Info.setBounds(800, 0, 200, 100);
 		player1Info.setBackground(new Color(153, 102, 255));
 		player1Info.setLayout(null);
-		
+
 		player2Info.setBounds(800, 100, 200, 100);
 		player2Info.setBackground(new Color(153, 153, 255));
 		player2Info.setLayout(null);
-		
+
 		player3Info.setBounds(800, 200, 200, 100);
 		player3Info.setBackground(new Color(153, 255, 255));
 		player3Info.setLayout(null);
-		
+
 		player4Info.setBounds(800, 300, 200, 100);
 		player4Info.setBackground(new Color(102, 255, 51));
 		player4Info.setLayout(null);
@@ -309,7 +307,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		board21.setBounds(650, 350, 150, 100);
 		board22.setBounds(650, 450, 150, 100);
 		board23.setBounds(650, 550, 150, 100); // 시작발판 바로 윗칸
-		
+
 		player1.setVisible(false);
 		player2.setVisible(false);
 		player3.setVisible(false);
@@ -385,7 +383,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		playerChatPanel.add(scChatList, BorderLayout.CENTER);
 		scChatList.add(playerChatList);
 		playerChatPanel.add(playerChatField, BorderLayout.SOUTH);
-		
+
 	}
 
 	@Override
@@ -396,7 +394,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				cpt.playerRoll();
 			}
 		});
-		
+
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -407,7 +405,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 				cpt.writer.println(gameStart);
 			}
 		});
-		
+
 		playerChatField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -422,9 +420,9 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			}
 		});
 	}
-	
+
 	class ClientPlayerThread extends Thread {
-		
+
 		private Socket socket;
 		private BufferedReader reader;
 		private PrintWriter writer;
@@ -432,6 +430,7 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		private String output;
 		private RequestDto dto;
 		private String id;
+
 		// 서버로 보내는 스레드 실행
 		public ClientPlayerThread(Socket socket, String id) {
 			this.socket = socket;
@@ -441,18 +440,18 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			try {
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				writer = new PrintWriter(socket.getOutputStream(), true);
-				
-				// 아이디 설정 -> 서버에 해당 클라이언트의 ID값을 넘겨줌 
+
+				// 아이디 설정 -> 서버에 해당 클라이언트의 ID값을 넘겨줌
 				dto.setType(Protocol.IDSET);
 				dto.setId(this.id);
 				String idSet = gson.toJson(dto);
 				writer.println(idSet);
-				
+
 //				dto.setType(Protocol.PLAYERSET);
 //				dto.setId(this.id);
 //				String playerSet = gson.toJson(dto);
 //				writer.println(playerSet);
-				
+
 				// 서버의 playerList의 크기가 4명 이상이면 서버 연결이 되지 않게 함.
 				dto.setType(Protocol.PLAYERNUMCHECK);
 				dto.setId(this.id);
@@ -467,27 +466,27 @@ public class MarbleClient extends JFrame implements JFrameSet{
 		}
 
 		private void playerRoll() {
-			int tempDice1 = dice.nextInt(6)+1;
-			int tempDice2 = dice.nextInt(6)+1;
+			int tempDice1 = dice.nextInt(6) + 1;
+			int tempDice2 = dice.nextInt(6) + 1;
 			dice1 = tempDice1;
 			dice2 = tempDice2;
-			int newPlayerTile = (int)((nowPlayerTile + dice1 + dice2) % 24);
-			
+			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
+
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.DICEROLL);
 			dto.setId(id);
 			dto.setDice1(dice1);
 			dto.setDice2(dice2);
-			
+
 			output = gson.toJson(dto);
 			writer.println(output);
-			
+
 			System.out.println(TAG + "playerRoll 실행");
 			move(newPlayerTile);
 		}
-		
+
 		private void move(int newPlayerTile) {
-			
+
 			dto.setId(id);
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.MOVE);
@@ -499,185 +498,217 @@ public class MarbleClient extends JFrame implements JFrameSet{
 			output = gson.toJson(dto);
 			writer.println(output);
 			System.out.println(TAG + "MOVE 실행됨");
-			
-			if(nowPlayerTile == 3 || nowPlayerTile == 5) {
-				System.out.println("섬 타일입니다.");
-				new DiallogIsland(id);
-			}else if(nowPlayerTile == 1 || nowPlayerTile == 2 || nowPlayerTile == 6) {
-				System.out.println("시티 타일입니다.");
-				new DiallogCity(id, cityTile);
-				
-			}else if(nowPlayerTile == 4 || nowPlayerTile == 7) {
-				System.out.println("스페셜 타일입니다.");
-				new DiallogSpecial(id);
-			}else if(nowPlayerTile == 0){
-				System.out.println("출발 타일입니다.");
-				new DiallogStart(id);
-			}
+			// 여기 위는 움직이는 통신
+			// 여기 아래는 다이얼로그 띄우는 통신
+			dto.setGubun(Protocol.GAME);
+			dto.setType(Protocol.DIALOGREQUEST);
+			dto.setId(id);
+			dto.setNowPlayerTile(nowPlayerTile); // 타일 번호 넘김
+
+			writer.println(gson.toJson(dto));
+
 		}
 	}
-	
-	   class ClientPlayerReader extends Thread {
-		      private BufferedReader reader;
-		      private PrintWriter writer;
-		      
-		      public ClientPlayerReader(BufferedReader reader, PrintWriter writer) {
-		         this.reader = reader;
-		         this.writer = writer;
-		      }
-		      
-		      @Override
-		      public void run() {
-		         try {
-		            String text = null;
-		            Gson gson = new Gson();
-		            RequestDto dto = new RequestDto();
-		            while ((text = reader.readLine()) != null) {
-		               dto = gson.fromJson(text, RequestDto.class);
-		               
-		               if (dto.getType().equals(Protocol.GAMEHOST)) {
-		                  System.out.println(TAG + "GAMEHOST 받음");
-		                  btnStart.setVisible(true);
-		               }
-		               
-		               // 이미 존재하는 ID면 ID를 변경하게 함.
+
+	class ClientPlayerReader extends Thread {
+		private BufferedReader reader;
+		private PrintWriter writer;
+
+		public ClientPlayerReader(BufferedReader reader, PrintWriter writer) {
+			this.reader = reader;
+			this.writer = writer;
+		}
+
+		@Override
+		public void run() {
+			try {
+				String text = null;
+				Gson gson = new Gson();
+				RequestDto dto = new RequestDto();
+				while ((text = reader.readLine()) != null) {
+					dto = gson.fromJson(text, RequestDto.class);
+					
+					if (dto.getType().equals(Protocol.GAMEHOST)) {
+						System.out.println(TAG + "GAMEHOST 받음");
+						btnStart.setVisible(true);
+					}
+
+					// 이미 존재하는 ID면 ID를 변경하게 함.
 //		               if (dto.getType().equals(Protocol.IDCHECK)) {
 //		                  JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
 //		                  System.exit(0);
 //		                  setVisible(false);
 //		               }
-		               
+
 //		                클라이언트 내 플레이어 객체에 ID값 넣기
-		               if (dto.getType().equals(Protocol.PLAYERSET)) {
-		                  if (dto.getPlayer1() != null) {
-		                     player1.setId(dto.getPlayer1());
-		                     player1.setVisible(true);
-		                     player1Img.setVisible(true);
-		                     player1Id.setText(player1.getId());
-		                     player1Money.setText(Integer.toString(5000));
-		                  }
-		                  if (dto.getPlayer2() != null) {
-		                     player2.setId(dto.getPlayer2());
-		                     player2.setVisible(true);
-		                     player2Img.setVisible(true);
-		                     player2Id.setText(player2.getId());
-		                     player2Money.setText(Integer.toString(5000));
-		                  }
-		                  if (dto.getPlayer3() != null) {
-		                     player3.setId(dto.getPlayer3());
-		                     player3.setVisible(true);
-		                     player3Img.setVisible(true);
-		                     player3Id.setText(player3.getId());
-		                     player3Money.setText(Integer.toString(5000));
-		                  }
-		                  if (dto.getPlayer4() != null) {
-		                     player4.setId(dto.getPlayer4());
-		                     player4.setVisible(true);
-		                     player4Img.setVisible(true);
-		                     player4Id.setText(player4.getId());
-		                     player4Money.setText(Integer.toString(5000));
-		                  }
-		                  
-		                  btnStart.setVisible(false);
-		                  btnDiceRoll.setVisible(true);
-		               }
-		               // 플레이중이거나 4명 초과하면 프로그램 종료.(참여불가)
-		               if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
-		                  if (dto.getPlayerNum() == 4) {
-		                     JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많거나 게임이 이미 플레이중입니다.\n 나중에 시도해주세요.");
-		                     System.exit(0);
-		                     setDaemon(false);
-		                  }
-		               }
-		               // 주사위굴리기 구현
-		               if (dto.getType().equals(Protocol.DICEROLL)) {
-		                  laDice1.setText(Integer.toString(dto.getDice1()));
-		                  laDice2.setText(Integer.toString(dto.getDice2()));
-		                  System.out.println(dto.getId() + "DICEROLL 받음");
-		               }
-		               // 움직이기 구현, 주사위 이미지 띄우기 구현
-		               if (dto.getType().equals(Protocol.MOVE)) {
-		                  // 움직이는 이미지
-		                  if (dto.getId().equals(player1.getId())) {
-		                     player1.moveAnimation(dto.getNewPlayerX()+30, dto.getNewPlayerY()+30, dto.getNewPlayerTile());
-		                     player1.setNowPlayerTile(dto.getNewPlayerTile());
-		                     System.out.println(player1.getId() + "의 nowPlayerTile은 :" + player1.getNowPlayerTile());
-		                  } else if (dto.getId().equals(player2.getId())) {
-		                     player2.moveAnimation(dto.getNewPlayerX()+60, dto.getNewPlayerY()+30, dto.getNewPlayerTile());
-		                     player2.setNowPlayerTile(dto.getNewPlayerTile());
-		                     System.out.println(player2.getId() + "의 nowPlayerTile은 :" + player2.getNowPlayerTile());
-		                     System.out.println(dto.getId() + "MOVE 받음");
-		                  } else if (dto.getId().equals(player3.getId())) {
-		                     player3.moveAnimation(dto.getNewPlayerX()+30, dto.getNewPlayerY()+60, dto.getNewPlayerTile());
-		                     player3.setNowPlayerTile(dto.getNewPlayerTile());
-		                     System.out.println(player3.getId() + "의 nowPlayerTile은 :" + player3.getNowPlayerTile());
-		                     System.out.println(dto.getId() + "MOVE 받음");
-		                  } else if (dto.getId().equals(player4.getId())) {
-		                     player4.moveAnimation(dto.getNewPlayerX()+60, dto.getNewPlayerY()+60, dto.getNewPlayerTile());
-		                     player4.setNowPlayerTile(dto.getNewPlayerTile());
-		                     System.out.println(player4.getId() + "의 nowPlayerTile은 :" + player4.getNowPlayerTile());
-		                     System.out.println(dto.getId() + "MOVE 받음");
-		                  }
-		                  // 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
-		                  laDice1.setIcon(diceShow(dto.getDice1()));
-		                  laDice2.setIcon(diceShow(dto.getDice2()));
-		               }
-		               // 채팅 시스템 구현
-		               if (dto.getType().equals(Protocol.CHAT)) {
-		                  playerChatList.append(dto.getText());
-		                  scChatList.getVAdjustable().setValue(scChatList.getVAdjustable().getMaximum());
-		               }
-		               
-		            }
-		         } catch (IOException e) {
-		            e.printStackTrace();
-		         }
-		      }
-		   }
-		   
-		   private void connect() {
-		      String host = Protocol.HOST;
-		      int port = Protocol.PORT;
-		      try {
-		         socket = new Socket(host, port);
-		         cpt = new ClientPlayerThread(socket, id);
-		         cpt.start();
-		         System.out.println(TAG + id + "연결 성공");
-		      } catch (Exception e) {
-		         System.out.println(TAG + id + "연결 실패");
-		         
-		      }
-		   }
-		   
-		   private void sendChat() {
-		      String playerChat = playerChatField.getText();
-		      cpt.dto.setGubun(Protocol.CHAT);
-		      cpt.dto.setType(Protocol.CHAT);
-		      cpt.dto.setText(playerChat);
-		      cpt.dto.setId(id);
-		      cpt.writer.println(cpt.gson.toJson(cpt.dto));
-		      playerChatField.setText("");
-		   }
-		   
-		   private ImageIcon diceShow(int dice) {
-		      ImageIcon result = null;
-		      if (dice == 1) {
-		         result = new ImageIcon("images/dice1.png");
-		      } else if (dice == 2) {
-		         result = new ImageIcon("images/dice2.png");
-		      } else if (dice == 3) {
-		         result = new ImageIcon("images/dice3.png");
-		      } else if (dice == 4) {
-		         result = new ImageIcon("images/dice4.png");
-		      } else if (dice == 5) {
-		         result = new ImageIcon("images/dice5.png");   
-		      } else {
-		         result = new ImageIcon("images/dice6.png");
-		      }
-		      return result;
-		   }
-		   
-		   public static void main(String[] args) {
-		      new MarbleClient("유저1");
-		   }
+					if (dto.getType().equals(Protocol.PLAYERSET)) {
+						if (dto.getPlayer1() != null) {
+							player1.setId(dto.getPlayer1());
+							player1.setVisible(true);
+							player1Img.setVisible(true);
+							player1Id.setText(player1.getId());
+							player1Money.setText(Integer.toString(5000));
+						}
+						if (dto.getPlayer2() != null) {
+							player2.setId(dto.getPlayer2());
+							player2.setVisible(true);
+							player2Img.setVisible(true);
+							player2Id.setText(player2.getId());
+							player2Money.setText(Integer.toString(5000));
+						}
+						if (dto.getPlayer3() != null) {
+							player3.setId(dto.getPlayer3());
+							player3.setVisible(true);
+							player3Img.setVisible(true);
+							player3Id.setText(player3.getId());
+							player3Money.setText(Integer.toString(5000));
+						}
+						if (dto.getPlayer4() != null) {
+							player4.setId(dto.getPlayer4());
+							player4.setVisible(true);
+							player4Img.setVisible(true);
+							player4Id.setText(player4.getId());
+							player4Money.setText(Integer.toString(5000));
+						}
+
+						btnStart.setVisible(false);
+						btnDiceRoll.setVisible(true);
+					}
+					// 플레이중이거나 4명 초과하면 프로그램 종료.(참여불가)
+					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
+						if (dto.getPlayerNum() == 4) {
+							JOptionPane.showMessageDialog(null, "현재 플레이중인 유저가 많거나 게임이 이미 플레이중입니다.\n 나중에 시도해주세요.");
+							System.exit(0);
+							setDaemon(false);
+						}
+					}
+					// 주사위굴리기 구현
+					if (dto.getType().equals(Protocol.DICEROLL)) {
+						laDice1.setText(Integer.toString(dto.getDice1()));
+						laDice2.setText(Integer.toString(dto.getDice2()));
+						System.out.println(dto.getId() + "DICEROLL 받음");
+					}
+					// 움직이기 구현, 주사위 이미지 띄우기 구현
+					if (dto.getType().equals(Protocol.MOVE)) {
+						// 움직이는 이미지
+						if (dto.getId().equals(player1.getId())) {
+							player1.moveAnimation(dto.getNewPlayerX() + 30, dto.getNewPlayerY() + 30,
+									dto.getNewPlayerTile());
+							player1.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + player1.getNowPlayerTile());
+						} else if (dto.getId().equals(player2.getId())) {
+							player2.moveAnimation(dto.getNewPlayerX() + 60, dto.getNewPlayerY() + 30,
+									dto.getNewPlayerTile());
+							player2.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player2.getId() + "의 nowPlayerTile은 :" + player2.getNowPlayerTile());
+							System.out.println(dto.getId() + "MOVE 받음");
+						} else if (dto.getId().equals(player3.getId())) {
+							player3.moveAnimation(dto.getNewPlayerX() + 30, dto.getNewPlayerY() + 60,
+									dto.getNewPlayerTile());
+							player3.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player3.getId() + "의 nowPlayerTile은 :" + player3.getNowPlayerTile());
+							System.out.println(dto.getId() + "MOVE 받음");
+						} else if (dto.getId().equals(player4.getId())) {
+							player4.moveAnimation(dto.getNewPlayerX() + 60, dto.getNewPlayerY() + 60,
+									dto.getNewPlayerTile());
+							player4.setNowPlayerTile(dto.getNewPlayerTile());
+							System.out.println(player4.getId() + "의 nowPlayerTile은 :" + player4.getNowPlayerTile());
+							System.out.println(dto.getId() + "MOVE 받음");
+						}
+						// 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
+						laDice1.setIcon(diceShow(dto.getDice1()));
+						laDice2.setIcon(diceShow(dto.getDice2()));
+					}
+					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
+					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
+						if (dto.getId().equals(id)) {
+
+							if (dto.getTileType() == 0) {
+
+							} else if (dto.getTileType() == 1) {
+								TILE = dto.getTileInfo();
+								new DiallogCity(id);
+								new Thread(new Runnable() {
+									@Override
+									public void run() {
+										while (true) {
+											try {
+												Thread.sleep(1000);
+												if (isDialog == true) {
+													RequestDto tempDto = new RequestDto();
+													tempDto.setType(Protocol.DIALOGUPDATE);
+													tempDto.setTileInfo(TILE);
+													writer.println(gson.toJson(tempDto));
+													isDialog = false;
+													System.out.println(isDialog);
+													break;
+												}
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+									}
+								}).start();
+							}
+						}
+					}
+
+					// 채팅 시스템 구현
+					if (dto.getType().equals(Protocol.CHAT)) {
+						playerChatList.append(dto.getText());
+						scChatList.getVAdjustable().setValue(scChatList.getVAdjustable().getMaximum());
+					}
+
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+	private void connect() {
+		String host = Protocol.HOST;
+		int port = Protocol.PORT;
+		try {
+			socket = new Socket(host, port);
+			cpt = new ClientPlayerThread(socket, id);
+			cpt.start();
+			System.out.println(TAG + id + "연결 성공");
+		} catch (Exception e) {
+			System.out.println(TAG + id + "연결 실패");
+
+		}
+	}
+
+	private void sendChat() {
+		String playerChat = playerChatField.getText();
+		cpt.dto.setGubun(Protocol.CHAT);
+		cpt.dto.setType(Protocol.CHAT);
+		cpt.dto.setText(playerChat);
+		cpt.dto.setId(id);
+		cpt.writer.println(cpt.gson.toJson(cpt.dto));
+		playerChatField.setText("");
+	}
+
+	private ImageIcon diceShow(int dice) {
+		ImageIcon result = null;
+		if (dice == 1) {
+			result = new ImageIcon("images/dice1.png");
+		} else if (dice == 2) {
+			result = new ImageIcon("images/dice2.png");
+		} else if (dice == 3) {
+			result = new ImageIcon("images/dice3.png");
+		} else if (dice == 4) {
+			result = new ImageIcon("images/dice4.png");
+		} else if (dice == 5) {
+			result = new ImageIcon("images/dice5.png");
+		} else {
+			result = new ImageIcon("images/dice6.png");
+		}
+		return result;
+	}
+
+	public static void main(String[] args) {
+		new MarbleClient("유저1");
+	}
+}
