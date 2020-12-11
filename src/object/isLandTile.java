@@ -2,6 +2,8 @@ package object;
 
 import lombok.Data;
 
+
+
 @Data
 public class IsLandTile extends Tile implements IslandInterface {
 
