@@ -1,8 +1,9 @@
 package object;
 
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class IsLandTile extends Tile implements IslandInterface {
 
 	String landOwner; // 소유한 플레이어
