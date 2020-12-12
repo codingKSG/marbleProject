@@ -1,7 +1,8 @@
 package protocol;
 
+import client.Player;
 import lombok.Data;
-import object.CityTile;
+import object.Tile;
 
 @Data
 public class RequestDto {
@@ -38,4 +39,19 @@ public class RequestDto {
 	private int newPlayerTile;
 	private int newPlayerX;
 	private int newPlayerY;
+	
+	// 타일 정보 값
+	private Tile tileInfo;
+	
+	// 타일 타입 값
+	private int tileType;
+	
+	// 플레이어 구입 금액
+	private int newprice;
+	
+	// 타일 통행료 금액
+	private int tileFine;
+	
+	// 타일 주인의 아이디
+	private String tileOwnerId;
 }

@@ -36,4 +36,16 @@ public interface Protocol {
 	
 	// 캐릭터 움직이는 신호
 	String MOVE = "MOVE";
+	
+	// 다이얼로그 정보 요청
+	String DIALOGREQUEST = "DIALOGREQUEST";
+	
+	// 다이얼로그 정보 클라이언트 >> 서버
+	String DIALOGUPDATE = "DIALOGUPDATE";
+	
+	// 플레이어 구매 정보 전달
+	String PLAYERPURCHASED = "PLAYERPURCHASED";
+	
+	// 플레이어 통행료 정보 전달
+	String PLAYERFINE = "PLAYERFINE";
 }
