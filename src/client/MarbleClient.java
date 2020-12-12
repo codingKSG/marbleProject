@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Container;
 
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,15 +16,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
@@ -54,9 +55,25 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
 
-	private JLayeredPane board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10,
-			board11, board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22,
-			board23;
+	private JLabel board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10, board11,
+			board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22, board23;
+	private JLabel board1CityName, board3CityName, board4CityName, board5CityName; // Line0 도시이름라벨
+	private JLabel board1Centerla, board3Centerla, board4Centerla, board5Centerla; // Line0 센터라벨
+	private JLabel board1BldImage, board3BldImage, board4BldImage, board5BldImage; // Line0 건물이미지라벨
+
+	private RotatedLabel board7CityName, board8CityName, board9CityName, board11CityName; // Line1 도시이름라벨
+	private RotatedLabel board7Centerla, board8Centerla, board9Centerla, board11Centerla; // Line1 센터라벨
+	private JLabel board7BldImage, board8BldImage, board9BldImage, board11BldImage; // Line1 건물이미지라벨
+
+	private JLabel board13CityName, board14CityName, board15CityName, board17CityName; // Line2 도시이름라벨
+	private JLabel board13Centerla, board14Centerla, board15Centerla, board17Centerla; // Line2 센터라벨
+	private JLabel board13BldImage, board14BldImage, board15BldImage, board17BldImage; // Line2 건물이미지라벨
+
+	private RotatedLabel board20CityName, board21CityName, board22CityName, board23CityName; // Line3 도시이름라벨
+	private RotatedLabel board20Centerla, board21Centerla, board22Centerla, board23Centerla; // Line3 센터라벨
+	private JLabel board20BldImage, board21BldImage, board22BldImage, board23BldImage; // Line3 건물이미지라벨
+
+	private ArrayList<JLabel> boardLine0, boardLine1, boardLine2, boardLine3; // 0:밑에줄 1:왼쪽 2:위쪽 3:오른쪽
 	private Container c;
 	// 주사위굴리기 버튼, 시작버튼
 	private JButton btnDiceRoll, btnStart;
@@ -98,31 +115,110 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	@Override
 	public void init() {
+		// 라인별 시티/아일랜드 타일을 담는 리스트
+		boardLine0 = new ArrayList<>();
+		boardLine1 = new ArrayList<>();
+		boardLine2 = new ArrayList<>();
+		boardLine3 = new ArrayList<>();
+
 		// 발판 new
-		board0 = new JLayeredPane();
-		board1 = new JLayeredPane();
-		board2 = new JLayeredPane();
-		board3 = new JLayeredPane();
-		board4 = new JLayeredPane();
-		board5 = new JLayeredPane();
-		board6 = new JLayeredPane();
-		board7 = new JLayeredPane();
-		board8 = new JLayeredPane();
-		board9 = new JLayeredPane();
-		board10 = new JLayeredPane();
-		board11 = new JLayeredPane();
-		board12 = new JLayeredPane();
-		board13 = new JLayeredPane();
-		board14 = new JLayeredPane();
-		board15 = new JLayeredPane();
-		board16 = new JLayeredPane();
-		board17 = new JLayeredPane();
-		board18 = new JLayeredPane();
-		board19 = new JLayeredPane();
-		board20 = new JLayeredPane();
-		board21 = new JLayeredPane();
-		board22 = new JLayeredPane();
-		board23 = new JLayeredPane();
+		board0 = new JLabel();
+		board1 = new JLabel();
+		board2 = new JLabel();
+		board3 = new JLabel();
+		board4 = new JLabel();
+		board5 = new JLabel();
+		board6 = new JLabel();
+		board7 = new JLabel();
+		board8 = new JLabel();
+		board9 = new JLabel();
+		board10 = new JLabel();
+		board11 = new JLabel();
+		board12 = new JLabel();
+		board13 = new JLabel();
+		board14 = new JLabel();
+		board15 = new JLabel();
+		board16 = new JLabel();
+		board17 = new JLabel();
+		board18 = new JLabel();
+		board19 = new JLabel();
+		board20 = new JLabel();
+		board21 = new JLabel();
+		board22 = new JLabel();
+		board23 = new JLabel();
+		// 아랫 라인( board2는 스페셜이라서 제외 )
+		boardLine0.add(board1);
+		boardLine0.add(board3);
+		boardLine0.add(board4);
+		boardLine0.add(board5);
+		// 왼쪽 라인( board10는 스페셜이라서 제외 )
+		boardLine1.add(board7);
+		boardLine1.add(board8);
+		boardLine1.add(board9);
+		boardLine1.add(board11);
+		// 윗쪽 라인( board16는 스페셜이라서 제외 )
+		boardLine2.add(board13);
+		boardLine2.add(board14);
+		boardLine2.add(board15);
+		boardLine2.add(board17);
+		// 오른쪽 라인( board19는 스페셜이라서 제외 )
+		boardLine3.add(board20);
+		boardLine3.add(board21);
+		boardLine3.add(board22);
+		boardLine3.add(board23);
+
+		// 보드별 도시 이름
+		board1CityName = new JLabel("홍콩");
+		board3CityName = new JLabel("도쿄");
+		board4CityName = new JLabel("제주도");
+		board5CityName = new JLabel("카이로");
+		board7CityName = new RotatedLabel("하와이");
+		board8CityName = new RotatedLabel("시드니");
+		board9CityName = new RotatedLabel("상파울로");
+		board11CityName = new RotatedLabel("퀘백");
+		board13CityName = new JLabel("모스크바");
+		board14CityName = new JLabel("베를린");
+		board15CityName = new JLabel("독도");
+		board17CityName = new JLabel("로마");
+		board20CityName = new RotatedLabel("런던");
+		board21CityName = new RotatedLabel("파리");
+		board22CityName = new RotatedLabel("뉴욕");
+		board23CityName = new RotatedLabel("서울");
+
+		board1BldImage = new JLabel();
+		board3BldImage = new JLabel();
+		board4BldImage = new JLabel();
+		board5BldImage = new JLabel();
+		board7BldImage = new JLabel();
+		board8BldImage = new JLabel();
+		board9BldImage = new JLabel();
+		board11BldImage = new JLabel();
+		board13BldImage = new JLabel();
+		board14BldImage = new JLabel();
+		board15BldImage = new JLabel();
+		board17BldImage = new JLabel();
+		board20BldImage = new JLabel();
+		board21BldImage = new JLabel();
+		board22BldImage = new JLabel();
+		board23BldImage = new JLabel();
+
+		board1Centerla = new JLabel("X20");
+		board3Centerla = new JLabel("X20");
+		board4Centerla = new JLabel("X20");
+		board5Centerla = new JLabel("X20");
+		board7Centerla = new RotatedLabel("X20");
+		board8Centerla = new RotatedLabel("X20");
+		board9Centerla = new RotatedLabel("X20");
+		board11Centerla = new RotatedLabel("X20");
+		board13Centerla = new JLabel("X20");
+		board14Centerla = new JLabel("X20");
+		board15Centerla = new JLabel("X20");
+		board17Centerla = new JLabel("X20");
+		board20Centerla = new RotatedLabel("X20");
+		board21Centerla = new RotatedLabel("X20");
+		board22Centerla = new RotatedLabel("X20");
+		board23Centerla = new RotatedLabel("X20");
+
 		// 중간 보드
 		boardCenter = new JLabel();
 		// 주사위 눈 이미지
@@ -199,6 +295,20 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board22.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board23.setBorder(new LineBorder(new Color(0, 0, 0)));
 
+		// 발판 내부 레이아웃 = null
+		for (int i = 0; i < boardLine0.size(); i++) {
+			boardLine0.get(i).setLayout(null);
+		}
+		for (int i = 0; i < boardLine1.size(); i++) {
+			boardLine1.get(i).setLayout(null);
+		}
+		for (int i = 0; i < boardLine2.size(); i++) {
+			boardLine2.get(i).setLayout(null);
+		}
+		for (int i = 0; i < boardLine3.size(); i++) {
+			boardLine3.get(i).setLayout(null);
+		}
+
 		// 오른쪽 플레이어창
 		player1Info.setBorder(new LineBorder(new Color(0, 0, 0)));
 		player2Info.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -236,33 +346,33 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		player1Img.setBorder(new LineBorder(new Color(163, 112, 255)));
 		player1Img.setVisible(false);
 		player1Id.setBounds(100, 10, 80, 20);
-		player1Id.setFont(new Font("CookieRun", Font.BOLD, 17));
+		player1Id.setFont(new Font("CookieRun BLACK", Font.BOLD, 17));
 		player1Money.setBounds(100, 75, 80, 20);
-		player1Money.setFont(new Font("CookieRun", Font.BOLD, 14));
+		player1Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 14));
 		// 플레이어2 이미지, 아이디, 보유 돈
 		player2Img.setBounds(10, 10, 80, 80);
 		player2Img.setBorder(new LineBorder(new Color(163, 163, 255)));
 		player2Img.setVisible(false);
 		player2Id.setBounds(100, 10, 80, 20);
-		player2Id.setFont(new Font("CookieRun", Font.BOLD, 17));
+		player2Id.setFont(new Font("CookieRun BLACK", Font.BOLD, 17));
 		player2Money.setBounds(100, 75, 80, 20);
-		player2Money.setFont(new Font("CookieRun", Font.BOLD, 14));
+		player2Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 14));
 		// 플레이어3 이미지, 아이디, 보유 돈
 		player3Img.setBounds(10, 10, 80, 80);
 		player3Img.setBorder(new LineBorder(new Color(173, 255, 255)));
 		player3Img.setVisible(false);
 		player3Id.setBounds(100, 10, 80, 20);
-		player3Id.setFont(new Font("CookieRun", Font.BOLD, 17));
+		player3Id.setFont(new Font("CookieRun BLACK", Font.BOLD, 17));
 		player3Money.setBounds(100, 75, 80, 20);
-		player3Money.setFont(new Font("CookieRun", Font.BOLD, 14));
+		player3Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 14));
 		// 플레이어4 이미지, 아이디, 보유 돈
 		player4Img.setBounds(10, 10, 80, 80);
 		player4Img.setBorder(new LineBorder(new Color(112, 255, 61)));
 		player4Img.setVisible(false);
 		player4Id.setBounds(100, 10, 80, 20);
-		player4Id.setFont(new Font("CookieRun", Font.BOLD, 17));
+		player4Id.setFont(new Font("CookieRun BLACK", Font.BOLD, 17));
 		player4Money.setBounds(100, 75, 80, 20);
-		player4Money.setFont(new Font("CookieRun", Font.BOLD, 14));
+		player4Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 14));
 		// 오른쪽 채팅창
 		playerChatPanel.setBounds(800, 400, 200, 400);
 		scChatList.setSize(180, 370);
@@ -270,6 +380,16 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		// 중간 보드
 		boardCenter.setIcon(new ImageIcon("images/bg_board.png"));
 		boardCenter.setBounds(150, 150, 500, 500);
+		// 모서리 발판들 이미지
+		board0.setBackground(new Color(204, 204, 153));
+		board6.setIcon(new ImageIcon("images/board_island.png"));
+		board12.setIcon(new ImageIcon("images/board_olympic.png"));
+		board18.setIcon(new ImageIcon("images/board_travel.png"));
+		// 황금 카드 이미지
+		board2.setIcon(new ImageIcon("images/bg_key_bottom.png"));
+		board10.setIcon(new ImageIcon("images/bg_key_left.png"));
+		board16.setIcon(new ImageIcon("images/bg_key_top.png"));
+		board19.setIcon(new ImageIcon("images/bg_key_right.png"));
 		// 주사위 이미지
 		laDice1.setBounds(155, 80, 90, 90);
 		laDice2.setBounds(265, 80, 90, 90);
@@ -308,10 +428,133 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board22.setBounds(650, 450, 150, 100);
 		board23.setBounds(650, 550, 150, 100); // 시작발판 바로 윗칸
 
-		player1.setVisible(false);
-		player2.setVisible(false);
-		player3.setVisible(false);
-		player4.setVisible(false);
+		// 발판별 건물이미지 라벨 설정
+		// Line 0
+		board1BldImage.setBounds(0, 0, 100, 40);
+		board3BldImage.setBounds(0, 0, 100, 40);
+		board4BldImage.setBounds(0, 0, 100, 40);
+		board5BldImage.setBounds(0, 0, 100, 40);
+		
+		// Line 1
+		board7BldImage.setBounds(0, 0, 40, 100);
+		board8BldImage.setBounds(0, 0, 40, 100);
+		board9BldImage.setBounds(0, 0, 40, 100);
+		board11BldImage.setBounds(0, 0, 40, 100);
+		
+		// Line 2
+		board13BldImage.setBounds(0, 0, 100, 40);
+		board14BldImage.setBounds(0, 0, 100, 40);
+		board15BldImage.setBounds(0, 0, 100, 40);
+		board17BldImage.setBounds(0, 0, 100, 40);
+		
+		// Line 3
+		board20BldImage.setBounds(0, 0, 40, 100);
+		board21BldImage.setBounds(0, 0, 40, 100);
+		board22BldImage.setBounds(0, 0, 40, 100);
+		board23BldImage.setBounds(0, 0, 40, 100);
+		
+		// 발판별 센터 라벨 설정
+		// Line 0
+		board1Centerla.setBounds(0, 40, 100, 70);
+		board1Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board1Centerla.setHorizontalAlignment(JLabel.CENTER);
+
+		board3Centerla.setBounds(0, 40, 100, 70);
+		board3Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board3Centerla.setHorizontalAlignment(JLabel.CENTER);
+
+		board4Centerla.setBounds(0, 40, 100, 70);
+		board4Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board4Centerla.setHorizontalAlignment(JLabel.CENTER);
+
+		board5Centerla.setBounds(0, 40, 100, 70);
+		board5Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board5Centerla.setHorizontalAlignment(JLabel.CENTER);
+		
+		// Line 1
+		board7Centerla.setBounds(40, 0, 70, 100);
+		board8Centerla.setBounds(40, 0, 70, 100);
+		board9Centerla.setBounds(40, 0, 70, 100);
+		board11Centerla.setBounds(40, 0, 70, 100);
+		
+		// Line 2
+		board13Centerla.setBounds(0, 40, 100, 70);
+		board13Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board13Centerla.setHorizontalAlignment(JLabel.CENTER);
+
+		board14Centerla.setBounds(0, 40, 100, 70);
+		board14Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board14Centerla.setHorizontalAlignment(JLabel.CENTER);
+
+		board15Centerla.setBounds(0, 40, 100, 70);
+		board15Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board15Centerla.setHorizontalAlignment(JLabel.CENTER);
+
+		board17Centerla.setBounds(0, 40, 100, 70);
+		board17Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
+		board17Centerla.setHorizontalAlignment(JLabel.CENTER);
+		
+		// Line 3
+		board20Centerla.setBounds(40, 0, 70, 100);
+
+		board21Centerla.setBounds(40, 0, 70, 100);
+
+		board22Centerla.setBounds(40, 0, 70, 100);
+
+		board23Centerla.setBounds(40, 0, 70, 100);
+		
+		// 발판별 이름 라벨 설정
+		// Line 0
+		board1CityName.setBounds(0, 110, 100, 40);
+		board1CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board1CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		board3CityName.setBounds(0, 110, 100, 40);
+		board3CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board3CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		board4CityName.setBounds(0, 110, 100, 40);
+		board4CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board4CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		board5CityName.setBounds(0, 110, 100, 40);
+		board5CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board5CityName.setHorizontalAlignment(JLabel.CENTER);
+		
+		// Line 1
+		board7CityName.setBounds(0, 0, 40, 100);
+		board8CityName.setBounds(0, 0, 40, 100);
+		board9CityName.setBounds(0, 0, 40, 100);
+		board11CityName.setBounds(0, 0, 40, 100);
+		
+		// Line 2
+		board13CityName.setBounds(0, 110, 100, 40);
+		board13CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board13CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		board14CityName.setBounds(0, 110, 100, 40);
+		board14CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board14CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		board15CityName.setBounds(0, 110, 100, 40);
+		board15CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board15CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		board17CityName.setBounds(0, 110, 100, 40);
+		board17CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
+		board17CityName.setHorizontalAlignment(JLabel.CENTER);
+
+		// Line 3
+		board20CityName.setBounds(110, 0, 40, 100);
+		board21CityName.setBounds(110, 0, 40, 100);
+		board22CityName.setBounds(110, 0, 40, 100);
+		board23CityName.setBounds(110, 0, 40, 100);
+		
+		// 시작전 플레이어 캐릭터 이미지 숨겨놓기
+//		player1.setVisible(false);
+//		player2.setVisible(false);
+//		player3.setVisible(false);
+//		player4.setVisible(false);
 	}
 
 	@Override
@@ -352,11 +595,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		// 주사위 값 배치 => 이미지 변경 예정
 		boardCenter.add(laDice1);
 		boardCenter.add(laDice2);
-		// 캐릭터 이미지 배치
-		add(player1);
-		add(player2);
-		add(player3);
-		add(player4);
 		// 오른쪽 플레이어창
 		add(player1Info);
 		add(player2Info);
@@ -384,6 +622,77 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		scChatList.add(playerChatList);
 		playerChatPanel.add(playerChatField, BorderLayout.SOUTH);
 
+		// 발판별 건물이미지 라벨 삽입
+		// Line 0
+		board1.add(board1BldImage);
+		board3.add(board3BldImage);
+		board4.add(board4BldImage);
+		board5.add(board5BldImage);
+		// Line 1
+		board7.add(board7BldImage);
+		board8.add(board8BldImage);
+		board9.add(board9BldImage);
+		board11.add(board11BldImage);
+		// Line 2
+		board13.add(board13BldImage);
+		board14.add(board14BldImage);
+		board15.add(board15BldImage);
+		board17.add(board17BldImage);
+		// Line 3
+		board20.add(board20BldImage);
+		board21.add(board21BldImage);
+		board22.add(board22BldImage);
+		board23.add(board23BldImage);
+		
+		// 발판별 센터 라벨 삽입
+		// Line 0
+		board1.add(board1Centerla);
+		board3.add(board3Centerla);
+		board4.add(board4Centerla);
+		board5.add(board5Centerla);
+		// Line 1
+		board7.add(board7Centerla);
+		board8.add(board8Centerla);
+		board9.add(board9Centerla);
+		board11.add(board11Centerla);
+		// Line 2
+		board13.add(board13Centerla);
+		board14.add(board14Centerla);
+		board15.add(board15Centerla);
+		board17.add(board17Centerla);
+		// Line 3
+		board20.add(board20Centerla);
+		board21.add(board21Centerla);
+		board22.add(board22Centerla);
+		board23.add(board23Centerla);
+		
+		// 발판별 이름 라벨 삽입
+		// Line 0
+		board1.add(board1CityName);
+		board3.add(board3CityName);
+		board4.add(board4CityName);
+		board5.add(board5CityName);
+		// Line 1
+		board7.add(board7CityName);
+		board8.add(board8CityName);
+		board9.add(board9CityName);
+		board11.add(board11CityName);
+		// Line 2
+		board13.add(board13CityName);
+		board14.add(board14CityName);
+		board15.add(board15CityName);
+		board17.add(board17CityName);
+		// Line 3
+		board20.add(board20CityName);
+		board21.add(board21CityName);
+		board22.add(board22CityName);
+		board23.add(board23CityName);
+		
+		// 플레이어 캐릭터 이미지
+		add(player1, 5);
+		add(player2, 5);
+		add(player3, 5);
+		add(player4, 5);
 	}
 
 	@Override
@@ -417,6 +726,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			public void mousePressed(MouseEvent e) {
 				System.out.println("X : " + e.getX());
 				System.out.println("Y : " + e.getY());
+			}
+		});
+		board0.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				System.out.println("board0:" + e.getX());
+			}
+		});
+		board1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				System.out.println("board1:" + e.getX());
 			}
 		});
 	}
@@ -527,7 +848,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				RequestDto dto = new RequestDto();
 				while ((text = reader.readLine()) != null) {
 					dto = gson.fromJson(text, RequestDto.class);
-					
+
 					if (dto.getType().equals(Protocol.GAMEHOST)) {
 						System.out.println(TAG + "GAMEHOST 받음");
 						btnStart.setVisible(true);
@@ -706,6 +1027,23 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			result = new ImageIcon("images/dice6.png");
 		}
 		return result;
+	}
+
+	private class RotatedLabel extends JLabel {
+		char[] tmpTextList;
+		
+		public RotatedLabel(String text) {
+			tmpTextList = new char[text.length()];
+			setLayout(new GridLayout(text.length(), 1));
+			for (int i = 0; i < text.length(); i++) {
+				tmpTextList[i] = text.charAt(i);
+				JLabel tmpla = new JLabel(Character.toString(tmpTextList[i]));
+				tmpla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+				tmpla.setHorizontalAlignment(JLabel.CENTER);
+				tmpla.setVerticalAlignment(JLabel.CENTER);
+				add(tmpla);
+			}
+		}
 	}
 
 	public static void main(String[] args) {

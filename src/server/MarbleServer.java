@@ -295,7 +295,7 @@ public class MarbleServer {
        Tile T19 = new SpecialTile("½ºÆä¼È", 19, 3, 650, 150);
        Tile T20 = new CityTile("·±´ø", 20, 1, 650, 250, null, 0, arrayinit, 45, 58, 70, 79, 0);
        Tile T21 = new CityTile("ÆÄ¸®", 21, 1, 650, 350, null, 0, arrayinit, 47, 62, 74, 84, 0);
-       Tile T22 = new CityTile("´º¿Á", 22, 1, 650, 450, null, 0, arrayinit, 50, 65, 79, 89, 0);
+       Tile T22 = new CityTile("´º¿å", 22, 1, 650, 450, null, 0, arrayinit, 50, 65, 79, 89, 0);
        Tile T23 = new IsLandTile("¼­¿ï", 23, 2, 650, 550, null, 0, arrayinit, 100);
        
        tileList.add(T0);
