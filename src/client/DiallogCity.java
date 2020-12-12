@@ -236,6 +236,7 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	
 	void checkDisable() {
 		if(MarbleClient.cityTile.getIsPurchased()[0] == 1) {
+			
 			landCheck.setEnabled(false);
 		}
 	}
