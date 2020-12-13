@@ -648,17 +648,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						// 움직이는 이미지
 						int nextx,nexty,nextnum;
 						if (dto.getId().equals(player1.getId())) {
-							
 							while(player1.getNowPlayerTile() != dto.getNewPlayerTile()) {
 								nextx = tileList.get((player1.getNowPlayerTile()+1)%24).getTileX();
 								nexty = tileList.get((player1.getNowPlayerTile()+1)%24).getTileY();
 								nextnum = tileList.get((player1.getNowPlayerTile()+1)%24).getTileNum();
-//								System.out.println("nextx : "+nextx+"   nexty : "+nexty);
-								System.out.println("X : "+nextx+" Y : "+nexty);
 								player1.moveAnimation(nextx+30,nexty+30,nextnum);
-//							player1.moveAnimation(dto.getNewPlayerX() + 30, dto.getNewPlayerY() + 30,
-//									dto.getNewPlayerTile());
-								player1.setNowPlayerTile(nextnum);
+								Thread.sleep(250);
 							}
 							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + player1.getNowPlayerTile());
 						} else if (dto.getId().equals(player2.getId())) {
@@ -725,7 +720,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					}
 
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

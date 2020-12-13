@@ -47,20 +47,27 @@ public class Player extends JLabel {
 			@Override
 			public void run() {
 //				System.out.println("변경전 x,y값 :" + playerX + "," + playerY);
-				while (nowPlayerTile != newPlayerTile) {
 					try {
-						Thread.sleep(500);
+						Thread.sleep(250);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					playerX = newX;
-					playerY = newY;
-					nowPlayerTile = newPlayerTile;
+					playerX = playerX +(newX-playerX)/2;
+					playerY = playerY+ (newY-playerY)/2;
+					setLocation(playerX, playerY); // 내부에 repaint() 존재
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					playerX = playerX +(newX-playerX)/2;
+					playerY = playerY+ (newY-playerY)/2;
 					setLocation(playerX, playerY); // 내부에 repaint() 존재
 					System.out.println(TAG + "moveAnimation 실행");
 					System.out.println("변경후 x,y값 :" + playerX + "," + playerY);
-				}
+				nowPlayerTile = newPlayerTile;
 			}
 		}).start();
 	}
