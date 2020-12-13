@@ -1,5 +1,7 @@
 package protocol;
 
+import java.util.Vector;
+
 import lombok.Data;
 import object.CityTile;
 import object.Tile;
@@ -42,4 +44,5 @@ public class RequestDto {
 	
 	private Tile tileInfo;
 	private int tileType;
+	Vector<Tile> tilelist;
 }

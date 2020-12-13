@@ -29,12 +29,12 @@ public class Player extends JLabel {
 	int money; // 보유 현금
 	int asset; // 보유 총자산 // 건물 + 현금
 	Vector<IsLandTile> playerCity; // 보유한 건물
-	
+
 	public Player(int x, int y, String imageSource) {
 		this.playerX = x;
 		this.playerY = y;
 		this.imageSource = imageSource;
-		
+
 		icPlayer = new ImageIcon(imageSource);
 		setIcon(icPlayer); // 기본이미지(오른쪽)
 		setSize(30, 30); // 크기설정
@@ -42,17 +42,25 @@ public class Player extends JLabel {
 	}
 
 	public void moveAnimation(int newX, int newY, int newPlayerTile) { // 이동
-		
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("변경전 x,y값 :" + playerX + "," + playerY);
-				playerX = newX;
-				playerY = newY;
-				nowPlayerTile = newPlayerTile;
-				setLocation(playerX, playerY); // 내부에 repaint() 존재
-				System.out.println(TAG + "moveAnimation 실행");
-				System.out.println("변경후 x,y값 :" + playerX + "," + playerY);
+//				System.out.println("변경전 x,y값 :" + playerX + "," + playerY);
+				while (nowPlayerTile != newPlayerTile) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					playerX = newX;
+					playerY = newY;
+					nowPlayerTile = newPlayerTile;
+					setLocation(playerX, playerY); // 내부에 repaint() 존재
+					System.out.println(TAG + "moveAnimation 실행");
+					System.out.println("변경후 x,y값 :" + playerX + "," + playerY);
+				}
 			}
 		}).start();
 	}

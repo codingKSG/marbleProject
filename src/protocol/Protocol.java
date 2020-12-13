@@ -42,4 +42,6 @@ public interface Protocol {
 	
 	// 다이얼로그 정보 클라이언트 >> 서버
 	String DIALOGUPDATE = "DIALOGUPDATE";
+	// 서버(tileList) >> 클라이언트
+	String UPLOADTILELIST="UPLOADTILELIST";
 }

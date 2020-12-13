@@ -225,18 +225,22 @@ public class DiallogCity extends JFrame implements JFrameSet {
 	}
 	
 	private void checkDisable() {
-		if (MarbleClient.TILE.getIsPurchased()[0] == 1) {
-			landCheck.setEnabled(false);
-		}
-		if (MarbleClient.TILE.getIsPurchased()[1] == 1) {
-			houseCheck.setEnabled(false);
-		}
-		if (MarbleClient.TILE.getIsPurchased()[2] == 1) {
-			buildingCheck.setEnabled(false);
-		}
-		if (MarbleClient.TILE.getIsPurchased()[3] == 1) {
-			hotelCheck.setEnabled(false);
-		}
-	}
+	      if (MarbleClient.TILE.getIsPurchased()[0] == 1) {
+	         isPurchased[0] = 1;
+	         landCheck.setVisible(false);
+	      }
+	      if (MarbleClient.TILE.getIsPurchased()[1] == 1) {
+	         isPurchased[1] = 1;
+	         houseCheck.setVisible(false);
+	      }
+	      if (MarbleClient.TILE.getIsPurchased()[2] == 1) {
+	         isPurchased[2] = 1;
+	         buildingCheck.setVisible(false);
+	      }
+	      if (MarbleClient.TILE.getIsPurchased()[3] == 1) {
+	         isPurchased[3] = 1;
+	         hotelCheck.setVisible(false);
+	      }
+	   }
 	
 }

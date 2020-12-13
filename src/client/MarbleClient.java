@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,6 +31,9 @@ import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
 
+import object.CityTile;
+import object.IsLandTile;
+import object.SpecialTile;
 import object.Tile;
 import protocol.JFrameSet;
 import protocol.Protocol;
@@ -79,6 +83,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private JLabel laDice1, laDice2;
 
 	Random dice = new Random();
+	private Vector<Tile> tileList; // 타일 객체가 담긴 벡터
+	int[] arrayinit = {0,0,0,0};
 
 	public MarbleClient(String id) {
 		this.id = id;
@@ -164,6 +170,55 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		playerChatList = new JTextArea();
 		playerChatField = new JTextField(20);
 
+		tileList = new Vector<>();
+		Tile T0 = new SpecialTile("시작", 0, 0, 650, 650);
+		Tile T1 = new CityTile("홍콩", 1, 1, 550, 650, null, 0, arrayinit , 20, 24, 30, 36, 0);
+		Tile T2 = new SpecialTile("스페셜", 2, 3, 450, 650);
+		Tile T3 = new CityTile("도쿄", 3, 1, 350, 650, null, 0, arrayinit, 24, 28, 34, 40, 0);
+		Tile T4 = new IsLandTile("제주도", 4, 2, 250, 650, null, 0, arrayinit, 45);
+		Tile T5 = new CityTile("카이로", 5, 1, 150, 650, null, 0, arrayinit, 27, 35, 41, 48, 0);
+		Tile T6 = new SpecialTile("무인도", 6, 3, 0, 650);
+		Tile T7 = new IsLandTile("하와이", 7, 2, 0, 550, null, 0, arrayinit, 65);
+		Tile T8 = new CityTile("시드니", 8, 1, 0, 450, null, 0, arrayinit, 30, 38, 45, 52, 0);
+		Tile T9 = new CityTile("상파울로", 9, 1, 0, 350, null, 0, arrayinit, 32, 40, 47, 55, 0);
+		Tile T10 = new SpecialTile("스페셜", 10, 3, 0, 250);
+		Tile T11 = new CityTile("퀘벡", 11, 1, 0, 150, null, 0, arrayinit, 35, 43, 51, 59, 0);
+		Tile T12 = new SpecialTile("올림픽", 12, 3, 0, 0);
+		Tile T13 = new CityTile("모스크바", 13, 1, 150, 0, null, 0, arrayinit, 37, 46, 54, 63, 0);
+		Tile T14 = new CityTile("베를린", 14, 1, 250, 0, null, 0, arrayinit, 40, 50, 59, 68, 0);
+		Tile T15 = new IsLandTile("독도", 15, 2, 350, 0, null, 0, arrayinit, 80);
+		Tile T16 = new SpecialTile("스페셜", 16, 3, 450, 0);
+		Tile T17 = new CityTile("로마", 17, 1, 550, 0, null, 0, arrayinit, 43, 54, 65, 74, 0);
+		Tile T18 = new SpecialTile("세계여행", 18, 3, 650, 0);
+		Tile T19 = new SpecialTile("스페셜", 19, 3, 650, 150);
+		Tile T20 = new CityTile("런던", 20, 1, 650, 250, null, 0, arrayinit, 45, 58, 70, 79, 0);
+		Tile T21 = new CityTile("파리", 21, 1, 650, 350, null, 0, arrayinit, 47, 62, 74, 84, 0);
+		Tile T22 = new CityTile("뉴옥", 22, 1, 650, 450, null, 0, arrayinit, 50, 65, 79, 89, 0);
+		Tile T23 = new IsLandTile("서울", 23, 2, 650, 550, null, 0, arrayinit, 100);
+		tileList.add(T0);
+		tileList.add(T1);
+		tileList.add(T2);
+		tileList.add(T3);
+		tileList.add(T4);
+		tileList.add(T5);
+		tileList.add(T6);
+		tileList.add(T7);
+		tileList.add(T8);
+		tileList.add(T9);
+		tileList.add(T10);
+		tileList.add(T11);
+		tileList.add(T12);
+		tileList.add(T13);
+		tileList.add(T14);
+		tileList.add(T15);
+		tileList.add(T16);
+		tileList.add(T17);
+		tileList.add(T18);
+		tileList.add(T19);
+		tileList.add(T20);
+		tileList.add(T21);
+		tileList.add(T22);
+		tileList.add(T23);
 	}
 
 	@Override
@@ -278,7 +333,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		btnDiceRoll.setVisible(false);
 		// 시작버튼
 		btnStart.setBounds(200, 300, 100, 50);
-		btnStart.setVisible(false);
+		btnStart.setVisible(true);  //*false
 		// 시작발판 ~ 무인도
 		board0.setBounds(650, 650, 150, 150); // 시작발판
 		board1.setBounds(550, 650, 100, 150);
@@ -591,10 +646,20 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					// 움직이기 구현, 주사위 이미지 띄우기 구현
 					if (dto.getType().equals(Protocol.MOVE)) {
 						// 움직이는 이미지
+						int nextx,nexty,nextnum;
 						if (dto.getId().equals(player1.getId())) {
-							player1.moveAnimation(dto.getNewPlayerX() + 30, dto.getNewPlayerY() + 30,
-									dto.getNewPlayerTile());
-							player1.setNowPlayerTile(dto.getNewPlayerTile());
+							
+							while(player1.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player1.getNowPlayerTile()+1)%24).getTileX();
+								nexty = tileList.get((player1.getNowPlayerTile()+1)%24).getTileY();
+								nextnum = tileList.get((player1.getNowPlayerTile()+1)%24).getTileNum();
+//								System.out.println("nextx : "+nextx+"   nexty : "+nexty);
+								System.out.println("X : "+nextx+" Y : "+nexty);
+								player1.moveAnimation(nextx+30,nexty+30,nextnum);
+//							player1.moveAnimation(dto.getNewPlayerX() + 30, dto.getNewPlayerY() + 30,
+//									dto.getNewPlayerTile());
+								player1.setNowPlayerTile(nextnum);
+							}
 							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + player1.getNowPlayerTile());
 						} else if (dto.getId().equals(player2.getId())) {
 							player2.moveAnimation(dto.getNewPlayerX() + 60, dto.getNewPlayerY() + 30,
