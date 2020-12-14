@@ -188,8 +188,8 @@ public class MarbleServer {
             tempDto.setGubun(Protocol.GAME);
             tempDto.setType(Protocol.DICEROLL);
             tempDto.setId(dto.getId());
-            tempDto.setDice1(dto.getDice1());
-            tempDto.setDice2(dto.getDice2());
+            tempDto.setDice1(1);
+            tempDto.setDice2(1);
             output = gson.toJson(tempDto);
             System.out.println(TAG + "DICEROLL ¹ÞÀ½");
             for (int i = 0; i < playerList.size(); i++) {

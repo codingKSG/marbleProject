@@ -496,11 +496,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		
 		// Line 3
 		board20Centerla.setBounds(40, 0, 70, 100);
-
 		board21Centerla.setBounds(40, 0, 70, 100);
-
 		board22Centerla.setBounds(40, 0, 70, 100);
-
 		board23Centerla.setBounds(40, 0, 70, 100);
 		
 		// 발판별 이름 라벨 설정
@@ -728,18 +725,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				System.out.println("Y : " + e.getY());
 			}
 		});
-		board0.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				System.out.println("board0:" + e.getX());
-			}
-		});
-		board1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				System.out.println("board1:" + e.getX());
-			}
-		});
 	}
 
 	class ClientPlayerThread extends Thread {
@@ -905,8 +890,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					}
 					// 주사위굴리기 구현
 					if (dto.getType().equals(Protocol.DICEROLL)) {
-						laDice1.setText(Integer.toString(dto.getDice1()));
-						laDice2.setText(Integer.toString(dto.getDice2()));
 						System.out.println(dto.getId() + "DICEROLL 받음");
 					}
 					// 움직이기 구현, 주사위 이미지 띄우기 구현
