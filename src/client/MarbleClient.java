@@ -333,7 +333,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		btnDiceRoll.setVisible(false);
 		// 시작버튼
 		btnStart.setBounds(200, 300, 100, 50);
-		btnStart.setVisible(true);  //*false
+		btnStart.setVisible(false); 
 		// 시작발판 ~ 무인도
 		board0.setBounds(650, 650, 150, 150); // 시작발판
 		board1.setBounds(550, 650, 100, 150);
@@ -645,39 +645,44 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					}
 					// 움직이기 구현, 주사위 이미지 띄우기 구현
 					if (dto.getType().equals(Protocol.MOVE)) {
-						// 움직이는 이미지
-						int nextx,nexty,nextnum;
+						// 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
+						laDice1.setIcon(diceShow(dto.getDice1()));
+						laDice2.setIcon(diceShow(dto.getDice2()));
+						int nextx,nexty,nextnum; //다음칸의 x, y, tilenum
 						if (dto.getId().equals(player1.getId())) {
-							while(player1.getNowPlayerTile() != dto.getNewPlayerTile()) {
+							//주사위를 굴려 나온 만큼 이동하지 않았다면
+							while(player1.getNowPlayerTile() != dto.getNewPlayerTile()) { 
 								nextx = tileList.get((player1.getNowPlayerTile()+1)%24).getTileX();
 								nexty = tileList.get((player1.getNowPlayerTile()+1)%24).getTileY();
 								nextnum = tileList.get((player1.getNowPlayerTile()+1)%24).getTileNum();
 								player1.moveAnimation(nextx+30,nexty+30,nextnum);
-								Thread.sleep(250);
+								Thread.sleep(100); //moveAnimation 스레드가 끝날때 까지 대기.
 							}
-							System.out.println(player1.getId() + "의 nowPlayerTile은 :" + player1.getNowPlayerTile());
 						} else if (dto.getId().equals(player2.getId())) {
-							player2.moveAnimation(dto.getNewPlayerX() + 60, dto.getNewPlayerY() + 30,
-									dto.getNewPlayerTile());
-							player2.setNowPlayerTile(dto.getNewPlayerTile());
-							System.out.println(player2.getId() + "의 nowPlayerTile은 :" + player2.getNowPlayerTile());
-							System.out.println(dto.getId() + "MOVE 받음");
+							while(player2.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player2.getNowPlayerTile()+1)%24).getTileX();
+								nexty = tileList.get((player2.getNowPlayerTile()+1)%24).getTileY();
+								nextnum = tileList.get((player2.getNowPlayerTile()+1)%24).getTileNum();
+								player2.moveAnimation(nextx+30,nexty+60,nextnum);
+								Thread.sleep(100);
+							}
 						} else if (dto.getId().equals(player3.getId())) {
-							player3.moveAnimation(dto.getNewPlayerX() + 30, dto.getNewPlayerY() + 60,
-									dto.getNewPlayerTile());
-							player3.setNowPlayerTile(dto.getNewPlayerTile());
-							System.out.println(player3.getId() + "의 nowPlayerTile은 :" + player3.getNowPlayerTile());
-							System.out.println(dto.getId() + "MOVE 받음");
+							while(player3.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player3.getNowPlayerTile()+1)%24).getTileX();
+								nexty = tileList.get((player3.getNowPlayerTile()+1)%24).getTileY();
+								nextnum = tileList.get((player3.getNowPlayerTile()+1)%24).getTileNum();
+								player3.moveAnimation(nextx+60,nexty+30,nextnum);
+								Thread.sleep(100);
+							}
 						} else if (dto.getId().equals(player4.getId())) {
-							player4.moveAnimation(dto.getNewPlayerX() + 60, dto.getNewPlayerY() + 60,
-									dto.getNewPlayerTile());
-							player4.setNowPlayerTile(dto.getNewPlayerTile());
-							System.out.println(player4.getId() + "의 nowPlayerTile은 :" + player4.getNowPlayerTile());
-							System.out.println(dto.getId() + "MOVE 받음");
+							while(player4.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player4.getNowPlayerTile()+1)%24).getTileX();
+								nexty = tileList.get((player4.getNowPlayerTile()+1)%24).getTileY();
+								nextnum = tileList.get((player4.getNowPlayerTile()+1)%24).getTileNum();
+								player4.moveAnimation(nextx+60,nexty+60,nextnum);
+								Thread.sleep(100);
+							}
 						}
-						// 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
-						laDice1.setIcon(diceShow(dto.getDice1()));
-						laDice2.setIcon(diceShow(dto.getDice2()));
 					}
 					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
