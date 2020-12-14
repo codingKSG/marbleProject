@@ -246,6 +246,5 @@ public class DialogCity extends JFrame implements JFrameSet {
 			isPurchased[3] = 1;
 			checkHotel.setVisible(false);
 		}
-
 	}
 }
