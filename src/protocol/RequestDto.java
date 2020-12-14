@@ -55,4 +55,10 @@ public class RequestDto {
 	// 타일 주인의 아이디
 	private String tileOwnerId;
 
+	// 새로 지어지는 건물리스트
+	private int[] newBuild;
+	
+	// 새로 지을 건물의 좌표
+	private int buildX;
+	private int buildY;
 }

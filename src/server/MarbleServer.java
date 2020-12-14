@@ -248,6 +248,7 @@ public class MarbleServer {
 				}
         	 }
          }
+         // 구매 다이얼로그 정보 받아서 모든 클라이언트에게 돌려줌.
          if(dto.getType().equals(Protocol.PLAYERPURCHASED)) {
         	 tempDto.setType(Protocol.PLAYERPURCHASED);
         	 tempDto.setId(dto.getId());
@@ -257,6 +258,20 @@ public class MarbleServer {
         	 }
          }
          
+         // 새로 지을 건물 정보 받아서 모든 클라이언트에게 돌려줌.
+         if (dto.getType().equals(Protocol.PLAYERBUILD)) {
+        	 tempDto.setType(Protocol.PLAYERBUILD);
+        	 tempDto.setTileOwnerId(dto.getTileOwnerId());
+        	 tempDto.setNowPlayerTile(dto.getNowPlayerTile());
+        	 tempDto.setNewBuild(dto.getNewBuild());
+        	 tempDto.setBuildX(tileList.get(dto.getNowPlayerTile()).getTileX());
+        	 tempDto.setBuildY(tileList.get(dto.getNowPlayerTile()).getTileY());
+        	 for (int i = 0; i < playerList.size(); i++) {
+        		 playerList.get(i).writer.println(gson.toJson(tempDto));
+        	 }
+         }
+         
+         // 벌금 다이얼로그 정보 받아서 모든 클라이언트에게 돌려줌.
          if(dto.getType().equals(Protocol.PLAYERFINE)) {
         	 tempDto.setType(Protocol.PLAYERFINE);
         	 tempDto.setId(dto.getId());
@@ -266,6 +281,8 @@ public class MarbleServer {
 				playerList.get(i).writer.println(gson.toJson(tempDto));
 			}
          }
+         
+         // 채팅 기능
          if (dto.getType().equals(Protocol.CHAT)) {
             String chatText = dto.getId() + " : " + dto.getText() + "\n";
             tempDto.setType(Protocol.CHAT);
@@ -340,9 +357,6 @@ public class MarbleServer {
        tileList.add(T21);
        tileList.add(T22);
        tileList.add(T23);
-       for (int i = 0; i < tileList.size(); i++) {
-		System.out.println(tileList.get(i));
-	}
    }
    
 }

@@ -234,6 +234,7 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		if (MarbleClient.TILE.getIsPurchased()[0] == 1) {
 			isPurchased[0] = 1;
 			landCheck.setVisible(false);
+			btnPurchased.setVisible(true);
 		}
 		if (MarbleClient.TILE.getIsPurchased()[1] == 1) {
 			isPurchased[1] = 1;
