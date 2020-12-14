@@ -1,5 +1,7 @@
 package protocol;
 
+import java.util.Vector;
+
 import client.Player;
 import lombok.Data;
 import object.Tile;
@@ -61,4 +63,10 @@ public class RequestDto {
 	// 새로 지을 건물의 좌표
 	private int buildX;
 	private int buildY;
+	
+	// 서버로부터 받아오는 타일리스트
+	private Vector<Tile> tileList;
+	
+	// 플레이어 턴을 알려줌.(아이디를 통해)
+	private String turnId;
 }

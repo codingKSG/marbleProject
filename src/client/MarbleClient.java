@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -58,6 +59,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private String playerImageSource;
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
+	int isDouble = 0; // 더블 여부
 
 	private JLabel board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10, board11,
 			board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22, board23;
@@ -81,7 +83,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	private Container c;
 	// 주사위굴리기 버튼, 시작버튼
-	private JButton btnDiceRoll, btnStart;
+	private JButton btnDiceRoll, btnStart, btnEndTurn;
 	// 중간 보드
 	private JLabel boardCenter;
 	// 오른쪽 플레이어창, 채팅창
@@ -104,6 +106,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	// 주사위 값 이미지 띄우는 라벨
 	private JLabel laDice1, laDice2;
 
+	// 타일값 받아오는 리스트
+	private Vector<Tile> tileList;
+	
 	Random dice = new Random();
 
 	public MarbleClient(String id) {
@@ -129,6 +134,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		boardLine1 = new ArrayList<>();
 		boardLine2 = new ArrayList<>();
 		boardLine3 = new ArrayList<>();
+		
+		// 서버로부터 받은 타일 리스트를 담는 리스트
+		tileList = new Vector<>();
 
 		// 발판 new
 		board0 = new JLabel();
@@ -236,6 +244,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		// 주사위 버튼, 시작 버튼
 		btnDiceRoll = new JButton("주사위 굴리기");
 		btnStart = new JButton("게임 시작");
+		btnEndTurn = new JButton("턴 종료");
 		// 메인 컨텐트
 		c = getContentPane();
 		// 플레이어 객체 이미지
@@ -425,6 +434,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		// 시작버튼
 		btnStart.setBounds(200, 300, 100, 50);
 		btnStart.setVisible(false);
+		// 턴종료 버튼
+		btnEndTurn.setBounds(200, 300, 100, 50);
+		btnEndTurn.setVisible(false);
 		// 시작발판 ~ 무인도
 		board0.setBounds(650, 650, 150, 150); // 시작발판
 		board1.setBounds(550, 650, 100, 150);
@@ -607,15 +619,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		add(board21);
 		add(board22);
 		add(board23);
-		// 주사위 굴리기, 시작 버튼 배치
-		add(btnDiceRoll);
-		add(btnStart);
 		// 중간 보드
 		add(boardCenter);
 		// 주사위 굴리기, 시작 버튼 배치
 		boardCenter.add(btnDiceRoll);
 		boardCenter.add(btnStart);
-		// 주사위 값 배치 => 이미지 변경 예정
+		boardCenter.add(btnEndTurn);
+		// 주사위 값 배치
 		boardCenter.add(laDice1);
 		boardCenter.add(laDice2);
 		// 오른쪽 플레이어창
@@ -724,13 +734,36 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cpt.playerRoll();
+				btnDiceRoll.setVisible(false);
 			}
 		});
 
+		btnEndTurn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				isDouble = 0;
+				cpt.dto.setType(Protocol.ENDTURN);
+				cpt.dto.setId(id);
+				cpt.writer.println(cpt.gson.toJson(cpt.dto));
+				
+				cpt.dto.setType(Protocol.NEXTTURN);
+				cpt.dto.setId(id);
+				cpt.writer.println(cpt.gson.toJson(cpt.dto));
+				
+				btnEndTurn.setVisible(false);
+			}
+		});
+		
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				btnStart.setVisible(false);
+				// 서버에서 타일 정보 받아오기
+				cpt.dto.setGubun(Protocol.GAME);
+				cpt.dto.setType(Protocol.TILELISTPULL);
+				cpt.writer.println(cpt.gson.toJson(cpt.dto));
+				
+				// 게임시작
 				cpt.dto.setGubun(Protocol.GAME);
 				cpt.dto.setType(Protocol.GAMESTART);
 				String gameStart = cpt.gson.toJson(cpt.dto);
@@ -802,6 +835,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			int tempDice2 = dice.nextInt(6) + 1;
 			dice1 = tempDice1;
 			dice2 = tempDice2;
+			if (dice1 == dice2) {
+				isDouble += 1;
+			} else {
+				isDouble = 0;
+			}
+			
 			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
 
 			dto.setGubun(Protocol.GAME);
@@ -813,7 +852,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			output = gson.toJson(dto);
 			writer.println(output);
 
-			System.out.println(TAG + "playerRoll 실행");
 			move(newPlayerTile);
 		}
 
@@ -904,7 +942,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						}
 
 						btnStart.setVisible(false);
-						btnDiceRoll.setVisible(true);
 					}
 					// 플레이중이거나 4명 초과하면 프로그램 종료.(참여불가)
 					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
@@ -914,6 +951,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							setDaemon(false);
 						}
 					}
+					
+					if (dto.getType().equals(Protocol.TILELISTPULL)) {
+						tileList = dto.getTileList();
+					}
+					
+					// 플레이어 턴 부여
+					if (dto.getType().equals(Protocol.TURN)) {
+						if (dto.getTurnId().equals(id)) {
+							btnDiceRoll.setVisible(true);
+						}
+					}
+					
 					// 주사위굴리기 구현
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						System.out.println(dto.getId() + "DICEROLL 받음");
@@ -954,12 +1003,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						if (dto.getId().equals(id)) {
 							TILE = dto.getTileInfo();
 							nowBuild = TILE.getIsPurchased(); // isPurchased를 받아옴(받아올 때의 건물구매상태)
-							System.out.println(TAG + "여기를 보세요 여기" + TILE.getLandOwner());
 							if (TILE.getTileType() == 0) {
 
 							} else if (TILE.getTileType() == 1) {
-								if (dto.getTileInfo().getLandOwner().equals("")
-										|| dto.getTileInfo().getLandOwner().equals(id)) {
+								if (dto.getTileInfo().getLandOwner().equals("") || dto.getTileInfo().getLandOwner().equals(id)) {
 									if (dto.getTileInfo().getIsPurchased().equals(allPurcharsed)) {
 										return;
 									} else {
@@ -1034,7 +1081,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									}).start();
 								}
 							}
+							if (isDouble == 1) {
+								btnDiceRoll.setVisible(true);
+								isTurn = true;
+							} else if ((isDouble == 0) || (isDouble == 2)) {
+								isTurn = false;
+							}
+							
+							if (isTurn == false) {
+								btnEndTurn.setVisible(true);
+							}
 						}
+						
 					}
 					
 					if (dto.getType().equals(Protocol.PLAYERPURCHASED)) {
@@ -1099,8 +1157,14 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player4.setMoney(player4.getMoney() - dto.getTileFine());
 							player4Money.setText(Integer.toString(player4.getMoney()));
 						}
-
 					}
+					
+					if (dto.getType().equals(Protocol.NEXTTURN)) {
+						if (dto.getTurnId().equals(id)) {
+							btnDiceRoll.setVisible(true);
+						}
+					}
+					
 					// 채팅 시스템 구현
 					if (dto.getType().equals(Protocol.CHAT)) {
 						playerChatList.append(dto.getText());
