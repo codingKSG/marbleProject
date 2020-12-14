@@ -23,10 +23,10 @@ public class DiallogIsland extends JFrame implements JFrameSet {
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
 
-	private JLabel textLabel, allLa, landLa;
-	private JPanel menuPanel, btnPanel, landPanel;
-	private JButton purchasedBtn, cancelBtn;
-	private JCheckBox landCheck;
+	private JLabel labelText, laAll, laLand;
+	private JPanel panelMenu, panelBtn, panelLand;
+	private JButton btnPurchased, btnCancel;
+	private JCheckBox checkLand;
 
 	private MyItemListener myItemListener;
 	
@@ -35,20 +35,20 @@ public class DiallogIsland extends JFrame implements JFrameSet {
 	// 식별된 Tile의 상태 값을 받아온다.
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
-	private String tileName; // 해당 타일의 이름
-	private int tileNum; // 해당 타일의 번호
+//	private String tileName; // 해당 타일의 이름
+//	private int tileNum; // 해당 타일의 번호
 
 	// 다이얼 로그가 CityTile에게 받아서 출력해야할 값들
 
 	// 구매시 필요한 값
-	private int isPurchased; // 땅 샀는지
+	private int[] isPurchased = {0}; // 땅 샀는지
 
 	private int priceAll; // 전체 구매 비용
 	private int priceLand; // 땅값
 
 	// 벌금시 필요한 값
-	private String landOwner; // 소유한 플레이어
-	private int fine; // 통행료 priceAll * 1.2
+//	private String landOwner; // 소유한 플레이어
+	private int fine; // 통행료 priceAll * 2
 
 	public DiallogIsland(String id) {
 		this.id = id;
@@ -66,18 +66,18 @@ public class DiallogIsland extends JFrame implements JFrameSet {
 	@Override
 	public void init() {
 
-		landCheck = new JCheckBox();
+		checkLand = new JCheckBox();
 
-		textLabel = new JLabel(tileName + " 섬");
-		landLa = new JLabel(priceLand + "");
-		allLa = new JLabel("총 구입 가격은 : 0원 입니다.");
+		labelText = new JLabel(MarbleClient.TILE.getTileName() + " 시티");
+		laLand = new JLabel("땅 가격: " + MarbleClient.TILE.getPriceLand() + "");
+		laAll = new JLabel("총 구입 가격은 : 0원 입니다.");
 
-		purchasedBtn = new JButton("구입하기");
-		cancelBtn = new JButton("취소하기");
+		btnPurchased = new JButton("구입하기");
+		btnCancel = new JButton("취소하기");
 
-		landPanel = new JPanel();
-		menuPanel = new JPanel();
-		btnPanel = new JPanel();
+		panelLand = new JPanel();
+		panelMenu = new JPanel();
+		panelBtn = new JPanel();
 		
 		myItemListener = new MyItemListener();
 	}
@@ -88,49 +88,56 @@ public class DiallogIsland extends JFrame implements JFrameSet {
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
-		menuPanel.setBackground(Color.LIGHT_GRAY);
-		menuPanel.setLayout(new BorderLayout());
-		landPanel.setLayout(new GridLayout(1, 2));
+		panelMenu.setBackground(Color.LIGHT_GRAY);
+		panelMenu.setLayout(new BorderLayout());
+		panelLand.setLayout(new GridLayout(1, 2));
 
-		textLabel.setHorizontalAlignment(JLabel.CENTER);
-		landLa.setHorizontalAlignment(JLabel.CENTER);
-		allLa.setHorizontalAlignment(JLabel.CENTER);
+		labelText.setHorizontalAlignment(JLabel.CENTER);
+		laLand.setHorizontalAlignment(JLabel.CENTER);
+		laAll.setHorizontalAlignment(JLabel.CENTER);
+		
+		checkDisable();
 	}
 
 	@Override
 	public void batch() {		
-		btnPanel.add(purchasedBtn);
-		btnPanel.add(cancelBtn);
+		panelBtn.add(btnPurchased);
+		panelBtn.add(btnCancel);
 
-		landPanel.add(landLa);
-		landPanel.add(landCheck);
+		panelLand.add(laLand);
+		panelLand.add(checkLand);
 
-		landCheck.addItemListener(myItemListener);
+		checkLand.addItemListener(myItemListener);
 
-		menuPanel.add(landPanel, BorderLayout.CENTER);
-		menuPanel.add(allLa, BorderLayout.SOUTH);
+		panelMenu.add(panelLand, BorderLayout.CENTER);
+		panelMenu.add(laAll, BorderLayout.SOUTH);
 
-		add(textLabel, BorderLayout.NORTH);
-		add(menuPanel, BorderLayout.CENTER);
-		add(btnPanel, BorderLayout.SOUTH);
+		add(labelText, BorderLayout.NORTH);
+		add(panelMenu, BorderLayout.CENTER);
+		add(panelBtn, BorderLayout.SOUTH);
 	}
 
 	@Override
 	public void listener() {
 
 		//
-		purchasedBtn.addActionListener(new ActionListener() {
+		btnPurchased.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				
-				landOwner = id;
+				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2;
+				MarbleClient.TILE.setPriceAll(MarbleClient.TILE.getPriceAll() + priceAll);
+				MarbleClient.TILE.setLandOwner(id);
+				MarbleClient.TILE.setIsPurchased(isPurchased);
+				MarbleClient.TILE.setFine(fine); // 임시값
+
+				setVisible(false);
+				MarbleClient.isDialogIsland = true;
 			}
 		});
 
 		// 구입안하고 다이얼로그창 끄기
-		cancelBtn.addActionListener(new ActionListener() {
+		btnCancel.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -145,17 +152,23 @@ public class DiallogIsland extends JFrame implements JFrameSet {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				if (e.getItem() == landCheck)
-					priceAll = priceAll + priceLand;
+				if (e.getItem() == checkLand) {
+					priceAll = priceAll + MarbleClient.TILE.getPriceLand();
+					isPurchased[0] = 1;
+				}
 			} else {
-				if (e.getItem() == landCheck)
-					priceAll = priceAll - priceLand;
+				if (e.getItem() == checkLand) {
+					priceAll = priceAll - MarbleClient.TILE.getPriceLand();
+					isPurchased[0] = 0;
+				}
 			}
-			allLa.setText("총 구입 가격은 : " + priceAll + "원 입니다.");
+			laAll.setText(",총 구입 가격은 : " + priceAll + "원 입니다.");
 		}
 	}
-
-	public static void main(String[] args) {
-		new DiallogIsland("test");
+	private void checkDisable() {
+		if (MarbleClient.TILE.getIsPurchased()[0] == 1) {
+			isPurchased[0] = 1;
+			checkLand.setVisible(false);
+		}
 	}
 }

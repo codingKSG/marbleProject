@@ -44,8 +44,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	
 	static int nowPrice;
 	static boolean isDialogCity = false;
+	static boolean isDialogIsland = false;
 	static boolean isDialogFine = false;
-	private int[] allPurcharsed = { 1, 1, 1, 1 };
+	private int[] allPurchasedCity = { 1, 1, 1, 1 };
+	private int[] allPurchasedIsland = {1};
 
 	private ClientPlayerThread cpt;
 	private Socket socket;
@@ -938,13 +940,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							} else if (TILE.getTileType() == 1) {
 								if (dto.getTileInfo().getLandOwner().equals("")
 										|| dto.getTileInfo().getLandOwner().equals(id)) {
-									if (dto.getTileInfo().getIsPurchased().equals(allPurcharsed)) {
+									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedCity)) {
 
 									} else {
 										nowPrice = TILE.getPriceAll();
 										new DiallogCity(id);
 
-										// isPurchased 가 allPurchased 와 다를 경우 서버로 타일 변경 값 전송
+										// isPurchased 가 allPurchasedCity 와 다를 경우 서버로 타일 변경 값 전송
 										new Thread(new Runnable() {
 											@Override
 											public void run() {
@@ -1000,6 +1002,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										}
 									}).start();
 								}
+							} else if (TILE.getTileType() == 2) {
+								
 							}
 						}
 					}
