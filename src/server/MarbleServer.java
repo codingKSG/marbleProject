@@ -189,8 +189,8 @@ public class MarbleServer {
             tempDto.setGubun(Protocol.GAME);
             tempDto.setType(Protocol.DICEROLL);
             tempDto.setId(dto.getId());
-            tempDto.setDice1(dto.getDice1());
-            tempDto.setDice2(dto.getDice2());
+            tempDto.setDice1(1);
+            tempDto.setDice2(1);
             output = gson.toJson(tempDto);
             System.out.println(TAG + "DICEROLL ¹ÞÀ½");
             for (int i = 0; i < playerList.size(); i++) {
@@ -248,7 +248,6 @@ public class MarbleServer {
 				}
         	 }
          }
-         
          if(dto.getType().equals(Protocol.PLAYERPURCHASED)) {
         	 tempDto.setType(Protocol.PLAYERPURCHASED);
         	 tempDto.setId(dto.getId());
@@ -267,7 +266,6 @@ public class MarbleServer {
 				playerList.get(i).writer.println(gson.toJson(tempDto));
 			}
          }
-         
          if (dto.getType().equals(Protocol.CHAT)) {
             String chatText = dto.getId() + " : " + dto.getText() + "\n";
             tempDto.setType(Protocol.CHAT);

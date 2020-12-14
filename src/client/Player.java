@@ -1,15 +1,9 @@
 package client;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 
 import lombok.Data;
 import object.IsLandTile;

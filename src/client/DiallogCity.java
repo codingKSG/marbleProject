@@ -115,7 +115,7 @@ public class DiallogCity extends JFrame implements JFrameSet {
 		allLa.setHorizontalAlignment(JLabel.CENTER);
 		
 		btnPurchased.setVisible(false);
-		
+
 		checkDisable();
 	}
 
@@ -247,5 +247,6 @@ public class DiallogCity extends JFrame implements JFrameSet {
 			isPurchased[3] = 1;
 			hotelCheck.setVisible(false);
 		}
+
 	}
 }

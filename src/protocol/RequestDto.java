@@ -39,7 +39,7 @@ public class RequestDto {
 	private int newPlayerTile;
 	private int newPlayerX;
 	private int newPlayerY;
-	
+
 	// 타일 정보 값
 	private Tile tileInfo;
 	
@@ -54,4 +54,5 @@ public class RequestDto {
 	
 	// 타일 주인의 아이디
 	private String tileOwnerId;
+
 }
