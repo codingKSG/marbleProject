@@ -125,7 +125,7 @@ public class DialogIsland extends JFrame implements JFrameSet {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2;
+				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 7;
 				MarbleClient.TILE.setPriceAll(MarbleClient.TILE.getPriceAll() + priceAll);
 				MarbleClient.TILE.setLandOwner(id);
 				MarbleClient.TILE.setIsPurchased(isPurchased);

@@ -934,16 +934,16 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 						if (dto.getId().equals(id)) {
 							TILE = dto.getTileInfo();
-							System.out.println(TAG + "여기를 보세요 여기" + TILE.getLandOwner());
+							nowPrice = TILE.getPriceAll();
+							
 							if (TILE.getTileType() == 0) {
 
 							} else if (TILE.getTileType() == 1) {
 								if (dto.getTileInfo().getLandOwner().equals("")
 										|| dto.getTileInfo().getLandOwner().equals(id)) {
 									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedCity)) {
-
+										return;
 									} else {
-										nowPrice = TILE.getPriceAll();
 										new DialogCity(id);
 
 										// isPurchased 가 allPurchasedCity 와 다를 경우 서버로 타일 변경 값 전송
@@ -1006,7 +1006,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								if (dto.getTileInfo().getLandOwner().equals("") 
 										|| dto.getTileInfo().getLandOwner().equals(id)) {
 									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedIsland)) {
-										
+										return;
 									} else {
 										nowPrice = TILE.getPriceAll();
 										new DialogIsland(id);
@@ -1028,7 +1028,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 															
 															tempDto.setType(Protocol.PLAYERPURCHASED);
 															tempDto.setId(id);
-															tempDto.setNewprice(TILE.getPriceAll());
+															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
+															writer.println(gson.toJson(tempDto));
+															
+															isDialogIsland = false;
+															break;
 														}
 													} catch (InterruptedException e) {
 														e.printStackTrace();
@@ -1038,6 +1042,34 @@ public class MarbleClient extends JFrame implements JFrameSet {
 											}
 										}).start();
 									}
+								} else {
+									new DialogFine(id);
+									
+									new Thread(new Runnable() {
+										
+										@Override
+										public void run() {
+											while(true) {
+												try {
+													Thread.sleep(1000);
+													if(isDialogFine == true) {
+														RequestDto tempDto = new RequestDto();
+														
+														tempDto.setType(Protocol.PLAYERFINE);
+														tempDto.setId(id);
+														tempDto.setTileFine(TILE.getFine());
+														tempDto.setTileOwnerId(TILE.getLandOwner());
+														writer.println(gson.toJson(tempDto));
+														
+														isDialogFine = false;
+														break;
+													}
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).start();
 								}
 							}
 						}
