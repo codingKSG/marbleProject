@@ -8,11 +8,11 @@ import javax.swing.JLabel;
 
 import protocol.JFrameSet;
 
-public class DiallogStart extends JFrame implements JFrameSet {
+public class DialogStart extends JFrame implements JFrameSet {
 	private JLabel textLabel;
 	private String id;
 
-	public DiallogStart(String id) {
+	public DialogStart(String id) {
 		this.id = id;
 		
 		init();

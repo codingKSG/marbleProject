@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 
 import protocol.JFrameSet;
 
-public class DiallogIsland extends JFrame implements JFrameSet {
-	private DiallogIsland diallogIsland = this;
+public class DialogIsland extends JFrame implements JFrameSet {
+	private DialogIsland diallogIsland = this;
 	private final static String TAG = "DiallogIsland : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
@@ -50,7 +50,7 @@ public class DiallogIsland extends JFrame implements JFrameSet {
 //	private String landOwner; // 소유한 플레이어
 	private int fine; // 통행료 priceAll * 2
 
-	public DiallogIsland(String id) {
+	public DialogIsland(String id) {
 		this.id = id;
 
 		init();

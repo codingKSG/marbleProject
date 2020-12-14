@@ -11,18 +11,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import object.Tile;
 import protocol.JFrameSet;
 
-public class DiallogFine extends JFrame implements JFrameSet {
-	private DiallogFine diallogSpecial = this;
+public class DialogSpecial extends JFrame implements JFrameSet {
+	private DialogSpecial diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
 
-	private JLabel textLabel, labelFine;
+	private JLabel textLabel;
 	private JPanel btnPanel;
-	private JButton payBtn;
+	private JButton confirmBtn;
 	
 	// Tile의 상태 값을 받아올 방법
 	// TileNum을 통해서 Tile을 식별
@@ -33,7 +32,7 @@ public class DiallogFine extends JFrame implements JFrameSet {
 	private int tileNum; // 해당 타일의 번호
 
 
-	public DiallogFine(String id) {
+	public DialogSpecial(String id) {
 		this.id = id;
 
 		init();
@@ -49,8 +48,7 @@ public class DiallogFine extends JFrame implements JFrameSet {
 	@Override
 	public void init() {
 		textLabel = new JLabel(tileName);
-		labelFine = new JLabel("통행료는 " + MarbleClient.TILE.getFine() + "원 입니다.");
-		payBtn = new JButton("통행료 지불하기");
+		confirmBtn = new JButton("확인");
 		btnPanel = new JPanel();
 	}
 
@@ -66,10 +64,9 @@ public class DiallogFine extends JFrame implements JFrameSet {
 
 	@Override
 	public void batch() {		
-		btnPanel.add(payBtn);
+		btnPanel.add(confirmBtn);
 		
 		add(textLabel, BorderLayout.NORTH);
-		add(labelFine, BorderLayout.CENTER);
 		add(btnPanel, BorderLayout.SOUTH);
 	}
 
@@ -77,16 +74,17 @@ public class DiallogFine extends JFrame implements JFrameSet {
 	public void listener() {
 		
 		// 확인하고 끄기
-		payBtn.addActionListener(new ActionListener() {
+		confirmBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MarbleClient.isDialogFine = true;
-				
 				setVisible(false);
 
 			}
 		});
 	}
 
+	public static void main(String[] args) {
+		new DialogSpecial("test");
+	}
 }

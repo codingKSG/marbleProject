@@ -944,7 +944,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 									} else {
 										nowPrice = TILE.getPriceAll();
-										new DiallogCity(id);
+										new DialogCity(id);
 
 										// isPurchased 가 allPurchasedCity 와 다를 경우 서버로 타일 변경 값 전송
 										new Thread(new Runnable() {
@@ -976,7 +976,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										}).start();
 									}
 								} else {
-									new DiallogFine(id);
+									new DialogFine(id);
 
 									new Thread(new Runnable() {
 										@Override
@@ -1003,7 +1003,42 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									}).start();
 								}
 							} else if (TILE.getTileType() == 2) {
-								
+								if (dto.getTileInfo().getLandOwner().equals("") 
+										|| dto.getTileInfo().getLandOwner().equals(id)) {
+									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedIsland)) {
+										
+									} else {
+										nowPrice = TILE.getPriceAll();
+										new DialogIsland(id);
+										
+										// isPurchased 가 allPurchasedIsland와 다를 경우 타일 변경값 서버에 전송
+										new Thread(new Runnable() {
+											
+											@Override
+											public void run() {
+												while(true) {
+													try {
+														Thread.sleep(1000);
+														if(isDialogIsland == true) {
+															RequestDto tempDto = new RequestDto();
+															
+															tempDto.setType(Protocol.DIALOGUPDATE);
+															tempDto.setTileInfo(TILE);
+															writer.println(gson.toJson(tempDto));
+															
+															tempDto.setType(Protocol.PLAYERPURCHASED);
+															tempDto.setId(id);
+															tempDto.setNewprice(TILE.getPriceAll());
+														}
+													} catch (InterruptedException e) {
+														e.printStackTrace();
+													}
+												}
+												
+											}
+										}).start();
+									}
+								}
 							}
 						}
 					}
