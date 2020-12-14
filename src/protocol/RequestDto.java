@@ -6,6 +6,8 @@ import client.Player;
 import lombok.Data;
 import object.Tile;
 
+import java.util.Vector;
+
 @Data
 public class RequestDto {
 	private String gubun;

@@ -13,15 +13,15 @@ import javax.swing.JPanel;
 
 import protocol.JFrameSet;
 
-public class DiallogSpecial extends JFrame implements JFrameSet {
-	private DiallogSpecial diallogSpecial = this;
+public class DialogSearch extends JFrame implements JFrameSet {
+	private DialogSearch diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
 
-	private JLabel textLabel;
-	private JPanel btnPanel;
-	private JButton confirmBtn;
+	private JLabel labelText;
+	private JPanel panelBtn;
+	private JButton btnConfirm;
 	
 	// Tile의 상태 값을 받아올 방법
 	// TileNum을 통해서 Tile을 식별
@@ -32,7 +32,7 @@ public class DiallogSpecial extends JFrame implements JFrameSet {
 	private int tileNum; // 해당 타일의 번호
 
 
-	public DiallogSpecial(String id) {
+	public DialogSearch(String id) {
 		this.id = id;
 
 		init();
@@ -47,9 +47,9 @@ public class DiallogSpecial extends JFrame implements JFrameSet {
 
 	@Override
 	public void init() {
-		textLabel = new JLabel(tileName);
-		confirmBtn = new JButton("확인");
-		btnPanel = new JPanel();
+		labelText = new JLabel(tileName);
+		btnConfirm = new JButton("확인");
+		panelBtn = new JPanel();
 	}
 
 	@Override
@@ -58,24 +58,23 @@ public class DiallogSpecial extends JFrame implements JFrameSet {
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
-		textLabel.setHorizontalAlignment(JLabel.CENTER);
+		labelText.setHorizontalAlignment(JLabel.CENTER);
 
 	}
 
 	@Override
 	public void batch() {		
-		btnPanel.add(confirmBtn);
+		panelBtn.add(btnConfirm);
 		
-		add(textLabel, BorderLayout.NORTH);
-		add(btnPanel, BorderLayout.SOUTH);
+		add(labelText, BorderLayout.NORTH);
+		add(panelBtn, BorderLayout.SOUTH);
 	}
 
 	@Override
 	public void listener() {
 		
 		// 확인하고 끄기
-		confirmBtn.addActionListener(new ActionListener() {
-
+		btnConfirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
@@ -85,6 +84,6 @@ public class DiallogSpecial extends JFrame implements JFrameSet {
 	}
 
 	public static void main(String[] args) {
-		new DiallogSpecial("test");
+		new DialogSearch("test");
 	}
 }

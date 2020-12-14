@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 import object.Tile;
 import protocol.JFrameSet;
 
-public class DiallogFine extends JFrame implements JFrameSet {
-	private DiallogFine diallogSpecial = this;
+public class DialogFine extends JFrame implements JFrameSet {
+	private DialogFine diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
@@ -33,7 +33,7 @@ public class DiallogFine extends JFrame implements JFrameSet {
 	private int tileNum; // 해당 타일의 번호
 
 
-	public DiallogFine(String id) {
+	public DialogFine(String id) {
 		this.id = id;
 
 		init();

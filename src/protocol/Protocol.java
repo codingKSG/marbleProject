@@ -52,6 +52,9 @@ public interface Protocol {
 	// 플레이어 건물 생성
 	String PLAYERBUILD = "PLAYERBUILD";
 	
+	// 플레이어 아일랜드 땅 구매
+	String PLAYERISLAND = "PLAYERISLAND";
+	
 	// 서버로부터 타일리스트 pull
 	String TILELISTPULL = "TILELISTPULL";
 	
