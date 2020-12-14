@@ -247,6 +247,5 @@ public class DiallogCity extends JFrame implements JFrameSet {
 			isPurchased[3] = 1;
 			hotelCheck.setVisible(false);
 		}
-
 	}
 }
