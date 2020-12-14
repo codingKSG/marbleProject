@@ -446,7 +446,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board12.setIcon(new ImageIcon("images/board_olympic.png"));
 		board18.setIcon(new ImageIcon("images/board_travel.png"));
 		// 황금 카드 이미지
+		board1.setIcon(new ImageIcon("images/bg_key_bottom.png"));
 		board2.setIcon(new ImageIcon("images/bg_key_bottom.png"));
+		board3.setIcon(new ImageIcon("images/bg_key_bottom.png"));
+		board4.setIcon(new ImageIcon("images/bg_key_bottom.png"));
+		board5.setIcon(new ImageIcon("images/bg_key_bottom.png"));
 		board10.setIcon(new ImageIcon("images/bg_key_left.png"));
 		board16.setIcon(new ImageIcon("images/bg_key_top.png"));
 		board19.setIcon(new ImageIcon("images/bg_key_right.png"));
@@ -458,7 +462,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		btnDiceRoll.setVisible(false);
 		// 시작버튼
 		btnStart.setBounds(200, 300, 100, 50);
-		btnStart.setVisible(false); 
+		btnStart.setVisible(true); //*false로 
 		// 시작발판 ~ 무인도
 		board0.setBounds(650, 650, 150, 150); // 시작발판
 		board1.setBounds(550, 650, 100, 150);

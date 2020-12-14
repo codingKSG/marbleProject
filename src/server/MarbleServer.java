@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import com.google.gson.Gson;
 
-import client.MarbleLogin;
 import object.CityTile;
 import object.IsLandTile;
 import object.SpecialTile;
@@ -121,6 +120,7 @@ public class MarbleServer {
 			// ID 설정 + 클라이언트 내 플레이어 객체에 ID값 넣기
 			if (dto.getType().equals(Protocol.IDSET)) {
 				playerThread.id = dto.getId();
+
 				// 오른쪽 플레이어 창에 아이디 띄우기
 //         이미 존재하는 ID면 ID를 변경하게 함.
 //            if (playerList.size() != 0) {
@@ -234,34 +234,8 @@ public class MarbleServer {
 						break;
 					}
 				}
-
-				if (dto.getType().equals(Protocol.GAMESTART)) {
-					isPlaying = true;
-					tempDto.setType(Protocol.PLAYERSET);
-					if (playerList.size() == 4) {
-						tempDto.setPlayer1(playerList.get(0).id);
-						tempDto.setPlayer2(playerList.get(1).id);
-						tempDto.setPlayer3(playerList.get(2).id);
-						tempDto.setPlayer4(playerList.get(3).id);
-					} else if (playerList.size() == 3) {
-						tempDto.setPlayer1(playerList.get(0).id);
-						tempDto.setPlayer2(playerList.get(1).id);
-						tempDto.setPlayer3(playerList.get(2).id);
-					} else if (playerList.size() == 2) {
-						tempDto.setPlayer1(playerList.get(0).id);
-						tempDto.setPlayer2(playerList.get(1).id);
-					} else if (playerList.size() == 1) {
-						tempDto.setPlayer1(playerList.get(0).id);
-					}
-
-					for (int i = 0; i < playerList.size(); i++) {
-						playerList.get(i).writer.println(gson.toJson(tempDto));
-					}
-
-					String notice = "[공지] 게임을 시작합니다.\n";
-					tempDto.setType(Protocol.CHAT);
-					tempDto.setText(notice);
-					for (int i = 0; i < playerList.size(); i++) {
+				for (int i = 0; i < playerList.size(); i++) {
+					if (playerList.get(i).id.equals(dto.getId())) {
 						playerList.get(i).writer.println(gson.toJson(tempDto));
 					}
 				}
@@ -373,4 +347,5 @@ public class MarbleServer {
 			System.out.println(tileList.get(i));
 		}
 	}
+
 }
