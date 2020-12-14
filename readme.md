@@ -1,9 +1,26 @@
 # MarbleProject 
 
-**MarbleClient.java** 465line 
-		btnStart.setVisible(true); //*false로  변경해야됩니다. 테스트를 위해 변경중
+## 참고사항
+**MarbleClient.java** 465 line 
+		btnStart.setVisible(true); //*false로  변경하면 1인플로 테스트할 수 있습니다.
+## 수정사항
+**MarbleClient.java**
+		tile5와 tile 2를 변경해야 됩니다.
+		유저가 입장했을 때 체팅으로 알려주는것
+
+1. 스페셜 타일 함수 
+	- 구현 앞으로1~3칸, 뒤로 1~3칸, 돈 흭득
+2. isTurn(); 구현
+	- 턴종료버튼도 구현해야됨.
+3. 건물세우기 구현
+4. 매각 구현
 
 
+**강조**
+# 큰글씨
+## 중간글씨
+- li
+> 보기좋게!
 
 Hi! I'm your first Markdown file in **StackEdit**. If you want to learn about StackEdit, you can read me. If you want to play with Markdown, you can edit me. Once you have finished with me, you can create new files by opening the **file explorer** on the left corner of the navigation bar.
 

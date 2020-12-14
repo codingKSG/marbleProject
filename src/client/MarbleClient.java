@@ -446,11 +446,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board12.setIcon(new ImageIcon("images/board_olympic.png"));
 		board18.setIcon(new ImageIcon("images/board_travel.png"));
 		// 황금 카드 이미지
-		board1.setIcon(new ImageIcon("images/bg_key_bottom.png"));
 		board2.setIcon(new ImageIcon("images/bg_key_bottom.png"));
-		board3.setIcon(new ImageIcon("images/bg_key_bottom.png"));
-		board4.setIcon(new ImageIcon("images/bg_key_bottom.png"));
-		board5.setIcon(new ImageIcon("images/bg_key_bottom.png"));
 		board10.setIcon(new ImageIcon("images/bg_key_left.png"));
 		board16.setIcon(new ImageIcon("images/bg_key_top.png"));
 		board19.setIcon(new ImageIcon("images/bg_key_right.png"));
@@ -462,7 +458,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		btnDiceRoll.setVisible(false);
 		// 시작버튼
 		btnStart.setBounds(200, 300, 100, 50);
-		btnStart.setVisible(true); //*false로 
+		btnStart.setVisible(false); //*false로 
 		// 시작발판 ~ 무인도
 		board0.setBounds(650, 650, 150, 150); // 시작발판
 		board1.setBounds(550, 650, 100, 150);
@@ -903,12 +899,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						btnStart.setVisible(true);
 					}
 
-					// 이미 존재하는 ID면 ID를 변경하게 함.
-//		               if (dto.getType().equals(Protocol.IDCHECK)) {
-//		                  JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
-//		                  System.exit(0);
-//		                  setVisible(false);
-//		               }
+					 //이미 존재하는 ID면 ID를 변경하게 함.
+		               if (dto.getType().equals(Protocol.IDCHECK)) {
+		                  JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
+		                  System.exit(0);
+		                  setVisible(false);
+		               }
 
 //		                클라이언트 내 플레이어 객체에 ID값 넣기
 					if (dto.getType().equals(Protocol.PLAYERSET)) {

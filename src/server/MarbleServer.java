@@ -119,18 +119,19 @@ public class MarbleServer {
 			RequestDto tempDto = new RequestDto();
 			// ID 설정 + 클라이언트 내 플레이어 객체에 ID값 넣기
 			if (dto.getType().equals(Protocol.IDSET)) {
-				playerThread.id = dto.getId();
-
-				// 오른쪽 플레이어 창에 아이디 띄우기
-//         이미 존재하는 ID면 ID를 변경하게 함.
-//            if (playerList.size() != 0) {
-//               for (int i = 0; i < playerList.size(); i++) {
-//                  if (playerList.get(playerList.size()-1).id.equals(dto.getId())) {
-//                     tempDto.setType(Protocol.IDCHECK);
-//                     playerList.get(i).writer.println(gson.toJson(tempDto));
-//                  }
-//               }
-//            }
+				// 이미 존재하는 ID면 ID를 변경하게 함.
+				if (playerList.size() > 1) {
+					for (int i = 0; i < playerList.size() - 1; i++) {
+						if (playerList.get(i).id.equals(dto.getId())) {
+							System.out.println("ID가 같다고???");
+							tempDto.setType(Protocol.IDCHECK);
+							playerList.get(playerList.size() - 1).writer.println(gson.toJson(tempDto));
+							playerList.remove(playerList.size() - 1);
+						} else
+							playerThread.id = dto.getId();
+					}
+				} else
+					playerThread.id = dto.getId();
 			}
 
 //         if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
