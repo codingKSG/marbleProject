@@ -68,7 +68,7 @@ public class DialogIsland extends JFrame implements JFrameSet {
 
 		checkLand = new JCheckBox();
 
-		labelText = new JLabel(MarbleClient.TILE.getTileName() + " 시티");
+		labelText = new JLabel(MarbleClient.TILE.getTileName());
 		laLand = new JLabel("땅 가격: " + MarbleClient.TILE.getPriceLand() + "");
 		laAll = new JLabel("총 구입 가격은 : 0원 입니다.");
 

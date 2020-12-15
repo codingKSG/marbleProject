@@ -186,6 +186,58 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
+
+				tempDto.setType(Protocol.TURN);
+				tempDto.setTurnId(playerList.get(0).id);
+
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+
+			if (dto.getType().equals(Protocol.TILELISTPULL)) {
+				tempDto.setType(Protocol.TILELISTPULL);
+				tempDto.setTileList(tileList);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+			
+			if (dto.getType().equals(Protocol.ENDTURN)) {
+				tempDto.setGubun(Protocol.CHAT);
+				tempDto.setType(Protocol.CHAT);
+				tempDto.setText("[공지] " + dto.getId() + "님이 턴을 종료합니다.\n");
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+			
+			if (dto.getType().equals(Protocol.NEXTTURN)) {
+				String tempId = "";
+				int tempIndex = 5;
+				tempDto.setType(Protocol.NEXTTURN);
+				for (int i = 0; i < playerList.size(); i++) {
+					if (playerList.get(playerList.size() - 1).id.equals(dto.getId())) {
+						tempId = playerList.get(0).id;
+						tempIndex = 0;
+						break;
+					}
+					if (playerList.get(i).id.equals(dto.getId())) {
+						tempId = playerList.get(i + 1).id;
+						tempIndex = i + 1;
+						break;
+					}
+				}
+				tempDto.setTurnId(tempId);
+				playerList.get(tempIndex).writer.println(gson.toJson(tempDto));
+
+				tempDto.setGubun(Protocol.CHAT);
+				tempDto.setType(Protocol.CHAT);
+				tempDto.setText("[공지] " + tempId + "님의 턴입니다.\n");
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+
 			}
 
 			if (dto.getType().equals(Protocol.DICEROLL)) {
@@ -251,6 +303,7 @@ public class MarbleServer {
 					}
 				}
 			}
+			// 구매 다이얼로그 정보 받아서 모든 클라이언트에게 돌려줌.
 			if (dto.getType().equals(Protocol.PLAYERPURCHASED)) {
 				tempDto.setType(Protocol.PLAYERPURCHASED);
 				tempDto.setId(dto.getId());
@@ -260,6 +313,29 @@ public class MarbleServer {
 				}
 			}
 
+			// 새로 지을 건물 정보 받아서 모든 클라이언트에게 돌려줌.
+			if (dto.getType().equals(Protocol.PLAYERBUILD)) {
+				tempDto.setType(Protocol.PLAYERBUILD);
+				tempDto.setTileOwnerId(dto.getTileOwnerId());
+				tempDto.setNowPlayerTile(dto.getNowPlayerTile());
+				tempDto.setNewBuild(dto.getNewBuild());
+				tempDto.setBuildX(tileList.get(dto.getNowPlayerTile()).getTileX());
+				tempDto.setBuildY(tileList.get(dto.getNowPlayerTile()).getTileY());
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+			
+			if (dto.getType().equals(Protocol.PLAYERISLAND)) {
+				tempDto.setType(Protocol.PLAYERISLAND);
+				tempDto.setTileOwnerId(dto.getTileOwnerId());
+				tempDto.setNowPlayerTile(dto.getNowPlayerTile());
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+
+			// 벌금 다이얼로그 정보 받아서 모든 클라이언트에게 돌려줌.
 			if (dto.getType().equals(Protocol.PLAYERFINE)) {
 				tempDto.setType(Protocol.PLAYERFINE);
 				tempDto.setId(dto.getId());
@@ -278,6 +354,7 @@ public class MarbleServer {
 				}
 			}
 			
+			// 채팅 기능
 			if (dto.getType().equals(Protocol.CHAT)) {
 				String chatText = dto.getId() + " : " + dto.getText() + "\n";
 				tempDto.setType(Protocol.CHAT);
@@ -352,9 +429,7 @@ public class MarbleServer {
 		tileList.add(T21);
 		tileList.add(T22);
 		tileList.add(T23);
-		for (int i = 0; i < tileList.size(); i++) {
-			System.out.println(tileList.get(i));
-		}
+
 	}
 
 }

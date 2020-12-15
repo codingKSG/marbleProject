@@ -64,6 +64,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private String playerImageSource;
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
+	int isDouble = 0; // 더블 여부
 
 	private JLabel board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10, board11,
 			board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22, board23;
@@ -87,7 +88,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	private Container c;
 	// 주사위굴리기 버튼, 시작버튼
-	private JButton btnDiceRoll, btnStart;
+	private JButton btnDiceRoll, btnStart, btnEndTurn;
 	// 중간 보드
 	private JLabel boardCenter;
 	// 오른쪽 플레이어창, 채팅창
@@ -102,12 +103,19 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	// 플레이어(유저) 이미지 객체 - 플레잉중이 아니면 안보임
 	private Player player1, player2, player3, player4;
 	private int playerNum;
+	// 구매하기 이전 isPurchased
+	private int[] nowBuild;
+	// 구매하기 이후 isPurchased
+	private int[] newBuild;
 
 	// 주사위 값 이미지 띄우는 라벨
 	private JLabel laDice1, laDice2;
 
+	// 타일값 받아오는 리스트
+	private Vector<Tile> tileList;
+	
 	Random dice = new Random();
-	private Vector<Tile> tileList; // 타일 객체가 담긴 벡터
+
 	int[] arrayinit = {0,0,0,0};
 
 	public MarbleClient(String id) {
@@ -133,6 +141,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		boardLine1 = new ArrayList<>();
 		boardLine2 = new ArrayList<>();
 		boardLine3 = new ArrayList<>();
+		
+		// 서버로부터 받은 타일 리스트를 담는 리스트
+		tileList = new Vector<>();
 
 		// 발판 new
 		board0 = new JLabel();
@@ -215,22 +226,22 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board22BldImage = new JLabel();
 		board23BldImage = new JLabel();
 
-		board1Centerla = new JLabel("X20");
-		board3Centerla = new JLabel("X20");
-		board4Centerla = new JLabel("X20");
-		board5Centerla = new JLabel("X20");
-		board7Centerla = new RotatedLabel("X20");
-		board8Centerla = new RotatedLabel("X20");
-		board9Centerla = new RotatedLabel("X20");
-		board11Centerla = new RotatedLabel("X20");
-		board13Centerla = new JLabel("X20");
-		board14Centerla = new JLabel("X20");
-		board15Centerla = new JLabel("X20");
-		board17Centerla = new JLabel("X20");
-		board20Centerla = new RotatedLabel("X20");
-		board21Centerla = new RotatedLabel("X20");
-		board22Centerla = new RotatedLabel("X20");
-		board23Centerla = new RotatedLabel("X20");
+		board1Centerla = new JLabel();
+		board3Centerla = new JLabel();
+		board4Centerla = new JLabel();
+		board5Centerla = new JLabel();
+		board7Centerla = new RotatedLabel();
+		board8Centerla = new RotatedLabel();
+		board9Centerla = new RotatedLabel();
+		board11Centerla = new RotatedLabel();
+		board13Centerla = new JLabel();
+		board14Centerla = new JLabel();
+		board15Centerla = new JLabel();
+		board17Centerla = new JLabel();
+		board20Centerla = new RotatedLabel();
+		board21Centerla = new RotatedLabel();
+		board22Centerla = new RotatedLabel();
+		board23Centerla = new RotatedLabel();
 
 		// 중간 보드
 		boardCenter = new JLabel();
@@ -240,6 +251,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		// 주사위 버튼, 시작 버튼
 		btnDiceRoll = new JButton("주사위 굴리기");
 		btnStart = new JButton("게임 시작");
+		btnEndTurn = new JButton("턴 종료");
 		// 메인 컨텐트
 		c = getContentPane();
 		// 플레이어 객체 이미지
@@ -273,55 +285,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		playerChatList = new JTextArea();
 		playerChatField = new JTextField(20);
 
-		tileList = new Vector<>();
-		Tile T0 = new SpecialTile("시작", 0, 0, 650, 650);
-		Tile T1 = new CityTile("홍콩", 1, 1, 550, 650, null, 0, arrayinit , 20, 24, 30, 36, 0);
-		Tile T2 = new SpecialTile("스페셜", 2, 3, 450, 650);
-		Tile T3 = new CityTile("도쿄", 3, 1, 350, 650, null, 0, arrayinit, 24, 28, 34, 40, 0);
-		Tile T4 = new IsLandTile("제주도", 4, 2, 250, 650, null, 0, arrayinit, 45);
-		Tile T5 = new CityTile("카이로", 5, 1, 150, 650, null, 0, arrayinit, 27, 35, 41, 48, 0);
-		Tile T6 = new SpecialTile("무인도", 6, 3, 0, 650);
-		Tile T7 = new IsLandTile("하와이", 7, 2, 0, 550, null, 0, arrayinit, 65);
-		Tile T8 = new CityTile("시드니", 8, 1, 0, 450, null, 0, arrayinit, 30, 38, 45, 52, 0);
-		Tile T9 = new CityTile("상파울로", 9, 1, 0, 350, null, 0, arrayinit, 32, 40, 47, 55, 0);
-		Tile T10 = new SpecialTile("스페셜", 10, 3, 0, 250);
-		Tile T11 = new CityTile("퀘벡", 11, 1, 0, 150, null, 0, arrayinit, 35, 43, 51, 59, 0);
-		Tile T12 = new SpecialTile("올림픽", 12, 3, 0, 0);
-		Tile T13 = new CityTile("모스크바", 13, 1, 150, 0, null, 0, arrayinit, 37, 46, 54, 63, 0);
-		Tile T14 = new CityTile("베를린", 14, 1, 250, 0, null, 0, arrayinit, 40, 50, 59, 68, 0);
-		Tile T15 = new IsLandTile("독도", 15, 2, 350, 0, null, 0, arrayinit, 80);
-		Tile T16 = new SpecialTile("스페셜", 16, 3, 450, 0);
-		Tile T17 = new CityTile("로마", 17, 1, 550, 0, null, 0, arrayinit, 43, 54, 65, 74, 0);
-		Tile T18 = new SpecialTile("세계여행", 18, 3, 650, 0);
-		Tile T19 = new SpecialTile("스페셜", 19, 3, 650, 150);
-		Tile T20 = new CityTile("런던", 20, 1, 650, 250, null, 0, arrayinit, 45, 58, 70, 79, 0);
-		Tile T21 = new CityTile("파리", 21, 1, 650, 350, null, 0, arrayinit, 47, 62, 74, 84, 0);
-		Tile T22 = new CityTile("뉴옥", 22, 1, 650, 450, null, 0, arrayinit, 50, 65, 79, 89, 0);
-		Tile T23 = new IsLandTile("서울", 23, 2, 650, 550, null, 0, arrayinit, 100);
-		tileList.add(T0);
-		tileList.add(T1);
-		tileList.add(T2);
-		tileList.add(T3);
-		tileList.add(T4);
-		tileList.add(T5);
-		tileList.add(T6);
-		tileList.add(T7);
-		tileList.add(T8);
-		tileList.add(T9);
-		tileList.add(T10);
-		tileList.add(T11);
-		tileList.add(T12);
-		tileList.add(T13);
-		tileList.add(T14);
-		tileList.add(T15);
-		tileList.add(T16);
-		tileList.add(T17);
-		tileList.add(T18);
-		tileList.add(T19);
-		tileList.add(T20);
-		tileList.add(T21);
-		tileList.add(T22);
-		tileList.add(T23);
 	}
 
 	@Override
@@ -357,6 +320,23 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board22.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board23.setBorder(new LineBorder(new Color(0, 0, 0)));
 
+		board1CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board3CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board4CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board5CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board7CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board8CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board9CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board11CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board13CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board14CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board15CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board17CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board20CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board21CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board22CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		board23CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
+		
 		// 발판 내부 레이아웃 = null
 		for (int i = 0; i < boardLine0.size(); i++) {
 			boardLine0.get(i).setLayout(null);
@@ -389,7 +369,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		c.setLayout(null);
 		// 오른쪽 플레이어창
 		player1Info.setBounds(800, 0, 200, 100);
-		player1Info.setBackground(new Color(153, 102, 255));
+		player1Info.setBackground(new Color(254, 236, 203));
 		player1Info.setLayout(null);
 
 		player2Info.setBounds(800, 100, 200, 100);
@@ -405,7 +385,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		player4Info.setLayout(null);
 		// 플레이어1 이미지, 아이디, 보유 돈
 		player1Img.setBounds(10, 10, 80, 80);
-		player1Img.setBorder(new LineBorder(new Color(163, 112, 255)));
+		player1Img.setBorder(new LineBorder(new Color(254, 246, 213)));
 		player1Img.setVisible(false);
 		player1Id.setBounds(100, 10, 80, 20);
 		player1Id.setFont(new Font("CookieRun BLACK", Font.BOLD, 17));
@@ -460,7 +440,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		btnDiceRoll.setVisible(false);
 		// 시작버튼
 		btnStart.setBounds(200, 300, 100, 50);
-		btnStart.setVisible(false); //*false로 
+		btnStart.setVisible(false);
+		// 턴종료 버튼
+		btnEndTurn.setBounds(200, 300, 100, 50);
+		btnEndTurn.setVisible(false);
 		// 시작발판 ~ 무인도
 		board0.setBounds(650, 650, 150, 150); // 시작발판
 		board1.setBounds(550, 650, 100, 150);
@@ -498,10 +481,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board5BldImage.setBounds(0, 0, 100, 40);
 		
 		// Line 1
-		board7BldImage.setBounds(0, 0, 40, 100);
-		board8BldImage.setBounds(0, 0, 40, 100);
-		board9BldImage.setBounds(0, 0, 40, 100);
-		board11BldImage.setBounds(0, 0, 40, 100);
+		board7BldImage.setBounds(110, 0, 40, 100);
+		board8BldImage.setBounds(110, 0, 40, 100);
+		board9BldImage.setBounds(110, 0, 40, 100);
+		board11BldImage.setBounds(110, 0, 40, 100);
 		
 		// Line 2
 		board13BldImage.setBounds(0, 0, 100, 40);
@@ -610,10 +593,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board23CityName.setBounds(110, 0, 40, 100);
 		
 		// 시작전 플레이어 캐릭터 이미지 숨겨놓기
-//		player1.setVisible(false);
-//		player2.setVisible(false);
-//		player3.setVisible(false);
-//		player4.setVisible(false);
+		player1.setVisible(false);
+		player2.setVisible(false);
+		player3.setVisible(false);
+		player4.setVisible(false);
 	}
 
 	@Override
@@ -643,15 +626,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		add(board21);
 		add(board22);
 		add(board23);
-		// 주사위 굴리기, 시작 버튼 배치
-		add(btnDiceRoll);
-		add(btnStart);
 		// 중간 보드
 		add(boardCenter);
 		// 주사위 굴리기, 시작 버튼 배치
 		boardCenter.add(btnDiceRoll);
 		boardCenter.add(btnStart);
-		// 주사위 값 배치 => 이미지 변경 예정
+		boardCenter.add(btnEndTurn);
+		// 주사위 값 배치
 		boardCenter.add(laDice1);
 		boardCenter.add(laDice2);
 		// 오른쪽 플레이어창
@@ -760,13 +741,36 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cpt.playerRoll();
+				btnDiceRoll.setVisible(false);
 			}
 		});
 
+		btnEndTurn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				isDouble = 0;
+				cpt.dto.setType(Protocol.ENDTURN);
+				cpt.dto.setId(id);
+				cpt.writer.println(cpt.gson.toJson(cpt.dto));
+				
+				cpt.dto.setType(Protocol.NEXTTURN);
+				cpt.dto.setId(id);
+				cpt.writer.println(cpt.gson.toJson(cpt.dto));
+				
+				btnEndTurn.setVisible(false);
+			}
+		});
+		
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				btnStart.setVisible(false);
+				// 서버에서 타일 정보 받아오기
+				cpt.dto.setGubun(Protocol.GAME);
+				cpt.dto.setType(Protocol.TILELISTPULL);
+				cpt.writer.println(cpt.gson.toJson(cpt.dto));
+				
+				// 게임시작
 				cpt.dto.setGubun(Protocol.GAME);
 				cpt.dto.setType(Protocol.GAMESTART);
 				String gameStart = cpt.gson.toJson(cpt.dto);
@@ -838,6 +842,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			int tempDice2 = dice.nextInt(6) + 1;
 			dice1 = tempDice1;
 			dice2 = tempDice2;
+			if (dice1 == dice2) {
+				isDouble += 1;
+			} else {
+				isDouble = 0;
+			}
+			
 			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
 
 			dto.setGubun(Protocol.GAME);
@@ -849,7 +859,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			output = gson.toJson(dto);
 			writer.println(output);
 
-			System.out.println(TAG + "playerRoll 실행");
 			move(newPlayerTile);
 		}
 
@@ -940,7 +949,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						}
 
 						btnStart.setVisible(false);
-						btnDiceRoll.setVisible(true);
 					}
 					// 플레이중이거나 4명 초과하면 프로그램 종료.(참여불가)
 					if (dto.getType().equals(Protocol.PLAYERNUMCHECK)) {
@@ -950,6 +958,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							setDaemon(false);
 						}
 					}
+					
+					if (dto.getType().equals(Protocol.TILELISTPULL)) {
+						tileList = dto.getTileList();
+					}
+					
+					// 플레이어 턴 부여
+					if (dto.getType().equals(Protocol.TURN)) {
+						if (dto.getTurnId().equals(id)) {
+							btnDiceRoll.setVisible(true);
+						}
+					}
+					
 					// 주사위굴리기 구현
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						System.out.println(dto.getId() + "DICEROLL 받음");
@@ -999,7 +1019,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 						if (dto.getId().equals(id)) {
 							TILE = dto.getTileInfo();
+
 							nowPrice = TILE.getPriceAll();
+							nowBuild = TILE.getIsPurchased();
 							
 							if (TILE.getTileType() == 0) {
 
@@ -1020,6 +1042,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 														Thread.sleep(1000);
 														if (isDialogCity == true) {
 															RequestDto tempDto = new RequestDto();
+															newBuild = TILE.getIsPurchased();
+															int[] tempBuild = new int[4];
 
 															tempDto.setType(Protocol.DIALOGUPDATE);
 															tempDto.setTileInfo(TILE);
@@ -1028,6 +1052,15 @@ public class MarbleClient extends JFrame implements JFrameSet {
 															tempDto.setType(Protocol.PLAYERPURCHASED);
 															tempDto.setId(id);
 															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
+															writer.println(gson.toJson(tempDto));
+															
+															tempDto.setType(Protocol.PLAYERBUILD);
+															tempDto.setTileOwnerId(TILE.getLandOwner());
+															for (int i = 1; i < nowBuild.length; i++) {
+																tempBuild[i] = nowBuild[i] - newBuild[i];
+															}
+															tempDto.setNewBuild(tempBuild);
+															tempDto.setNowPlayerTile(nowPlayerTile);
 															writer.println(gson.toJson(tempDto));
 
 															isDialogCity = false;
@@ -1096,6 +1129,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
 															writer.println(gson.toJson(tempDto));
 															
+															tempDto.setType(Protocol.PLAYERISLAND);
+															tempDto.setTileOwnerId(TILE.getLandOwner());
+															if (TILE.getIsPurchased()[0] == 1) {
+																tempDto.setNowPlayerTile(nowPlayerTile);
+																writer.println(gson.toJson(tempDto));
+															}
+															
 															isDialogIsland = false;
 															break;
 														}
@@ -1137,8 +1177,20 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									}).start();
 								}
 							}
+							if (isDouble == 1) {
+								btnDiceRoll.setVisible(true);
+								isTurn = true;
+							} else if ((isDouble == 0) || (isDouble == 2)) {
+								isTurn = false;
+							}
+							
+							if (isTurn == false) {
+								btnEndTurn.setVisible(true);
+							}
 						}
+						
 					}
+					
 					if (dto.getType().equals(Protocol.PLAYERPURCHASED)) {
 
 						if (dto.getId().equals(player1.getId())) {
@@ -1154,9 +1206,32 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player4.setMoney(player4.getMoney() - dto.getNewprice());
 							player4Money.setText(Integer.toString(player4.getMoney()));
 						}
-
 					}
 
+					if (dto.getType().equals(Protocol.PLAYERBUILD)) {
+						String tempId = dto.getTileOwnerId();
+						int[] tempArray = dto.getNewBuild();
+						int tempX = dto.getBuildX();
+						int tempY = dto.getBuildY();
+						int tempTileNum = dto.getNowPlayerTile();
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								buildUp(tempId, tempArray, tempX, tempY, tempTileNum);
+							}
+						}).start();
+					}
+					
+					if (dto.getType().equals(Protocol.PLAYERISLAND)) {
+						String tempId = dto.getTileOwnerId();
+						int tempTileNum = dto.getNowPlayerTile();
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								buildUpIsland(tempId, tempTileNum);
+							}
+						}).start();
+					}
 					
 					if (dto.getType().equals(Protocol.PLAYERFINE)) {
 
@@ -1290,8 +1365,14 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							} else
 								player4Money.setText(Integer.toString(player4.getMoney()));
 						}
-
 					}
+					
+					if (dto.getType().equals(Protocol.NEXTTURN)) {
+						if (dto.getTurnId().equals(id)) {
+							btnDiceRoll.setVisible(true);
+						}
+					}
+					
 					// 채팅 시스템 구현
 					if (dto.getType().equals(Protocol.CHAT)) {
 						playerChatList.append(dto.getText());
@@ -1346,8 +1427,329 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 		return result;
 	}
+	
+
+	private void buildUp(String id, int[] intArray, int x, int y, int tileNum) {
+		Color playerColor = new Color(0, 0, 0);
+		int isHouse = intArray[1];
+		int isBuilding = intArray[2];
+		int isHotel = intArray[3];
+		JLabel houseLabel = new JLabel();
+		houseLabel.setIcon(new ImageIcon("images/img_house.png"));
+		JLabel buildingLabel = new JLabel();
+		buildingLabel.setIcon(new ImageIcon("images/img_building.png"));
+		JLabel hotelLabel = new JLabel();
+		hotelLabel.setIcon(new ImageIcon("images/img_hotel.png"));
+		int width = 30;
+		int height = 30;
+		
+		if (player1.getId().equals(id)) {
+			playerColor = new Color(254, 236, 203);
+		} else if (player2.getId().equals(id)) {
+			playerColor = new Color(153, 153, 255);
+		} else if (player3.getId().equals(id)) {
+			playerColor = new Color(153, 255, 255);
+		} else if (player4.getId().equals(id)) {
+			playerColor = new Color(102, 255, 51);
+		}
+		
+		System.out.println("buildUp 실행");
+		System.out.println(intArray[1]);
+		System.out.println("isHouse : " + isHouse);
+		System.out.println(intArray[2]);
+		System.out.println("isBuilding : " + isBuilding);
+		System.out.println(intArray[3]);
+		System.out.println("isHotel : " + isHotel);
+		System.out.println("tileNum : " + tileNum);
+		System.out.println("color : " + playerColor);
+		
+		if (tileNum == 1) {
+			board1CityName.setOpaque(true);
+			board1CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board1BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board1BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board1BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 3) {
+			board3CityName.setOpaque(true);
+			board3CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board3BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board3BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board3BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 4) {
+			board3CityName.setOpaque(true);
+			board3CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board4BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board4BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board4BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 5) {
+			board5CityName.setOpaque(true);
+			board5CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board5BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board5BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board5BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 7) {
+			board7CityName.setOpaque(true);
+			board7CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board7BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board7BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board7BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 8) {
+			board8CityName.setOpaque(true);
+			board8CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board8BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board8BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board8BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 9) {
+			board9CityName.setOpaque(true);
+			board9CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board9BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board9BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board9BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 11) {
+			board11CityName.setOpaque(true);
+			board11CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board11BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board11BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board11BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 13) {
+			board13CityName.setOpaque(true);
+			board13CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board13BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board13BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board13BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 14) {
+			board14CityName.setOpaque(true);
+			board14CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board14BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board14BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board14BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 15) {
+			board15CityName.setOpaque(true);
+			board15CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board15BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board15BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board15BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 17) {
+			board17CityName.setOpaque(true);
+			board17CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board17BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(35, 3, width, height);
+				board17BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(67, 3, width, height);
+				board17BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 20) {
+			board20CityName.setOpaque(true);
+			board20CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board20BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board20BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board20BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 21) {
+			board21CityName.setOpaque(true);
+			board21CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board21BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board21BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board21BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 22) {
+			board22CityName.setOpaque(true);
+			board22CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board22BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board22BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board22BldImage.add(hotelLabel);
+			}
+		} else if (tileNum == 23) {
+			board23CityName.setOpaque(true);
+			board23CityName.setBackground(playerColor);
+			if (isHouse == -1) {
+				houseLabel.setBounds(3, 3, width, height);
+				board23BldImage.add(houseLabel);
+			}
+			if (isBuilding == -1) {
+				buildingLabel.setBounds(3, 35, width, height);
+				board23BldImage.add(buildingLabel);
+			}
+			if (isHotel == -1) {
+				hotelLabel.setBounds(3, 67, width, height);
+				board23BldImage.add(hotelLabel);
+			}
+		}
+		houseLabel.repaint();
+		buildingLabel.repaint();
+		hotelLabel.repaint();
+	}
+	
+	private void buildUpIsland(String id, int tileNum) {
+		Color playerColor = new Color(0, 0, 0);
+		
+		if (player1.getId().equals(id)) {
+			playerColor = new Color(254, 236, 203);
+		} else if (player2.getId().equals(id)) {
+			playerColor = new Color(153, 153, 255);
+		} else if (player3.getId().equals(id)) {
+			playerColor = new Color(153, 255, 255);
+		} else if (player4.getId().equals(id)) {
+			playerColor = new Color(102, 255, 51);
+		}
+		
+		if (tileNum == 4) {
+			board4CityName.setBackground(playerColor);
+			board4CityName.setOpaque(true);
+		}
+		
+		if (tileNum == 7) {
+			board7CityName.setBackground(playerColor);
+			board7CityName.setOpaque(true);
+		}
+		
+		if (tileNum == 15) {
+			board15CityName.setBackground(playerColor);
+			board15CityName.setOpaque(true);
+		}
+		
+		if (tileNum == 23) {
+			board23CityName.setBackground(playerColor);
+			board23CityName.setOpaque(true);
+		}
+	}
+	
+	// 양 옆 세로라벨
 	private class RotatedLabel extends JLabel {
 		char[] tmpTextList;
+		
+		public RotatedLabel() {
+			
+		}
 		
 		public RotatedLabel(String text) {
 			tmpTextList = new char[text.length()];

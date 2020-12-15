@@ -51,4 +51,22 @@ public interface Protocol {
 	
 	// 플레이어 아웃 정보 전달
 	String PLAYERDIE = "PLAYERDIE";
+
+	// 플레이어 건물 생성
+	String PLAYERBUILD = "PLAYERBUILD";
+	
+	// 플레이어 아일랜드 땅 구매
+	String PLAYERISLAND = "PLAYERISLAND";
+	
+	// 서버로부터 타일리스트 pull
+	String TILELISTPULL = "TILELISTPULL";
+	
+	// 플레이어 턴
+	String TURN = "TURN";
+	
+	// 다음 턴
+	String NEXTTURN = "NEXTTURN";
+	
+	// 턴 종료
+	String ENDTURN = "ENDTURN";
 }
