@@ -17,7 +17,7 @@ import protocol.JFrameSet;
 
 public class DialogSearch extends JFrame implements JFrameSet {
 	private DialogSearch diallogSpecial = this;
-	private final static String TAG = "DiallogSpecial : ";
+	private final static String TAG = "DialogSearch : ";
 	
 	private Tile tile;
 	private JLabel labelTitle, labelText;

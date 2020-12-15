@@ -71,4 +71,7 @@ public class RequestDto {
 	
 	// 플레이어 턴을 알려줌.(아이디를 통해)
 	private String turnId;
+	
+	// 올림픽 밟은 플레이어의 타일 리스트
+	private Vector<Tile> playerTileList;
 }

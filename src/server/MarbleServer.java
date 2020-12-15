@@ -357,6 +357,32 @@ public class MarbleServer {
 				}
 			}
 
+			if (dto.getType().equals(Protocol.OLYMPIC)) {
+				String tempId = "";
+				Vector<Tile> tempList = new Vector<>();
+				for (int i = 0; i < playerList.size(); i++) {
+					if (playerList.get(i).id.equals(dto.getId())) {
+						tempId = playerList.get(i).id;
+					}
+				}
+				
+				for (int i = 0; i < tileList.size(); i++) {
+					if ((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(tempId))) {
+						tempList.add(tileList.get(i));
+					}
+				}
+				
+				tempDto.setType(Protocol.OLYMPIC);
+				tempDto.setId(dto.getId());
+				tempDto.setPlayerTileList(tempList);
+				
+				for (int i = 0; i < playerList.size(); i++) {
+					if (playerList.get(i).id.equals(dto.getId())) {
+						playerList.get(i).writer.println(gson.toJson(tempDto));
+					}
+				}
+			}
+			
 			// 채팅 기능
 			if (dto.getType().equals(Protocol.CHAT)) {
 				String chatText = dto.getId() + " : " + dto.getText() + "\n";

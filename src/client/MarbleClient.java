@@ -1006,10 +1006,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 
 		private void playerRoll() {
-			int tempDice1 = dice.nextInt(6) + 1;
-			int tempDice2 = dice.nextInt(6) + 1;
-			dice1 = tempDice1;
-			dice2 = tempDice2;
+//			int tempDice1 = dice.nextInt(6) + 1;
+//			int tempDice2 = dice.nextInt(6) + 1;
+			dice1 = 2;
+			dice2 = 2;
 			if (dice1 == dice2) {
 				isDouble += 1;
 			} else {
@@ -1044,6 +1044,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			dto.setNewPlayerTile(newPlayerTile);
 			dto.setDice1(dice1);
 			dto.setDice2(dice2);
+			nowPlayerTile = newPlayerTile;
 
 			output = gson.toJson(dto);
 			writer.println(output);
@@ -1053,7 +1054,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.DIALOGREQUEST);
 			dto.setId(id);
-			dto.setNewPlayerTile(newPlayerTile); // 타일 번호 넘김
+			dto.setNowPlayerTile(nowPlayerTile); // 타일 번호 넘김
 
 			writer.println(gson.toJson(dto));
 
@@ -1354,7 +1355,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							} else if (TILE.getTileType() == 4) {
 								isResting += 1;
 							} else if (TILE.getTileType() == 5) {
-								
+								RequestDto tempDto = new RequestDto();
+								tempDto.setType(Protocol.OLYMPIC);
+								tempDto.setId(id);
+								writer.println(gson.toJson(tempDto));
 							} else if (TILE.getTileType() == 6) {
 								
 							}
@@ -1462,6 +1466,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						if (dto.getGubun().equals(Protocol.TURNSEQUENCE)) {
 							totalTurn++;
 						}
+					}
+					
+					if (dto.getType().equals(Protocol.OLYMPIC)) {
+						Vector<Tile> tempList = new Vector<>();
+						new DialogOlympic(tempList);
 					}
 					
 					// 채팅 시스템 구현
