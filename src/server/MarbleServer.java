@@ -269,6 +269,15 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
+			
+			if (dto.getType().equals(Protocol.PLAYERDIE)) {
+				for (int i = 0; i < tileList.size(); i++) {
+					if(tileList.get(i).equals(dto.getId())){
+						tileList.get(i).setLandOwner("최주호 강사님");
+					}
+				}
+			}
+			
 			if (dto.getType().equals(Protocol.CHAT)) {
 				String chatText = dto.getId() + " : " + dto.getText() + "\n";
 				tempDto.setType(Protocol.CHAT);

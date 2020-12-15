@@ -20,7 +20,7 @@ public class Player extends JLabel {
 	private String imageSource;
 	private int nowPlayerTile = 0;
 	private String id;
-	int money = 5000; // 보유 현금
+	int money = 2500; // 보유 현금
 	int asset; // 보유 총자산 // 건물 + 현금
 	Vector<IsLandTile> playerCity; // 보유한 건물
 

@@ -48,4 +48,7 @@ public interface Protocol {
 	
 	// 플레이어 통행료 정보 전달
 	String PLAYERFINE = "PLAYERFINE";
+	
+	// 플레이어 아웃 정보 전달
+	String PLAYERDIE = "PLAYERDIE";
 }

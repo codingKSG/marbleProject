@@ -915,28 +915,28 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player1.setVisible(true);
 							player1Img.setVisible(true);
 							player1Id.setText(player1.getId());
-							player1Money.setText(Integer.toString(5000));
+							player1Money.setText(Integer.toString(2500));
 						}
 						if (dto.getPlayer2() != null) {
 							player2.setId(dto.getPlayer2());
 							player2.setVisible(true);
 							player2Img.setVisible(true);
 							player2Id.setText(player2.getId());
-							player2Money.setText(Integer.toString(5000));
+							player2Money.setText(Integer.toString(2500));
 						}
 						if (dto.getPlayer3() != null) {
 							player3.setId(dto.getPlayer3());
 							player3.setVisible(true);
 							player3Img.setVisible(true);
 							player3Id.setText(player3.getId());
-							player3Money.setText(Integer.toString(5000));
+							player3Money.setText(Integer.toString(2500));
 						}
 						if (dto.getPlayer4() != null) {
 							player4.setId(dto.getPlayer4());
 							player4.setVisible(true);
 							player4Img.setVisible(true);
 							player4Id.setText(player4.getId());
-							player4Money.setText(Integer.toString(5000));
+							player4Money.setText(Integer.toString(2500));
 						}
 
 						btnStart.setVisible(false);
@@ -1176,18 +1176,119 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						}
 
 						// 걸린 플레이어에게 통행료 만큼 돈을 차감
+						// 벌금으로 인해 플레이어의 현금이 0이하가 되면 플레이어 아웃
 						if (dto.getId().equals(player1.getId())) {
 							player1.setMoney(player1.getMoney() - dto.getTileFine());
-							player1Money.setText(Integer.toString(player1.getMoney()));
+							if(player1.getMoney() <= 0) {
+								player1Money.setText("0");
+								if(dto.getId().equals(id)) {
+									isPlaying = false;
+									
+									new Thread(new Runnable() {
+										@Override
+										public void run() {
+											while(true) {
+												try {
+													Thread.sleep(1000);
+													RequestDto tempDto = new RequestDto();
+													tempDto.setType(Protocol.PLAYERDIE);
+													tempDto.setId(id);
+													writer.println(gson.toJson(tempDto));
+													
+													break;
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).start();
+								}
+							} else
+								player1Money.setText(Integer.toString(player1.getMoney()));
 						} else if (dto.getId().equals(player2.getId())) {
 							player2.setMoney(player2.getMoney() - dto.getTileFine());
-							player2Money.setText(Integer.toString(player2.getMoney()));
+							if(player2.getMoney() <= 0) {
+								player2Money.setText("0");
+								if(dto.getId().equals(id)) {
+									isPlaying = false;
+									
+									new Thread(new Runnable() {
+										@Override
+										public void run() {
+											while(true) {
+												try {
+													Thread.sleep(1000);
+													RequestDto tempDto = new RequestDto();
+													tempDto.setType(Protocol.PLAYERDIE);
+													tempDto.setId(id);
+													writer.println(gson.toJson(tempDto));
+													
+													break;
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).start();
+								}
+							} else
+								player2Money.setText(Integer.toString(player2.getMoney()));
 						} else if (dto.getId().equals(player3.getId())) {
 							player3.setMoney(player3.getMoney() - dto.getTileFine());
-							player3Money.setText(Integer.toString(player3.getMoney()));
+							if(player3.getMoney() <= 0) {
+								player3Money.setText("0");
+								if(dto.getId().equals(id)) {
+									isPlaying = false;
+									
+									new Thread(new Runnable() {
+										@Override
+										public void run() {
+											while(true) {
+												try {
+													Thread.sleep(1000);
+													RequestDto tempDto = new RequestDto();
+													tempDto.setType(Protocol.PLAYERDIE);
+													tempDto.setId(id);
+													writer.println(gson.toJson(tempDto));
+													
+													break;
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).start();
+								}
+							} else
+								player3Money.setText(Integer.toString(player3.getMoney()));
 						} else if (dto.getId().equals(player4.getId())) {
 							player4.setMoney(player4.getMoney() - dto.getTileFine());
-							player4Money.setText(Integer.toString(player4.getMoney()));
+							if(player4.getMoney() <= 0) {
+								player4Money.setText("0");
+								if(dto.getId().equals(id)) {
+									isPlaying = false;
+									
+									new Thread(new Runnable() {
+										@Override
+										public void run() {
+											while(true) {
+												try {
+													Thread.sleep(1000);
+													RequestDto tempDto = new RequestDto();
+													tempDto.setType(Protocol.PLAYERDIE);
+													tempDto.setId(id);
+													writer.println(gson.toJson(tempDto));
+													
+													break;
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).start();
+								}
+							} else
+								player4Money.setText(Integer.toString(player4.getMoney()));
 						}
 
 					}
