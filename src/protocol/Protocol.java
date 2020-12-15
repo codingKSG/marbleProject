@@ -49,6 +49,12 @@ public interface Protocol {
 	// 플레이어 통행료 정보 전달
 	String PLAYERFINE = "PLAYERFINE";
 	
+	// 플레이어 게임 아웃 정보 전달
+	String PLAYERDIE = "PLAYERDIE";
+	
+	// 플레이어 리스트 아웃
+	String PLAYERLISTOUT = "PLAYERLISTOUT";
+
 	// 플레이어 건물 생성
 	String PLAYERBUILD = "PLAYERBUILD";
 	

@@ -158,11 +158,15 @@ public class DialogIsland extends JDialog implements JFrameSet {
 				if (e.getItem() == checkLand) {
 					priceAll = priceAll + MarbleClient.TILE.getPriceLand();
 					isPurchased[0] = 1;
+					
+					btnPurchased.setVisible(true);
 				}
 			} else {
 				if (e.getItem() == checkLand) {
 					priceAll = priceAll - MarbleClient.TILE.getPriceLand();
 					isPurchased[0] = 0;
+					
+					btnPurchased.setVisible(false);
 				}
 			}
 			laAll.setText(",총 구입 가격은 : " + priceAll + "원 입니다.");

@@ -44,6 +44,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 	private int fine;
 
 	public DialogCity(String id) {
+		
 		this.id = id;
 
 		init();
@@ -151,7 +152,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 		//
 		btnPurchased.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {				
 				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2;
 				MarbleClient.TILE.setPriceAll(MarbleClient.TILE.getPriceAll() + priceAll);
 				MarbleClient.TILE.setLandOwner(id);
