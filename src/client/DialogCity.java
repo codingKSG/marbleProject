@@ -10,13 +10,14 @@ import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import protocol.JFrameSet;
 
-public class DialogCity extends JFrame implements JFrameSet {
+public class DialogCity extends JDialog implements JFrameSet {
 	private DialogCity diallogCity = this;
 	private final static String TAG = "DiallogCity : ";
 	
@@ -54,6 +55,7 @@ public class DialogCity extends JFrame implements JFrameSet {
 //	private int fine; // ≈Î«‡∑· priceAll * 1.2
 
 	public DialogCity(String id) {
+		
 		this.id = id;
 
 		init();
@@ -66,6 +68,7 @@ public class DialogCity extends JFrame implements JFrameSet {
 	
 	@Override
 	public void init() {
+		setModal(true);
 		checkLand = new JCheckBox();
 		checkHouse = new JCheckBox();
 		checkBuilding = new JCheckBox();
@@ -159,7 +162,7 @@ public class DialogCity extends JFrame implements JFrameSet {
 		//
 		btnPurchased.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {				
 				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2;
 				MarbleClient.TILE.setPriceAll(MarbleClient.TILE.getPriceAll() + priceAll);
 				MarbleClient.TILE.setLandOwner(id);

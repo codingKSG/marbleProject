@@ -104,9 +104,11 @@ public class MarbleServer {
 			} catch (IOException e) {
 				System.out.println(TAG + id + "연결 종료");
 				// 연결 종료한 플레이어를 리스트에서 삭제
-				for (int i = 0; i < playerList.size(); i++) {
-					if (playerList.get(i).id.equals(id)) {
-						playerList.remove(i);
+				if (isPlaying == false) {
+					for (int i = 0; i < playerList.size(); i++) {
+						if (playerList.get(i).id.equals(id)) {
+							playerList.remove(i);
+						}
 					}
 				}
 			}
@@ -186,7 +188,8 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
-
+				
+				// 플레이어 턴
 				tempDto.setType(Protocol.TURN);
 				tempDto.setTurnId(playerList.get(0).id);
 
@@ -204,6 +207,9 @@ public class MarbleServer {
 			}
 			
 			if (dto.getType().equals(Protocol.ENDTURN)) {
+				if (dto.getGubun().equals(Protocol.ENDTURN)) {
+					return;
+				}
 				tempDto.setGubun(Protocol.CHAT);
 				tempDto.setType(Protocol.CHAT);
 				tempDto.setText("[공지] " + dto.getId() + "님이 턴을 종료합니다.\n");
@@ -348,9 +354,27 @@ public class MarbleServer {
 			
 			if (dto.getType().equals(Protocol.PLAYERDIE)) {
 				for (int i = 0; i < tileList.size(); i++) {
-					if(tileList.get(i).equals(dto.getId())){
-						tileList.get(i).setLandOwner("최주호 강사님");
+					if((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(dto.getId()))){
+						tileList.get(i).setLandOwner("MapleWord검은마법사");
+						System.out.println("tile : " + tileList.get(i).getTileName());
+						System.out.println("소유주 : " + tileList.get(i).getLandOwner());
 					}
+				}
+			}
+			
+			if(dto.getType().equals(Protocol.PLAYERLISTOUT)) {
+				tempDto.setType(Protocol.PLAYERLISTOUT);
+				for (int i = 0; i < playerList.size(); i++) {
+					if (playerList.get(i).id.equals(dto.getId())) {
+						tempDto.setId(dto.getId());
+						playerList.get(i).writer.println(gson.toJson(tempDto));
+					}
+				}
+				
+				tempDto.setType(Protocol.CHAT);
+				tempDto.setText("[공지] " + dto.getId() + "님이 탈락하셨습니다.\n");
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
 			
