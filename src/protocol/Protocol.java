@@ -64,6 +64,9 @@ public interface Protocol {
 	// 다음 턴
 	String NEXTTURN = "NEXTTURN";
 	
+	// 모든 플레이어의 차례가 한 바퀴 돌았음
+	String TURNSEQUENCE = "TURNSEQUENCE";
+	
 	// 턴 종료
 	String ENDTURN = "ENDTURN";
 }

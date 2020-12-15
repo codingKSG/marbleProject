@@ -1,26 +1,27 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import object.Tile;
 import protocol.JFrameSet;
 
 public class DialogSearch extends JFrame implements JFrameSet {
 	private DialogSearch diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
 	
-	private String id; // 해당 땅을 밟은 플레이어 id
-
-	private JLabel labelText;
-	private JPanel panelBtn;
+	private Tile tile;
+	private JLabel labelTitle, labelText;
+	private JPanel btnPanel;
 	private JButton btnConfirm;
 	
 	// Tile의 상태 값을 받아올 방법
@@ -28,28 +29,24 @@ public class DialogSearch extends JFrame implements JFrameSet {
 	// 식별된 Tile의 상태 값을 받아온다.
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
-	private String tileName; // 해당 타일의 이름
-	private int tileNum; // 해당 타일의 번호
 
-
-	public DialogSearch(String id) {
-		this.id = id;
-
+	public DialogSearch(Tile tile) {
+		this.tile = tile;
+		
 		init();
 		setting();
 		batch();
 		listener();
-
-		
 		
 		setVisible(true);
 	}
 
 	@Override
 	public void init() {
-		labelText = new JLabel(tileName);
+		labelTitle = new JLabel(tile.getTileName());
+		labelText = new JLabel();
+		btnPanel = new JPanel();
 		btnConfirm = new JButton("확인");
-		panelBtn = new JPanel();
 	}
 
 	@Override
@@ -58,16 +55,45 @@ public class DialogSearch extends JFrame implements JFrameSet {
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
+		labelTitle.setHorizontalAlignment(JLabel.CENTER);
 		labelText.setHorizontalAlignment(JLabel.CENTER);
-
+		labelText.setVerticalAlignment(JLabel.CENTER);
+		labelText.setFont(new Font("CookieRun BLACK", Font.ROMAN_BASELINE, 20));
+		labelText.setLayout(new FlowLayout());
+		
+		if (tile.getLandOwner().equals("")) {
+			if (tile.getTileType() == 1) {
+				labelText.setLayout(new GridLayout(5, 1));
+				labelText.add(new JLabel("현재 소유주가 없습니다."));
+				labelText.add(new JLabel("땅 구매비용 : " + tile.getPriceLand()));
+				labelText.add(new JLabel("집 구매비용 : " + tile.getPriceHouse()));
+				labelText.add(new JLabel("빌딩 구매비용 : " + tile.getPriceBuilding()));
+				labelText.add(new JLabel("호텔 구매비용 : " + tile.getPriceHotel()));
+			} else if (tile.getTileType() == 2) {
+				labelText.setLayout(new GridLayout(2, 1));
+				labelText.add(new JLabel("현재 소유주가 없습니다."));
+				labelText.add(new JLabel("섬 구매비용 : " + tile.getPriceLand()));
+			}
+		} else {
+			if (tile.getTileType() == 1) {
+				labelText.setLayout(new GridLayout(2, 1));
+				labelText.add(new JLabel("현재 소유주 : " + tile.getLandOwner()));
+				labelText.add(new JLabel("총 벌금 : " + tile.getFine()));
+			} else if (tile.getTileType() == 2) {
+				labelText.setLayout(new GridLayout(2, 1));
+				labelText.add(new JLabel("현재 소유주 : " + tile.getLandOwner()));
+				labelText.add(new JLabel("총 벌금 : " + tile.getFine()));
+			}
+		}
 	}
 
 	@Override
-	public void batch() {		
-		panelBtn.add(btnConfirm);
+	public void batch() {
+		btnPanel.add(btnConfirm);
 		
-		add(labelText, BorderLayout.NORTH);
-		add(panelBtn, BorderLayout.SOUTH);
+		add(labelTitle, BorderLayout.NORTH);
+		add(labelText, BorderLayout.CENTER);
+		add(btnPanel, BorderLayout.SOUTH);
 	}
 
 	@Override
@@ -77,13 +103,13 @@ public class DialogSearch extends JFrame implements JFrameSet {
 		btnConfirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				MarbleClient.isInfoOn = false;
 				setVisible(false);
-
 			}
 		});
 	}
 
 	public static void main(String[] args) {
-		new DialogSearch("test");
+		new DialogSearch(new Tile("하이", 0, 0, 0, 0));
 	}
 }

@@ -3,10 +3,13 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.ScrollPane;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -45,6 +48,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private MarbleClient marbleClient = this;
 	private final static String TAG = "MarbleClient : ";
 	static Tile TILE;
+	static boolean isInfoOn = false;
 	
 	static int nowPrice;
 	static boolean isDialogCity = false;
@@ -61,10 +65,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private int nowPlayerTile = 0;
 	private int playerX = 240;
 	private int playerY = 240;
-	private String playerImageSource;
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
 	int isDouble = 0; // 더블 여부
+	int totalTurn = 1;
+	int isResting = 0;
 
 	private JLabel board0, board1, board2, board3, board4, board5, board6, board7, board8, board9, board10, board11,
 			board12, board13, board14, board15, board16, board17, board18, board19, board20, board21, board22, board23;
@@ -136,6 +141,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	@Override
 	public void init() {
+		// 커서변경
+		noClickCursor();
+		
 		// 라인별 시티/아일랜드 타일을 담는 리스트
 		boardLine0 = new ArrayList<>();
 		boardLine1 = new ArrayList<>();
@@ -737,6 +745,19 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	@Override
 	public void listener() {
+		// 커서 변경 리스너
+		c.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				onClickCursor();
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				noClickCursor();
+			}
+		});
+		
+		// 주사위굴리기 버튼 리스너
 		btnDiceRoll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -744,7 +765,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				btnDiceRoll.setVisible(false);
 			}
 		});
-
+		
+		// 턴종료 버튼 리스너
 		btnEndTurn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -758,9 +780,15 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				cpt.writer.println(cpt.gson.toJson(cpt.dto));
 				
 				btnEndTurn.setVisible(false);
+				if (isResting == 1) {
+					isResting++;
+				} else if (isResting == 2) {
+					isResting = 0;
+				}
 			}
 		});
 		
+		// 시작버튼 리스너
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -777,18 +805,158 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				cpt.writer.println(gameStart);
 			}
 		});
-
+		
+		// 채팅 리스너
 		playerChatField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sendChat();
 			}
 		});
-		c.addMouseListener(new MouseAdapter() {
+		
+		// 타일 정보 보여주는 리스너
+		board1.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mousePressed(MouseEvent e) {
-				System.out.println("X : " + e.getX());
-				System.out.println("Y : " + e.getY());
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(1));
+					isInfoOn = true;
+				}
+			}
+		});
+		board3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(3));
+					isInfoOn = true;
+				}
+			}
+		});
+		board4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(4));
+					isInfoOn = true;
+				}
+			}
+		});
+		board5.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(5));
+					isInfoOn = true;
+				}
+			}
+		});
+		board7.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(7));
+					isInfoOn = true;
+				}
+			}
+		});
+		board8.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(8));
+					isInfoOn = true;
+				}
+			}
+		});
+		board9.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(9));
+					isInfoOn = true;
+				}
+			}
+		});
+		board11.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(11));
+					isInfoOn = true;
+				}
+			}
+		});
+		board13.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(13));
+					isInfoOn = true;
+				}
+			}
+		});
+		board14.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(14));
+					isInfoOn = true;
+				}
+			}
+		});
+		board15.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(15));
+					isInfoOn = true;
+				}
+			}
+		});
+		board17.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(17));
+					isInfoOn = true;
+				}
+			}
+		});
+		board20.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(20));
+					isInfoOn = true;
+				}
+			}
+		});
+		board21.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(21));
+					isInfoOn = true;
+				}
+			}
+		});
+		board22.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(22));
+					isInfoOn = true;
+				}
+			}
+		});
+		board23.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isInfoOn == false) {
+					new DialogSearch(tileList.get(23));
+					isInfoOn = true;
+				}
 			}
 		});
 	}
@@ -847,8 +1015,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			} else {
 				isDouble = 0;
 			}
-			
-			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
 
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.DICEROLL);
@@ -858,6 +1024,14 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 			output = gson.toJson(dto);
 			writer.println(output);
+			
+			if ((isResting >= 1) && (isDouble == 0)) {
+				isTurn = false;
+				btnEndTurn.setVisible(true);
+				return;
+			}
+			
+			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
 
 			move(newPlayerTile);
 		}
@@ -870,7 +1044,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			dto.setNewPlayerTile(newPlayerTile);
 			dto.setDice1(dice1);
 			dto.setDice2(dice2);
-			nowPlayerTile = newPlayerTile;
 
 			output = gson.toJson(dto);
 			writer.println(output);
@@ -880,7 +1053,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.DIALOGREQUEST);
 			dto.setId(id);
-			dto.setNowPlayerTile(nowPlayerTile); // 타일 번호 넘김
+			dto.setNewPlayerTile(newPlayerTile); // 타일 번호 넘김
 
 			writer.println(gson.toJson(dto));
 
@@ -973,12 +1146,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					// 주사위굴리기 구현
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						System.out.println(dto.getId() + "DICEROLL 받음");
+						laDice1.setIcon(diceShow(dto.getDice1()));
+						laDice2.setIcon(diceShow(dto.getDice2()));
 					}
 					// 움직이기 구현, 주사위 이미지 띄우기 구현
 					if (dto.getType().equals(Protocol.MOVE)) {
 						// 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
-						laDice1.setIcon(diceShow(dto.getDice1()));
-						laDice2.setIcon(diceShow(dto.getDice2()));
 						int nextx,nexty,nextnum; //다음칸의 x, y, tilenum
 						if (dto.getId().equals(player1.getId())) {
 							//주사위를 굴려 나온 만큼 이동하지 않았다면
@@ -1176,7 +1349,17 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										}
 									}).start();
 								}
+							} else if (TILE.getTileType() == 3) {
+								
+							} else if (TILE.getTileType() == 4) {
+								isResting += 1;
+							} else if (TILE.getTileType() == 5) {
+								
+							} else if (TILE.getTileType() == 6) {
+								
 							}
+							
+							
 							if (isDouble == 1) {
 								btnDiceRoll.setVisible(true);
 								isTurn = true;
@@ -1266,9 +1449,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						}
 					}
 					
+					if (dto.getType().equals(Protocol.DIALOGUPDATE)) {
+						Tile tempTile = dto.getTileInfo();
+						int tempTileNum = dto.getTileNum();
+						tileList.set(tempTileNum, tempTile);
+					}
+					
 					if (dto.getType().equals(Protocol.NEXTTURN)) {
 						if (dto.getTurnId().equals(id)) {
 							btnDiceRoll.setVisible(true);
+						}
+						if (dto.getGubun().equals(Protocol.TURNSEQUENCE)) {
+							totalTurn++;
 						}
 					}
 					
@@ -1624,21 +1816,25 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		if (tileNum == 4) {
 			board4CityName.setBackground(playerColor);
 			board4CityName.setOpaque(true);
+			board4CityName.repaint();
 		}
 		
 		if (tileNum == 7) {
 			board7CityName.setBackground(playerColor);
 			board7CityName.setOpaque(true);
+			board7CityName.repaint();
 		}
 		
 		if (tileNum == 15) {
 			board15CityName.setBackground(playerColor);
 			board15CityName.setOpaque(true);
+			board15CityName.repaint();
 		}
 		
 		if (tileNum == 23) {
 			board23CityName.setBackground(playerColor);
 			board23CityName.setOpaque(true);
+			board23CityName.repaint();
 		}
 	}
 	
@@ -1663,7 +1859,21 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			}
 		}
 	}
-	public static void main(String[] args) {
-		new MarbleClient("유저1");
+	
+	// 마우스 커서 변경 (클릭 뗄 시)
+	private void noClickCursor() {
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Image cursorimage = tk.getImage("images/img_mouse_noclick.png");
+		Point point = new Point(20,20);
+		Cursor cursor = tk.createCustomCursor(cursorimage, point, "haha");
+		setCursor(cursor); 
+	}
+	// 마우스 커서 변경 (클릭시)
+	private void onClickCursor() {
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Image cursorimage = tk.getImage("images/img_mouse_click.png");
+		Point point = new Point(20,20);
+		Cursor cursor = tk.createCustomCursor(cursorimage, point, "haha");
+		setCursor(cursor);
 	}
 }

@@ -2,11 +2,8 @@ package protocol;
 
 import java.util.Vector;
 
-import client.Player;
 import lombok.Data;
 import object.Tile;
-
-import java.util.Vector;
 
 @Data
 public class RequestDto {
@@ -68,6 +65,9 @@ public class RequestDto {
 	
 	// 서버로부터 받아오는 타일리스트
 	private Vector<Tile> tileList;
+	
+	// 서버 및 클라이언트 타일 업데이트 시 타일리스트 인덱스 확인용
+	private int tileNum;
 	
 	// 플레이어 턴을 알려줌.(아이디를 통해)
 	private String turnId;
