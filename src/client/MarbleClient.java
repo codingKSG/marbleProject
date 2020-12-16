@@ -49,7 +49,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private final static String TAG = "MarbleClient : ";
 	static Tile TILE;
 	static boolean isInfoOn = false;
+	static int olympicTileNum;
 	static int nowPrice;
+	static boolean isOlympic = false;
 	static boolean isDialogCity = false;
 	static boolean isDialogIsland = false;
 	static boolean isDialogFine = false;
@@ -1225,6 +1227,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						// 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
 						laDice1.setIcon(diceShow(dto.getDice1()));
 						laDice2.setIcon(diceShow(dto.getDice2()));
+						laDice1.setVisible(true);
+						laDice2.setVisible(true);
 					}
 					// 움직이기 구현, 주사위 이미지 띄우기 구현
 					if (dto.getType().equals(Protocol.MOVE)) {
@@ -1264,6 +1268,9 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								Thread.sleep(100);
 							}
 						}
+						
+						laDice1.setVisible(false);
+						laDice2.setVisible(false);
 					}
 					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
@@ -1289,7 +1296,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 											public void run() {
 												while (true) {
 													try {
-														Thread.sleep(1000);
+														Thread.sleep(500);
 														if (isDialogCity == true) {
 															RequestDto tempDto = new RequestDto();
 															newBuild = TILE.getIsPurchased();
@@ -1332,7 +1339,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										public void run() {
 											while (true) {
 												try {
-													Thread.sleep(1000);
+													Thread.sleep(500);
 													if (isDialogFine == true) {
 														RequestDto tempDto = new RequestDto();
 														tempDto.setType(Protocol.PLAYERFINE);
@@ -1368,7 +1375,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 											public void run() {
 												while (true) {
 													try {
-														Thread.sleep(1000);
+														Thread.sleep(500);
 														if (isDialogIsland == true) {
 															RequestDto tempDto = new RequestDto();
 
@@ -1409,7 +1416,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										public void run() {
 											while (true) {
 												try {
-													Thread.sleep(1000);
+													Thread.sleep(500);
 													if (isDialogFine == true) {
 														RequestDto tempDto = new RequestDto();
 
@@ -1435,10 +1442,58 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							} else if (TILE.getTileType() == 4) {
 								isResting += 1;
 							} else if (TILE.getTileType() == 5) {
-								RequestDto tempDto = new RequestDto();
-								tempDto.setType(Protocol.OLYMPIC);
-								tempDto.setId(id);
-								writer.println(gson.toJson(tempDto));
+								int tempCount = 0;
+								for (int i = 0; i < tileList.size(); i++) {
+									if ((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(id))) {
+										tempCount++;
+										break;
+									}
+								}
+								
+								if (tempCount == 0) {
+									JOptionPane.showMessageDialog(null, "보유한 땅이 없습니다 ㅠㅠ");
+									return;
+								} else if (tempCount > 0) {
+									new DialogOlympic(id, tileList);
+									new Thread(new Runnable() {
+										@Override
+										public void run() {
+											Tile tempTile = new Tile("선언용", 31, 31, 0, 0);
+											int tempTileNum = 30;
+											while (true) {
+												try {
+													Thread.sleep(500);
+													if (isOlympic == true) {
+														for (int i = 0; i < tileList.size(); i++) {
+															if (tileList.get(i).getTileNum() == olympicTileNum) {
+																tileList.get(i).setOlympicCount(tileList.get(i).getOlympicCount()+1);
+																tempTileNum = i;
+																tempTile = tileList.get(i);
+																break;
+															}
+														}
+														RequestDto tempDto = new RequestDto();
+														
+														tempDto.setType(Protocol.DIALOGUPDATE);
+														tempDto.setTileNum(tempTileNum);
+														tempDto.setTileInfo(tempTile);
+														
+														tempDto.setType(Protocol.OLYMPIC);
+														tempDto.setTileNum(tempTileNum);
+														writer.println(gson.toJson(tempDto));
+														
+														isOlympic = false;
+														
+														break;
+													}
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).start();
+								}
+								
 							} else if (TILE.getTileType() == 6) {
 								
 							}
@@ -1522,6 +1577,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player1.setMoney(player1.getMoney() - dto.getTileFine());
 							if (player1.getMoney() < 0) {
 								player1Money.setText("GAME OVER");
+								player1Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 10));
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
@@ -1539,6 +1595,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player2.setMoney(player2.getMoney() - dto.getTileFine());
 							if (player2.getMoney() < 0) {
 								player2Money.setText("GAME OVER");
+								player2Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 10));
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
@@ -1568,6 +1625,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player3.setMoney(player3.getMoney() - dto.getTileFine());
 							if (player3.getMoney() < 0) {
 								player3Money.setText("GAME OVER");
+								player3Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 10));
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
@@ -1597,6 +1655,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player4.setMoney(player4.getMoney() - dto.getTileFine());
 							if (player4.getMoney() < 0) {
 								player4Money.setText("GAME OVER");
+								player4Money.setFont(new Font("CookieRun BLACK", Font.BOLD, 10));
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
@@ -1654,10 +1713,29 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					}
 					
 					if (dto.getType().equals(Protocol.OLYMPIC)) {
-						Vector<Tile> tempList = new Vector<>();
-						new DialogOlympic(tempList);
+						int doubleCount = (int)(Math.pow(2, tileList.get(dto.getTileNum()).getOlympicCount()));
+						tileList.get(dto.getTileNum()).setFine((tileList.get(dto.getTileNum()).getFine() * doubleCount));
+						showOlympic(dto.getTileNum(), doubleCount);
 					}
 
+					if (dto.getType().equals(Protocol.ENDGAME)) {
+						btnDiceRoll.setVisible(false);
+						btnEndTurn.setVisible(false);
+						btnStart.setVisible(false);
+						laDice1.setVisible(false);
+						laDice2.setVisible(false);
+						
+						if (dto.getGubun().equals(Protocol.WIN)) {
+							JOptionPane.showMessageDialog(null, "축하합니다. 승리하셨습니다 !");
+							boardCenter.setIcon(new ImageIcon("images/bg_win.jpg"));
+						}
+						
+						if (dto.getGubun().equals(Protocol.LOSE)) {
+							JOptionPane.showMessageDialog(null, "아쉽군요. 패배하셨습니다 ;-(");
+							boardCenter.setIcon(new ImageIcon("images/bg_lose.jpg"));
+						}
+					}
+					
 					// 채팅 시스템 구현
 					if (dto.getType().equals(Protocol.CHAT)) {
 						playerChatList.append(dto.getText());
@@ -2030,6 +2108,46 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			board23CityName.repaint();
 		}
 	}
+	
+	// 올림픽 배율 띄우기
+	private void showOlympic(int tileNum, int doubleCount) {
+		String text = "X" + doubleCount;
+		
+		switch (tileNum) {
+		case 1: board1Centerla.setText(text);
+			break;
+		case 3: board3Centerla.setText(text);
+			break;
+		case 4: board4Centerla.setText(text);
+			break;
+		case 5: board5Centerla.setText(text);
+			break;
+		case 7: board7Centerla.setText(text);
+			break;
+		case 8: board8Centerla.setText(text);
+			break;
+		case 9: board9Centerla.setText(text);
+			break;
+		case 11: board11Centerla.setText(text);
+			break;
+		case 13: board13Centerla.setText(text);
+			break;
+		case 14: board14Centerla.setText(text);
+			break;
+		case 15: board15Centerla.setText(text);
+			break;
+		case 17: board17Centerla.setText(text);
+			break;
+		case 20: board20Centerla.setText(text);
+			break;
+		case 21: board21Centerla.setText(text);
+			break;
+		case 22: board22Centerla.setText(text);
+			break;
+		case 23: board23Centerla.setText(text);
+			break;
+		}
+	}
 
 	// 양 옆 세로라벨
 	private class RotatedLabel extends JLabel {
@@ -2057,7 +2175,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private void noClickCursor() {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Image cursorimage = tk.getImage("images/img_mouse_noclick.png");
-		Point point = new Point(20,20);
+		Point point = new Point(10,10);
 		Cursor cursor = tk.createCustomCursor(cursorimage, point, "haha");
 		setCursor(cursor); 
 	}
@@ -2065,7 +2183,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private void onClickCursor() {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Image cursorimage = tk.getImage("images/img_mouse_click.png");
-		Point point = new Point(20,20);
+		Point point = new Point(10,10);
 		Cursor cursor = tk.createCustomCursor(cursorimage, point, "haha");
 		setCursor(cursor);
 

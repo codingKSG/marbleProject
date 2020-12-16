@@ -78,4 +78,13 @@ public interface Protocol {
 	
 	// 올림픽
 	String OLYMPIC = "OLYMPIC";
+	
+	// 게임 종료
+	String ENDGAME = "ENDGAME";
+	
+	// 게임 승리
+	String WIN = "WIN";
+	
+	// 게임 패배
+	String LOSE = "LOSE";
 }

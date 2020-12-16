@@ -19,9 +19,10 @@ public class Tile {
 	int priceBuilding; // 빌딩값
 	int priceHotel; // 호텔값
 	int priceAll; // 전체구매비용 priceLand + priceHouse + priceBuilding + priceHotel
+	int olympicCount; // 올림픽 횟수 체크 기본 0
 	
 	public Tile(String tileName, int tileNum, int tileType, int tileX, int tileY, String landOwner, int fine,
-			int[] isPurchased, int priceLand) {
+			int[] isPurchased, int priceLand, int olympicCount) {
 		super();
 		this.tileName = tileName;
 		this.tileNum = tileNum;
@@ -32,6 +33,7 @@ public class Tile {
 		this.fine = fine;
 		this.isPurchased = isPurchased;
 		this.priceLand = priceLand;
+		this.olympicCount = olympicCount;
 	}
 
 	public Tile(String tileName, int tileNum, int tileType, int tileX, int tileY) {
