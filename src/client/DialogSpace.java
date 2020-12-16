@@ -81,7 +81,7 @@ public class DialogSpace extends JDialog implements JFrameSet {
 
 	@Override
 	public void setting() {
-		setSize(250, 450);
+		setSize(350, 450);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
