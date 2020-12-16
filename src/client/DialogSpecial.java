@@ -16,38 +16,32 @@ import protocol.JFrameSet;
 public class DialogSpecial extends JFrame implements JFrameSet {
 	private DialogSpecial diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
-	
-	private String id; // 해당 땅을 밟은 플레이어 id
 
-	private JLabel textLabel;
+	private String id; // 해당 땅을 밟은 플레이어 id
+	private JLabel labelText, labelEvent; // 타일이름, 안내 문구
 	private JPanel btnPanel;
 	private JButton confirmBtn;
-	
-	// Tile의 상태 값을 받아올 방법
-	// TileNum을 통해서 Tile을 식별
-	// 식별된 Tile의 상태 값을 받아온다.
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
 	private String tileName; // 해당 타일의 이름
 	private int tileNum; // 해당 타일의 번호
+	private String specialText;
 
-
-	public DialogSpecial(String id) {
+	public DialogSpecial(String id, String specialText) {
 		this.id = id;
-
+		this.specialText = specialText;
 		init();
 		setting();
 		batch();
 		listener();
 
-		
-		
 		setVisible(true);
 	}
 
 	@Override
 	public void init() {
-		textLabel = new JLabel(tileName);
+		labelEvent = new JLabel(specialText);
+		labelText = new JLabel(tileName);
 		confirmBtn = new JButton("확인");
 		btnPanel = new JPanel();
 	}
@@ -58,33 +52,33 @@ public class DialogSpecial extends JFrame implements JFrameSet {
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
-		textLabel.setHorizontalAlignment(JLabel.CENTER);
+		labelText.setHorizontalAlignment(JLabel.CENTER);
+		labelEvent.setHorizontalAlignment(JLabel.CENTER);
 
 	}
 
 	@Override
-	public void batch() {		
+	public void batch() {
 		btnPanel.add(confirmBtn);
-		
-		add(textLabel, BorderLayout.NORTH);
+
+		add(labelText, BorderLayout.NORTH);
+		add(labelEvent, BorderLayout.CENTER);
 		add(btnPanel, BorderLayout.SOUTH);
 	}
 
 	@Override
 	public void listener() {
-		
+
 		// 확인하고 끄기
 		confirmBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				MarbleClient.isDialogSpecial = true;
+
 				setVisible(false);
 
 			}
 		});
-	}
-
-	public static void main(String[] args) {
-		new DialogSpecial("test");
 	}
 }

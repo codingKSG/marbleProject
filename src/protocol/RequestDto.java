@@ -80,4 +80,10 @@ public class RequestDto {
 	
 	// 월급
 	private int salary;
+	
+	//이벤트 종류
+	private int specialType;
+	
+	//이벤트 발생 시 나오는 문구
+	private String specialText;
 }

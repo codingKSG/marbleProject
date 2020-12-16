@@ -37,9 +37,9 @@ public class MarbleLogin extends JFrame {
 	}
 	
 	private void init() {
-		tfId = new JTextField("", 10);
+		tfId = new JTextField("", 6);
 		jpCetner = new JPanel();
-		laText1 = new JLabel("10자 이내의 ID를 설정해주세요.");
+		laText1 = new JLabel("6자 이내의 ID를 설정해주세요.");
 		laText2 = new JLabel("");
 		btnLogin = new JButton("로그인");
 	}
@@ -81,8 +81,8 @@ public class MarbleLogin extends JFrame {
 	
 	private void login() {
 		String userInput = tfId.getText();
-		if (userInput.length() > 10) {
-			laText2.setText("10자 이내의 ID로 변경해주세요 !");
+		if (userInput.length() > 6) {
+			laText2.setText("5자 이내의 ID로 변경해주세요 !");
 			return;
 		}
 		if (userInput.equals("")) {
