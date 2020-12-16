@@ -73,7 +73,7 @@ public class MarbleServer {
 		private PrintWriter writer;
 		private String id;
 		private boolean playerPlaying = true;
-		
+
 		public PlayerThread(Socket socket) {
 			this.socket = socket;
 		}
@@ -140,7 +140,7 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
-			
+
 			// 4명 이상 이미 플레이중이면 더이상 새로운 플레이어가 참가할 수 없게 함.
 			if (dto.getType().equals(Protocol.PLAYERNUMCHECK) && (playerList.size() != 0)) {
 				if ((isPlaying == true) || playerList.size() > 4) {
@@ -184,9 +184,9 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
-				
+
 				// 플레이어 턴
-				tempDto.setType(Protocol.TURN);
+				tempDto.setType(Protocol.INITTURN);
 				tempDto.setTurnId(playerList.get(0).id);
 
 				for (int i = 0; i < playerList.size(); i++) {
@@ -218,13 +218,13 @@ public class MarbleServer {
 				String tempId = "";
 				int tempIndex = 5;
 				Vector<PlayerThread> tempPlayerList = new Vector<>();
-				
+
 				for (int i = 0; i < playerList.size(); i++) {
 					if (playerList.get(i).playerPlaying == true) {
 						tempPlayerList.add(playerList.get(i));
 					}
 				}
-				
+
 				tempDto.setType(Protocol.NEXTTURN);
 				for (int i = 0; i < tempPlayerList.size(); i++) {
 					if (tempPlayerList.get(tempPlayerList.size() - 1).id.equals(dto.getId())) {
@@ -240,7 +240,7 @@ public class MarbleServer {
 						break;
 					}
 				}
-				
+
 				for (int i = 0; i < playerList.size(); i++) {
 					if (playerList.get(playerList.size() - 1).id.equals(dto.getId())) {
 						tempId = playerList.get(0).id;
@@ -381,7 +381,7 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
-			
+
 			if (dto.getType().equals(Protocol.OLYMPIC)) {
 				tempDto.setType(Protocol.OLYMPIC);
 				tempDto.setTileNum(dto.getTileNum());
@@ -389,10 +389,11 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
-			
+
 			if (dto.getType().equals(Protocol.PLAYERDIE)) {
 				for (int i = 0; i < tileList.size(); i++) {
-					if((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(dto.getId()))){
+					if ((tileList.get(i).getLandOwner() != null)
+							&& (tileList.get(i).getLandOwner().equals(dto.getId()))) {
 						tileList.get(i).setLandOwner("Country");
 						tempDto.setType(Protocol.DIALOGUPDATE);
 						tempDto.setTileInfo(tileList.get(i));
@@ -403,8 +404,8 @@ public class MarbleServer {
 					}
 				}
 			}
-			
-			if(dto.getType().equals(Protocol.PLAYERLISTOUT)) {
+
+			if (dto.getType().equals(Protocol.PLAYERLISTOUT)) {
 				tempDto.setType(Protocol.PLAYERLISTOUT);
 				for (int i = 0; i < playerList.size(); i++) {
 					if (playerList.get(i).id.equals(dto.getId())) {
@@ -415,15 +416,15 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
-				
+
 				tempDto.setType(Protocol.CHAT);
 				tempDto.setText("[공지] " + dto.getId() + "님이 탈락하셨습니다.\n");
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
-				
+
 				countPlayer--;
-				
+
 				if (countPlayer == 1) {
 					String winner = "";
 					tempDto.setType(Protocol.ENDGAME);
@@ -437,17 +438,17 @@ public class MarbleServer {
 							playerList.get(i).writer.println(gson.toJson(tempDto));
 						}
 					}
-					
+
 					tempDto.setType(Protocol.CHAT);
 					tempDto.setGubun(Protocol.CHAT);
 					tempDto.setText("[공지] " + winner + "님이 승리하셨습니다 !!\n");
 					for (int i = 0; i < playerList.size(); i++) {
 						playerList.get(i).writer.println(gson.toJson(tempDto));
 					}
-					
+
 				}
 			}
-			
+
 			// 채팅 기능
 			if (dto.getType().equals(Protocol.CHAT)) {
 				String chatText = dto.getId() + " : " + dto.getText() + "\n";
@@ -491,8 +492,6 @@ public class MarbleServer {
 				}
 			} // PLAYERSPECIAL END
 			if (dto.getType().equals(Protocol.PLAYERSPACE)) {
-				
-				
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.MOVE);
 				tempDto.setId(dto.getId());
@@ -502,8 +501,16 @@ public class MarbleServer {
 					playerList.get(i).writer.println(output);
 					System.out.println(TAG + "MOVE 받아서 보냄");
 				}
+
+				tempDto.setType(Protocol.PLAYERSPACE);
+				tempDto.setId(dto.getId());
+				tempDto.setNewPlayerTile(dto.getNewPlayerTile());
+				output = gson.toJson(tempDto);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(output);
+				}
 			} // SPACE 끝
-			
+
 		} // end of router
 	} // end of thread
 

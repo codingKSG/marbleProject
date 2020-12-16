@@ -68,7 +68,7 @@ public interface Protocol {
 	String TILELISTPULL = "TILELISTPULL";
 	
 	// 플레이어 턴
-	String TURN = "TURN";
+	String INITTURN = "TURN";
 	
 	// 다음 턴
 	String NEXTTURN = "NEXTTURN";
