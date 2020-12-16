@@ -45,13 +45,14 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private MarbleClient marbleClient = this;
 	private final static String TAG = "MarbleClient : ";
 	static Tile TILE;
-	
+
 	static int nowPrice;
 	static boolean isDialogCity = false;
 	static boolean isDialogIsland = false;
 	static boolean isDialogFine = false;
-	private int[] allPurchasedCity = { 1, 1, 1, 1 };
-	private int[] allPurchasedIsland = {1};
+	static boolean isDialogSpecial = false;
+	private int[] allPurchasedCity = { 1, 1, 1, 1 }; // 전부 구매했는지 확인하는 배열
+	private int[] allPurchasedIsland = { 1 };
 
 	private ClientPlayerThread cpt;
 	private Socket socket;
@@ -113,10 +114,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	// 타일값 받아오는 리스트
 	private Vector<Tile> tileList;
-	
+
 	Random dice = new Random();
 
-	int[] arrayinit = {0,0,0,0};
+	int[] arrayinit = { 0, 0, 0, 0 };
 
 	public MarbleClient(String id) {
 		this.id = id;
@@ -141,7 +142,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		boardLine1 = new ArrayList<>();
 		boardLine2 = new ArrayList<>();
 		boardLine3 = new ArrayList<>();
-		
+
 		// 서버로부터 받은 타일 리스트를 담는 리스트
 		tileList = new Vector<>();
 
@@ -336,7 +337,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board21CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board22CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
 		board23CityName.setBorder(new LineBorder(new Color(0, 0, 0)));
-		
+
 		// 발판 내부 레이아웃 = null
 		for (int i = 0; i < boardLine0.size(); i++) {
 			boardLine0.get(i).setLayout(null);
@@ -479,25 +480,25 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board3BldImage.setBounds(0, 0, 100, 40);
 		board4BldImage.setBounds(0, 0, 100, 40);
 		board5BldImage.setBounds(0, 0, 100, 40);
-		
+
 		// Line 1
 		board7BldImage.setBounds(110, 0, 40, 100);
 		board8BldImage.setBounds(110, 0, 40, 100);
 		board9BldImage.setBounds(110, 0, 40, 100);
 		board11BldImage.setBounds(110, 0, 40, 100);
-		
+
 		// Line 2
 		board13BldImage.setBounds(0, 0, 100, 40);
 		board14BldImage.setBounds(0, 0, 100, 40);
 		board15BldImage.setBounds(0, 0, 100, 40);
 		board17BldImage.setBounds(0, 0, 100, 40);
-		
+
 		// Line 3
 		board20BldImage.setBounds(0, 0, 40, 100);
 		board21BldImage.setBounds(0, 0, 40, 100);
 		board22BldImage.setBounds(0, 0, 40, 100);
 		board23BldImage.setBounds(0, 0, 40, 100);
-		
+
 		// 발판별 센터 라벨 설정
 		// Line 0
 		board1Centerla.setBounds(0, 40, 100, 70);
@@ -515,13 +516,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board5Centerla.setBounds(0, 40, 100, 70);
 		board5Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
 		board5Centerla.setHorizontalAlignment(JLabel.CENTER);
-		
+
 		// Line 1
 		board7Centerla.setBounds(40, 0, 70, 100);
 		board8Centerla.setBounds(40, 0, 70, 100);
 		board9Centerla.setBounds(40, 0, 70, 100);
 		board11Centerla.setBounds(40, 0, 70, 100);
-		
+
 		// Line 2
 		board13Centerla.setBounds(0, 40, 100, 70);
 		board13Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
@@ -538,13 +539,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board17Centerla.setBounds(0, 40, 100, 70);
 		board17Centerla.setFont(new Font("CookieRun BLACK", Font.BOLD, 45));
 		board17Centerla.setHorizontalAlignment(JLabel.CENTER);
-		
+
 		// Line 3
 		board20Centerla.setBounds(40, 0, 70, 100);
 		board21Centerla.setBounds(40, 0, 70, 100);
 		board22Centerla.setBounds(40, 0, 70, 100);
 		board23Centerla.setBounds(40, 0, 70, 100);
-		
+
 		// 발판별 이름 라벨 설정
 		// Line 0
 		board1CityName.setBounds(0, 110, 100, 40);
@@ -562,13 +563,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board5CityName.setBounds(0, 110, 100, 40);
 		board5CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
 		board5CityName.setHorizontalAlignment(JLabel.CENTER);
-		
+
 		// Line 1
 		board7CityName.setBounds(0, 0, 40, 100);
 		board8CityName.setBounds(0, 0, 40, 100);
 		board9CityName.setBounds(0, 0, 40, 100);
 		board11CityName.setBounds(0, 0, 40, 100);
-		
+
 		// Line 2
 		board13CityName.setBounds(0, 110, 100, 40);
 		board13CityName.setFont(new Font("CookieRun BLACK", Font.BOLD, 20));
@@ -591,7 +592,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board21CityName.setBounds(110, 0, 40, 100);
 		board22CityName.setBounds(110, 0, 40, 100);
 		board23CityName.setBounds(110, 0, 40, 100);
-		
+
 		// 시작전 플레이어 캐릭터 이미지 숨겨놓기
 		player1.setVisible(false);
 		player2.setVisible(false);
@@ -683,7 +684,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board21.add(board21BldImage);
 		board22.add(board22BldImage);
 		board23.add(board23BldImage);
-		
+
 		// 발판별 센터 라벨 삽입
 		// Line 0
 		board1.add(board1Centerla);
@@ -705,7 +706,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board21.add(board21Centerla);
 		board22.add(board22Centerla);
 		board23.add(board23Centerla);
-		
+
 		// 발판별 이름 라벨 삽입
 		// Line 0
 		board1.add(board1CityName);
@@ -727,7 +728,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		board21.add(board21CityName);
 		board22.add(board22CityName);
 		board23.add(board23CityName);
-		
+
 		// 플레이어 캐릭터 이미지
 		add(player1, 5);
 		add(player2, 5);
@@ -752,15 +753,15 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				cpt.dto.setType(Protocol.ENDTURN);
 				cpt.dto.setId(id);
 				cpt.writer.println(cpt.gson.toJson(cpt.dto));
-				
+
 				cpt.dto.setType(Protocol.NEXTTURN);
 				cpt.dto.setId(id);
 				cpt.writer.println(cpt.gson.toJson(cpt.dto));
-				
+
 				btnEndTurn.setVisible(false);
 			}
 		});
-		
+
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -769,7 +770,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				cpt.dto.setGubun(Protocol.GAME);
 				cpt.dto.setType(Protocol.TILELISTPULL);
 				cpt.writer.println(cpt.gson.toJson(cpt.dto));
-				
+
 				// 게임시작
 				cpt.dto.setGubun(Protocol.GAME);
 				cpt.dto.setType(Protocol.GAMESTART);
@@ -847,7 +848,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			} else {
 				isDouble = 0;
 			}
-			
+
 			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
 
 			dto.setGubun(Protocol.GAME);
@@ -881,7 +882,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			dto.setType(Protocol.DIALOGREQUEST);
 			dto.setId(id);
 			dto.setNowPlayerTile(nowPlayerTile); // 타일 번호 넘김
-
 			writer.println(gson.toJson(dto));
 
 		}
@@ -902,7 +902,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				String text = null;
 				Gson gson = new Gson();
 				RequestDto dto = new RequestDto();
-				while ((text = reader.readLine()) != null) {
+				while ((text = reader.readLine()) != null) { // Server 통신 읽기
 					dto = gson.fromJson(text, RequestDto.class);
 
 					if (dto.getType().equals(Protocol.GAMEHOST)) {
@@ -910,12 +910,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						btnStart.setVisible(true);
 					}
 
-					 //이미 존재하는 ID면 ID를 변경하게 함.
-		               if (dto.getType().equals(Protocol.IDCHECK)) {
-		                  JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
-		                  System.exit(0);
-		                  setVisible(false);
-		               }
+					// 이미 존재하는 ID면 ID를 변경하게 함.
+					if (dto.getType().equals(Protocol.IDCHECK)) {
+						JOptionPane.showMessageDialog(null, "이미 존재하는 ID입니다.\n 다른 ID를 사용해주세요 !");
+						System.exit(0);
+						setVisible(false);
+					}
 
 //		                클라이언트 내 플레이어 객체에 ID값 넣기
 					if (dto.getType().equals(Protocol.PLAYERSET)) {
@@ -958,18 +958,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							setDaemon(false);
 						}
 					}
-					
+
 					if (dto.getType().equals(Protocol.TILELISTPULL)) {
 						tileList = dto.getTileList();
 					}
-					
+
 					// 플레이어 턴 부여
 					if (dto.getType().equals(Protocol.TURN)) {
 						if (dto.getTurnId().equals(id)) {
 							btnDiceRoll.setVisible(true);
 						}
 					}
-					
+
 					// 주사위굴리기 구현
 					if (dto.getType().equals(Protocol.DICEROLL)) {
 						System.out.println(dto.getId() + "DICEROLL 받음");
@@ -979,50 +979,50 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						// 받은 주사위값을 통해 클라이언트에 이미지로 띄우기
 						laDice1.setIcon(diceShow(dto.getDice1()));
 						laDice2.setIcon(diceShow(dto.getDice2()));
-						int nextx,nexty,nextnum; //다음칸의 x, y, tilenum
+						int nextx, nexty, nextnum; // 다음칸의 x, y, tilenum
 						if (dto.getId().equals(player1.getId())) {
-							//주사위를 굴려 나온 만큼 이동하지 않았다면
-							while(player1.getNowPlayerTile() != dto.getNewPlayerTile()) { 
-								nextx = tileList.get((player1.getNowPlayerTile()+1)%24).getTileX();
-								nexty = tileList.get((player1.getNowPlayerTile()+1)%24).getTileY();
-								nextnum = tileList.get((player1.getNowPlayerTile()+1)%24).getTileNum();
-								player1.moveAnimation(nextx+30,nexty+30,nextnum);
-								Thread.sleep(100); //moveAnimation 스레드가 끝날때 까지 대기.
+							// 주사위를 굴려 나온 만큼 이동하지 않았다면
+							while (player1.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player1.getNowPlayerTile() + 1) % 24).getTileX();
+								nexty = tileList.get((player1.getNowPlayerTile() + 1) % 24).getTileY();
+								nextnum = tileList.get((player1.getNowPlayerTile() + 1) % 24).getTileNum();
+								player1.moveAnimation(nextx + 30, nexty + 30, nextnum);
+								Thread.sleep(100); // moveAnimation 스레드가 끝날때 까지 대기.
 							}
 						} else if (dto.getId().equals(player2.getId())) {
-							while(player2.getNowPlayerTile() != dto.getNewPlayerTile()) {
-								nextx = tileList.get((player2.getNowPlayerTile()+1)%24).getTileX();
-								nexty = tileList.get((player2.getNowPlayerTile()+1)%24).getTileY();
-								nextnum = tileList.get((player2.getNowPlayerTile()+1)%24).getTileNum();
-								player2.moveAnimation(nextx+30,nexty+60,nextnum);
+							while (player2.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player2.getNowPlayerTile() + 1) % 24).getTileX();
+								nexty = tileList.get((player2.getNowPlayerTile() + 1) % 24).getTileY();
+								nextnum = tileList.get((player2.getNowPlayerTile() + 1) % 24).getTileNum();
+								player2.moveAnimation(nextx + 30, nexty + 60, nextnum);
 								Thread.sleep(100);
 							}
 						} else if (dto.getId().equals(player3.getId())) {
-							while(player3.getNowPlayerTile() != dto.getNewPlayerTile()) {
-								nextx = tileList.get((player3.getNowPlayerTile()+1)%24).getTileX();
-								nexty = tileList.get((player3.getNowPlayerTile()+1)%24).getTileY();
-								nextnum = tileList.get((player3.getNowPlayerTile()+1)%24).getTileNum();
-								player3.moveAnimation(nextx+60,nexty+30,nextnum);
+							while (player3.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player3.getNowPlayerTile() + 1) % 24).getTileX();
+								nexty = tileList.get((player3.getNowPlayerTile() + 1) % 24).getTileY();
+								nextnum = tileList.get((player3.getNowPlayerTile() + 1) % 24).getTileNum();
+								player3.moveAnimation(nextx + 60, nexty + 30, nextnum);
 								Thread.sleep(100);
 							}
 						} else if (dto.getId().equals(player4.getId())) {
-							while(player4.getNowPlayerTile() != dto.getNewPlayerTile()) {
-								nextx = tileList.get((player4.getNowPlayerTile()+1)%24).getTileX();
-								nexty = tileList.get((player4.getNowPlayerTile()+1)%24).getTileY();
-								nextnum = tileList.get((player4.getNowPlayerTile()+1)%24).getTileNum();
-								player4.moveAnimation(nextx+60,nexty+60,nextnum);
+							while (player4.getNowPlayerTile() != dto.getNewPlayerTile()) {
+								nextx = tileList.get((player4.getNowPlayerTile() + 1) % 24).getTileX();
+								nexty = tileList.get((player4.getNowPlayerTile() + 1) % 24).getTileY();
+								nextnum = tileList.get((player4.getNowPlayerTile() + 1) % 24).getTileNum();
+								player4.moveAnimation(nextx + 60, nexty + 60, nextnum);
 								Thread.sleep(100);
 							}
 						}
-					}
-					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
+					} // Move끝
+						// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 						if (dto.getId().equals(id)) {
 							TILE = dto.getTileInfo();
 
 							nowPrice = TILE.getPriceAll();
 							nowBuild = TILE.getIsPurchased();
-							
+
 							if (TILE.getTileType() == 0) {
 
 							} else if (TILE.getTileType() == 1) {
@@ -1053,7 +1053,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 															tempDto.setId(id);
 															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
 															writer.println(gson.toJson(tempDto));
-															
+
 															tempDto.setType(Protocol.PLAYERBUILD);
 															tempDto.setTileOwnerId(TILE.getLandOwner());
 															for (int i = 1; i < nowBuild.length; i++) {
@@ -1101,41 +1101,41 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									}).start();
 								}
 							} else if (TILE.getTileType() == 2) {
-								if (dto.getTileInfo().getLandOwner().equals("") 
+								if (dto.getTileInfo().getLandOwner().equals("")
 										|| dto.getTileInfo().getLandOwner().equals(id)) {
 									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedIsland)) {
 										return;
 									} else {
 										nowPrice = TILE.getPriceAll();
 										new DialogIsland(id);
-										
+
 										// isPurchased 가 allPurchasedIsland와 다를 경우 타일 변경값 서버에 전송
 										new Thread(new Runnable() {
-											
+
 											@Override
 											public void run() {
-												while(true) {
+												while (true) {
 													try {
 														Thread.sleep(1000);
-														if(isDialogIsland == true) {
+														if (isDialogIsland == true) {
 															RequestDto tempDto = new RequestDto();
-															
+
 															tempDto.setType(Protocol.DIALOGUPDATE);
 															tempDto.setTileInfo(TILE);
 															writer.println(gson.toJson(tempDto));
-															
+
 															tempDto.setType(Protocol.PLAYERPURCHASED);
 															tempDto.setId(id);
 															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
 															writer.println(gson.toJson(tempDto));
-															
+
 															tempDto.setType(Protocol.PLAYERISLAND);
 															tempDto.setTileOwnerId(TILE.getLandOwner());
 															if (TILE.getIsPurchased()[0] == 1) {
 																tempDto.setNowPlayerTile(nowPlayerTile);
 																writer.println(gson.toJson(tempDto));
 															}
-															
+
 															isDialogIsland = false;
 															break;
 														}
@@ -1143,29 +1143,29 @@ public class MarbleClient extends JFrame implements JFrameSet {
 														e.printStackTrace();
 													}
 												}
-												
+
 											}
 										}).start();
 									}
 								} else {
 									new DialogFine(id);
-									
+
 									new Thread(new Runnable() {
-										
+
 										@Override
 										public void run() {
-											while(true) {
+											while (true) {
 												try {
 													Thread.sleep(1000);
-													if(isDialogFine == true) {
+													if (isDialogFine == true) {
 														RequestDto tempDto = new RequestDto();
-														
+
 														tempDto.setType(Protocol.PLAYERFINE);
 														tempDto.setId(id);
 														tempDto.setTileFine(TILE.getFine());
 														tempDto.setTileOwnerId(TILE.getLandOwner());
 														writer.println(gson.toJson(tempDto));
-														
+
 														isDialogFine = false;
 														break;
 													}
@@ -1176,21 +1176,65 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										}
 									}).start();
 								}
-							}
+							} // 타일타입이 섬이라면 끝
+							else if (TILE.getTileType() == 3) {
+								RequestDto tempDto = new RequestDto();
+								Random rand = new Random();
+								int randNum = rand.nextInt(3) + 1; // 스페셜 이벤트 1~3
+								String specialText = "null"; // 안내 문구
+								switch (randNum) {
+								case 1: // 벌금
+									tempDto.setSpecialType(randNum); // 이벤트 타입 지정
+									tempDto.setTileFine(100); // 벌금 설정
+									specialText = "과속입니다!"; // 안내 문구 설정
+									break;
+								case 2: // 세계여행
+									tempDto.setSpecialType(randNum);
+									tempDto.setNewPlayerTile(18); // 이동할 칸 지정
+									specialText = "세계여행 당첨!";
+									break;
+								case 3: // 앞으로 2칸 이동
+									tempDto.setSpecialType(randNum);
+									tempDto.setNewPlayerTile(dto.getTileInfo().getTileNum() + 2); // 전진할 칸 수 지정
+									specialText = "앞으로 두칸!";
+								default:
+									break;
+								}
+								new DialogSpecial(dto.getId(), specialText); // 스페셜 다이어로그 생성
+								new Thread(new Runnable() {
+									@Override
+									public void run() {
+										while (true) {
+											try {
+												Thread.sleep(1000);
+												if (isDialogSpecial == true) { // 확인이 클릭되었을 때
+													tempDto.setType(Protocol.PLAYERSPECIAL);
+													tempDto.setId(id);
+													writer.println(gson.toJson(tempDto));
+													isDialogSpecial = false;
+													break;
+												}
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+									}
+								}).start();
+							} // 스페셜 끝
 							if (isDouble == 1) {
 								btnDiceRoll.setVisible(true);
 								isTurn = true;
 							} else if ((isDouble == 0) || (isDouble == 2)) {
 								isTurn = false;
 							}
-							
+
 							if (isTurn == false) {
 								btnEndTurn.setVisible(true);
 							}
 						}
-						
+
 					}
-					
+
 					if (dto.getType().equals(Protocol.PLAYERPURCHASED)) {
 
 						if (dto.getId().equals(player1.getId())) {
@@ -1221,7 +1265,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							}
 						}).start();
 					}
-					
+
 					if (dto.getType().equals(Protocol.PLAYERISLAND)) {
 						String tempId = dto.getTileOwnerId();
 						int tempTileNum = dto.getNowPlayerTile();
@@ -1232,7 +1276,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							}
 						}).start();
 					}
-					
+
 					if (dto.getType().equals(Protocol.PLAYERFINE)) {
 
 						// 타일 주인 플레이어에게 통행료 만큼 돈을 넣음
@@ -1265,25 +1309,145 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							player4Money.setText(Integer.toString(player4.getMoney()));
 						}
 					}
-					
+
 					if (dto.getType().equals(Protocol.NEXTTURN)) {
 						if (dto.getTurnId().equals(id)) {
 							btnDiceRoll.setVisible(true);
 						}
 					}
-					
+
 					// 채팅 시스템 구현
 					if (dto.getType().equals(Protocol.CHAT)) {
 						playerChatList.append(dto.getText());
 						scChatList.getVAdjustable().setValue(scChatList.getVAdjustable().getMaximum());
 					}
-
-				}
+					// 황금열쇄 이벤트 구현
+					if (dto.getType().equals(Protocol.PLAYERSPECIAL)) {
+						RequestDto tempDto = new RequestDto();
+						if (dto.getId().equals(player1.getId())) { // 플레이어1이 스페셜 타일이라면
+							switch (dto.getSpecialType()) { // 이벤트 종류
+							case 1: // 벌금
+								player1.setMoney(player1.getMoney() - 100); // 100원 벌금
+								player1Money.setText(Integer.toString(player1.getMoney())); // 텍스트 라벨 수정
+								break;
+							case 2: // 세계여행
+								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player1.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto)); // 서버에 전송
+									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
+								}
+								break;
+							case 3: // 앞으로 2칸 이동
+								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player1.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto)); // 서버에 전송
+									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
+								}
+								break;
+							default:
+								break;
+							}
+						} else if (dto.getId().equals(player2.getId())) {
+							switch (dto.getSpecialType()) {
+							case 1:
+								player2.setMoney(player2.getMoney() - 100);
+								player2Money.setText(Integer.toString(player2.getMoney()));
+								break;
+							case 2:
+								if (dto.getId().equals(id)) {
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player2.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto));
+									nowPlayerTile = dto.getNewPlayerTile();
+								}
+								break;
+							case 3:
+								if (dto.getId().equals(id)) {
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player2.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto));
+									nowPlayerTile = dto.getNewPlayerTile();
+								}
+								break;
+							default:
+								break;
+							}
+						} else if (dto.getId().equals(player3.getId())) {
+							switch (dto.getSpecialType()) {
+							case 1:
+								player3.setMoney(player3.getMoney() - 100);
+								player3Money.setText(Integer.toString(player3.getMoney()));
+								break;
+							case 2:
+								if (dto.getId().equals(id)) {
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player3.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto));
+									nowPlayerTile = dto.getNewPlayerTile();
+								}
+								break;
+							case 3:
+								if (dto.getId().equals(id)) {
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player3.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto));
+									nowPlayerTile = dto.getNewPlayerTile();
+								}
+								break;
+							default:
+								break;
+							}
+						} else if (dto.getId().equals(player4.getId())) {
+							switch (dto.getSpecialType()) {
+							case 1:
+								player4.setMoney(player4.getMoney() - 100);
+								player4Money.setText(Integer.toString(player4.getMoney()));
+								break;
+							case 2:
+								if (dto.getId().equals(id)) {
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player4.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto));
+									nowPlayerTile = dto.getNewPlayerTile();
+								}
+								break;
+							case 3:
+								if (dto.getId().equals(id)) {
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player4.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto));
+									nowPlayerTile = dto.getNewPlayerTile();
+								}
+								break;
+							default:
+								break;
+							}
+						}
+					} // special 끝
+				} // 서버 통신 읽기 끝
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-	}
+	} // ClientPlayerReader 끝
 
 	private void connect() {
 		String host = Protocol.HOST;
@@ -1321,12 +1485,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			result = new ImageIcon("images/dice4.png");
 		} else if (dice == 5) {
 			result = new ImageIcon("images/dice5.png");
-		} else {
+		} else if (dice == 6) {
 			result = new ImageIcon("images/dice6.png");
 		}
 		return result;
 	}
-	
 
 	private void buildUp(String id, int[] intArray, int x, int y, int tileNum) {
 		Color playerColor = new Color(0, 0, 0);
@@ -1341,7 +1504,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		hotelLabel.setIcon(new ImageIcon("images/img_hotel.png"));
 		int width = 30;
 		int height = 30;
-		
+
 		if (player1.getId().equals(id)) {
 			playerColor = new Color(254, 236, 203);
 		} else if (player2.getId().equals(id)) {
@@ -1351,7 +1514,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		} else if (player4.getId().equals(id)) {
 			playerColor = new Color(102, 255, 51);
 		}
-		
+
 		System.out.println("buildUp 실행");
 		System.out.println(intArray[1]);
 		System.out.println("isHouse : " + isHouse);
@@ -1361,7 +1524,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		System.out.println("isHotel : " + isHotel);
 		System.out.println("tileNum : " + tileNum);
 		System.out.println("color : " + playerColor);
-		
+
 		if (tileNum == 1) {
 			board1CityName.setOpaque(true);
 			board1CityName.setBackground(playerColor);
@@ -1607,10 +1770,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		buildingLabel.repaint();
 		hotelLabel.repaint();
 	}
-	
+
 	private void buildUpIsland(String id, int tileNum) {
 		Color playerColor = new Color(0, 0, 0);
-		
+
 		if (player1.getId().equals(id)) {
 			playerColor = new Color(254, 236, 203);
 		} else if (player2.getId().equals(id)) {
@@ -1620,36 +1783,36 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		} else if (player4.getId().equals(id)) {
 			playerColor = new Color(102, 255, 51);
 		}
-		
+
 		if (tileNum == 4) {
 			board4CityName.setBackground(playerColor);
 			board4CityName.setOpaque(true);
 		}
-		
+
 		if (tileNum == 7) {
 			board7CityName.setBackground(playerColor);
 			board7CityName.setOpaque(true);
 		}
-		
+
 		if (tileNum == 15) {
 			board15CityName.setBackground(playerColor);
 			board15CityName.setOpaque(true);
 		}
-		
+
 		if (tileNum == 23) {
 			board23CityName.setBackground(playerColor);
 			board23CityName.setOpaque(true);
 		}
 	}
-	
+
 	// 양 옆 세로라벨
 	private class RotatedLabel extends JLabel {
 		char[] tmpTextList;
-		
+
 		public RotatedLabel() {
-			
+
 		}
-		
+
 		public RotatedLabel(String text) {
 			tmpTextList = new char[text.length()];
 			setLayout(new GridLayout(text.length(), 1));
@@ -1663,6 +1826,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			}
 		}
 	}
+
 	public static void main(String[] args) {
 		new MarbleClient("유저1");
 	}

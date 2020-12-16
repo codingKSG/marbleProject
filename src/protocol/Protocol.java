@@ -66,4 +66,7 @@ public interface Protocol {
 	
 	// 턴 종료
 	String ENDTURN = "ENDTURN";
+	
+	// 스페셜 타일 
+	String PLAYERSPECIAL = "PLAYERSPECIAL";
 }

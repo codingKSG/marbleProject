@@ -71,4 +71,9 @@ public class RequestDto {
 	
 	// 플레이어 턴을 알려줌.(아이디를 통해)
 	private String turnId;
+	
+	//이벤트 종류
+	private int specialType;
+	//이벤트 발생 시 나오는 문구
+	private String specialText;
 }
