@@ -7,6 +7,9 @@ public interface Protocol {
 	String CHAT = "CHAT";
 	String GAME = "GAME";
 	
+	// 입장시 알림메시지
+	String ENTERHELLO = "ENTERHELLO";
+	
 	// 제일 먼저 입장한 플레이어 = 방장
 	String GAMEHOST = "GAMEHOST";
 	
@@ -93,4 +96,7 @@ public interface Protocol {
 	
 	// 스페셜 타일 
 	String PLAYERSPECIAL = "PLAYERSPECIAL";
+	
+	// 세계여행 타일
+	String PLAYERSPACE = "PLAYERSPACE";
 }
