@@ -282,8 +282,8 @@ public class MarbleServer {
 
 			if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 				Tile tempTile = null;
-				tempDto.setId(dto.getId());
 				tempDto.setType(Protocol.DIALOGREQUEST);
+				tempDto.setId(dto.getId());
 				for (int i = 0; i < tileList.size(); i++) {
 					if (tileList.get(i).getTileNum() == dto.getNowPlayerTile()) {
 						tempTile = tileList.get(i);

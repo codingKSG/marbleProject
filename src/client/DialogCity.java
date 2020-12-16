@@ -11,7 +11,6 @@ import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -20,16 +19,19 @@ import protocol.JFrameSet;
 public class DialogCity extends JDialog implements JFrameSet {
 	private DialogCity diallogCity = this;
 	private final static String TAG = "DiallogCity : ";
-	
+
+	private Player player;
+
 	private String id; // 해당 땅을 밟은 플레이어 id
-	
+	private int playerMoney;
+
 	private JLabel labelText, laAll, laLand, laHouse, laBuilding, laHotel;
 	private JPanel purchasedMenu, panelMenu, panelBtn, panelLand, panelHouse, panelBuilding, panelHotel;
 	private JButton btnPurchased, btnCancel;
 	private JCheckBox checkLand, checkHouse, checkBuilding, checkHotel;
 
 	private MyItemListener myItemListener;
-	
+
 	// Tile의 상태 값을 받아올 방법
 	// TileNum을 통해서 Tile을 식별
 	// 식별된 Tile의 상태 값을 받아온다.
@@ -37,11 +39,11 @@ public class DialogCity extends JDialog implements JFrameSet {
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
 //	private String tileName; // 해당 타일의 이름
 //	private int tileNum; // 해당 타일의 번호
-	
+
 	// 다이얼 로그가 CityTile에게 받아서 출력해야할 값들
 
 	// 구매시 필요한 값
-	private int[] isPurchased = {0, 0, 0, 0}; // 땅/ 집/ 빌딩/ 호텔 샀는지
+	private int[] isPurchased = { 0, 0, 0, 0 }; // 땅/ 집/ 빌딩/ 호텔 샀는지
 
 	private int priceAll; // 전체 구매 비용
 	private int fine;
@@ -54,18 +56,19 @@ public class DialogCity extends JDialog implements JFrameSet {
 //	private String landOwner; // 소유한 플레이어
 //	private int fine; // 통행료 priceAll * 1.2
 
-	public DialogCity(String id) {
-		
+	public DialogCity(int playerMoney, String id) {
+
 		this.id = id;
+		this.playerMoney = playerMoney;
 
 		init();
 		setting();
 		batch();
 		listener();
-		
+
 		setVisible(true);
 	}
-	
+
 	@Override
 	public void init() {
 		setModal(true);
@@ -91,7 +94,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 		panelMenu = new JPanel();
 		purchasedMenu = new JPanel();
 		panelBtn = new JPanel();
-		
+
 		myItemListener = new MyItemListener();
 	}
 
@@ -102,7 +105,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 		setLocationRelativeTo(null);
 
 		panelMenu.setBackground(Color.LIGHT_GRAY);
-		
+
 		panelMenu.setLayout(new BorderLayout());
 		purchasedMenu.setLayout(new GridLayout(4, 1));
 		panelLand.setLayout(new GridLayout(1, 2));
@@ -116,14 +119,24 @@ public class DialogCity extends JDialog implements JFrameSet {
 		laBuilding.setHorizontalAlignment(JLabel.CENTER);
 		laHotel.setHorizontalAlignment(JLabel.CENTER);
 		laAll.setHorizontalAlignment(JLabel.CENTER);
-		
+
 		btnPurchased.setVisible(false);
+		
+		if (playerMoney > MarbleClient.TILE.getPriceLand()) {
+			checkLand.setEnabled(true);
+		} else {
+			checkLand.setEnabled(false);
+			laAll.setText("현재 보유금액으로 구입이 불가능합니다.");
+		}
+		checkHouse.setEnabled(false);
+		checkBuilding.setEnabled(false);
+		checkHotel.setEnabled(false);
 
 		checkDisable();
 	}
 
 	@Override
-	public void batch() {		
+	public void batch() {
 		panelBtn.add(btnPurchased);
 		panelBtn.add(btnCancel);
 
@@ -138,7 +151,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 
 		panelHotel.add(laHotel);
 		panelHotel.add(checkHotel);
-		
+
 		checkLand.addItemListener(myItemListener);
 		checkHouse.addItemListener(myItemListener);
 		checkBuilding.addItemListener(myItemListener);
@@ -148,7 +161,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 		purchasedMenu.add(panelHouse);
 		purchasedMenu.add(panelBuilding);
 		purchasedMenu.add(panelHotel);
-		
+
 		panelMenu.add(purchasedMenu, BorderLayout.CENTER);
 		panelMenu.add(laAll, BorderLayout.SOUTH);
 
@@ -162,7 +175,8 @@ public class DialogCity extends JDialog implements JFrameSet {
 		//
 		btnPurchased.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
+
 				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2;
 				MarbleClient.TILE.setPriceAll(MarbleClient.TILE.getPriceAll() + priceAll);
 				MarbleClient.TILE.setLandOwner(id);
@@ -173,7 +187,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 				MarbleClient.isDialogCity = true;
 			}
 		});
-		
+
 		// 구입안하고 다이얼로그창 끄기
 		btnCancel.addActionListener(new ActionListener() {
 
@@ -185,44 +199,72 @@ public class DialogCity extends JDialog implements JFrameSet {
 	}
 
 	class MyItemListener implements ItemListener {
-		
+
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
+				// 땅 구매 체크시
 				if (e.getItem() == checkLand) {
 					priceAll = priceAll + MarbleClient.TILE.getPriceLand();
 					isPurchased[0] = 1;
-					
+					if ((playerMoney - priceAll) > MarbleClient.TILE.getPriceHotel()) {
+						checkHotel.setEnabled(true);
+						checkBuilding.setEnabled(true);
+						checkHouse.setEnabled(true);
+					} else if ((playerMoney - priceAll) > MarbleClient.TILE.getPriceBuilding()) {
+						checkBuilding.setEnabled(true);
+						checkHouse.setEnabled(true);
+					} else if ((playerMoney - priceAll) > MarbleClient.TILE.getPriceHouse()) {
+						checkHouse.setEnabled(true);
+					}
 					btnPurchased.setVisible(true);
 				}
+				// 하우스 구매 체크시
 				else if (e.getItem() == checkHouse) {
 					priceAll = priceAll + MarbleClient.TILE.getPriceHouse();
 					isPurchased[1] = 1;
+
+					if (((playerMoney - priceAll) < MarbleClient.TILE.getPriceBuilding()) && isPurchased[2] != 1) {
+						checkHouse.setEnabled(false);
+					} if (((playerMoney - priceAll) < MarbleClient.TILE.getPriceHotel()) && isPurchased[3] != 1) {
+						checkHotel.setEnabled(false);
+					}
 				}
+				// 빌딩 구매 체크시
 				else if (e.getItem() == checkBuilding) {
 					priceAll = priceAll + MarbleClient.TILE.getPriceBuilding();
 					isPurchased[2] = 1;
+					
+					if (((playerMoney - priceAll) < MarbleClient.TILE.getPriceHouse()) && isPurchased[1] != 1) {
+						checkHouse.setEnabled(false);
+					} if (((playerMoney - priceAll) < MarbleClient.TILE.getPriceHotel()) && isPurchased[3] != 1) {
+						checkHotel.setEnabled(false);
+					}
 				}
+				// 호텔 구매 체크시
 				else {
 					priceAll = priceAll + MarbleClient.TILE.getPriceHotel();
 					isPurchased[3] = 1;
+					
+					if (((playerMoney - priceAll) < MarbleClient.TILE.getPriceHouse()) && isPurchased[1] != 1) {
+						checkHouse.setEnabled(false);
+					} if (((playerMoney - priceAll) < MarbleClient.TILE.getPriceBuilding()) && isPurchased[2] != 1) {
+						checkBuilding.setEnabled(false);
+					}
 				}
 			} else {
 				if (e.getItem() == checkLand) {
 					priceAll = priceAll - MarbleClient.TILE.getPriceLand();
 					isPurchased[0] = 0;
-					
+
 					btnPurchased.setVisible(false);
-				}
-				else if (e.getItem() == checkHouse) {
+				} else if (e.getItem() == checkHouse) {
 					priceAll = priceAll - MarbleClient.TILE.getPriceHouse();
 					isPurchased[1] = 0;
-				}
-				else if (e.getItem() == checkBuilding) {
+				} else if (e.getItem() == checkBuilding) {
 					priceAll = priceAll - MarbleClient.TILE.getPriceBuilding();
 					isPurchased[2] = 0;
-				}
-				else {
+				} else {
 					priceAll = priceAll - MarbleClient.TILE.getPriceHotel();
 					isPurchased[3] = 0;
 				}
@@ -230,7 +272,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 			laAll.setText(",총 구입 가격은 : " + priceAll + "원 입니다.");
 		}
 	}
-	
+
 	private void checkDisable() {
 		if (MarbleClient.TILE.getIsPurchased()[0] == 1) {
 			isPurchased[0] = 1;

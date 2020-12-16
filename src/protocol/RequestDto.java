@@ -47,6 +47,9 @@ public class RequestDto {
 	// 타일 정보 값
 	private Tile tileInfo;
 	
+	// 플레이어 정보 값
+	private Player playerInfo;
+	
 	// 타일 타입 값
 	private int tileType;
 	
