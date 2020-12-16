@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.net.ssl.CertPathTrustManagerParameters;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -1014,10 +1015,12 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 
 		private void playerRoll() {
-			int tempDice1 = dice.nextInt(6) + 1;
-			int tempDice2 = dice.nextInt(6) + 1;
-			dice1 = tempDice1;
-			dice2 = tempDice2;
+//			int tempDice1 = dice.nextInt(6) + 1;
+//			int tempDice2 = dice.nextInt(6) + 1;
+//			dice1 = tempDice1;
+//			dice2 = tempDice2;
+			dice1 = 2;
+			dice2 = 2;
 
 			if (dice1 == dice2) {
 				isDouble += 1;
@@ -1426,50 +1429,50 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									}).start();
 								}
 		                     } else if (TILE.getTileType() == 3) {
-									RequestDto tempDto = new RequestDto();
-									Random rand = new Random();
-									int randNum = rand.nextInt(3) + 1; // 스페셜 이벤트 1~3
-									String specialText = "null"; // 안내 문구
-									
-									
-									switch (randNum) {
-									case 1: // 벌금
-										tempDto.setSpecialType(randNum); // 이벤트 타입 지정
-										tempDto.setTileFine(100); // 벌금 설정
-										specialText = "과속입니다! \n 벌금은 100원 입니다!!"; // 안내 문구 설정
-										break;
-									case 2: // 세계여행
-										tempDto.setSpecialType(randNum);
-										tempDto.setNewPlayerTile(18); // 이동할 칸 지정
-										specialText = "세계여행 당첨!";
-										break;
-									case 3: // 앞으로 2칸 이동
-										tempDto.setSpecialType(randNum);
-										tempDto.setNewPlayerTile(dto.getTileInfo().getTileNum() + 2); // 전진할 칸 수 지정
-										specialText = "앞으로 두칸!";
-									default:
-										break;
-									}
-									new DialogSpecial(dto.getId(), specialText); // 스페셜 다이어로그 생성
-									new Thread(new Runnable() {
-										@Override
-										public void run() {
-											while (true) {
-												try {
-													Thread.sleep(1000);
-													if (isDialogSpecial == true) { // 확인이 클릭되었을 때
-														tempDto.setType(Protocol.PLAYERSPECIAL);
-														tempDto.setId(id);
-														writer.println(gson.toJson(tempDto));
-														isDialogSpecial = false;
-														break;
-													}
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
+//									RequestDto tempDto = new RequestDto();
+//									Random rand = new Random();
+//									int randNum = rand.nextInt(3) + 1; // 스페셜 이벤트 1~3
+//									String specialText = "null"; // 안내 문구
+//									
+//									
+//									switch (randNum) {
+//									case 1: // 벌금
+//										tempDto.setSpecialType(randNum); // 이벤트 타입 지정
+//										tempDto.setTileFine(100); // 벌금 설정
+//										specialText = "과속입니다! \n 벌금은 100원 입니다!!"; // 안내 문구 설정
+//										break;
+//									case 2: // 세계여행
+//										tempDto.setSpecialType(randNum);
+//										tempDto.setNewPlayerTile(18); // 이동할 칸 지정
+//										specialText = "세계여행 당첨!";
+//										break;
+//									case 3: // 앞으로 2칸 이동
+//										tempDto.setSpecialType(randNum);
+//										tempDto.setNewPlayerTile(dto.getTileInfo().getTileNum() + 2); // 전진할 칸 수 지정
+//										specialText = "앞으로 두칸!";
+//									default:
+//										break;
+//									}
+//									new DialogSpecial(dto.getId(), specialText); // 스페셜 다이어로그 생성
+//									new Thread(new Runnable() {
+//										@Override
+//										public void run() {
+//											while (true) {
+//												try {
+//													Thread.sleep(1000);
+//													if (isDialogSpecial == true) { // 확인이 클릭되었을 때
+//														tempDto.setType(Protocol.PLAYERSPECIAL);
+//														tempDto.setId(id);
+//														writer.println(gson.toJson(tempDto));
+//														isDialogSpecial = false;
+//														break;
+//													}
+//												} catch (InterruptedException e) {
+//													e.printStackTrace();
+//												}
+//											}
+//										}
+//									}).start();
 		                     } else if (TILE.getTileType() == 4) {
 		                        isResting += 1;
 		                     } else if (TILE.getTileType() == 5) {
@@ -1790,8 +1793,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 					if (dto.getType().equals(Protocol.OLYMPIC)) {
 						int doubleCount = (int) (Math.pow(2, tileList.get(dto.getTileNum()).getOlympicCount()));
-						tileList.get(dto.getTileNum())
-								.setFine((tileList.get(dto.getTileNum()).getFine() * doubleCount));
 						showOlympic(dto.getTileNum(), doubleCount);
 					}
 
@@ -2340,7 +2341,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	// 올림픽 배율 띄우기
 	private void showOlympic(int tileNum, int doubleCount) {
 		String text = "X" + doubleCount;
-
+		RequestDto olympicDto = new RequestDto();
+		
+		if (tileList.get(tileNum).getTileType() == 1) {
+			tileList.get(tileNum).setFine(tileList.get(tileNum).getPriceAll()*2*doubleCount);
+		}
+		if (tileList.get(tileNum).getTileType() == 2) {
+			tileList.get(tileNum).setFine(tileList.get(tileNum).getPriceAll()*7*doubleCount);
+		}
+		olympicDto.setType(Protocol.DIALOGUPDATE);
+		olympicDto.setTileInfo(tileList.get(tileNum));
+		cpt.writer.println(cpt.gson.toJson(olympicDto));
+		
 		switch (tileNum) {
 		case 1:
 			board1Centerla.setText(text);

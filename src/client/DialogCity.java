@@ -172,7 +172,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2;
+				fine = (MarbleClient.TILE.getPriceAll() + priceAll) * 2 * (int)Math.pow(2, MarbleClient.TILE.getOlympicCount());
 				MarbleClient.TILE.setPriceAll(MarbleClient.TILE.getPriceAll() + priceAll);
 				MarbleClient.TILE.setLandOwner(id);
 				MarbleClient.TILE.setIsPurchased(isPurchased);
@@ -264,7 +264,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 					isPurchased[3] = 0;
 				}
 			}
-			laAll.setText(",총 구입 가격은 : " + priceAll + "원 입니다.");
+			laAll.setText("총 구입 가격은 : " + priceAll + "원 입니다.");
 		}
 	}
 

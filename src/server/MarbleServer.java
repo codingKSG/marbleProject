@@ -492,7 +492,6 @@ public class MarbleServer {
 			} // PLAYERSPECIAL END
 			if (dto.getType().equals(Protocol.PLAYERSPACE)) {
 				
-				
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.MOVE);
 				tempDto.setId(dto.getId());
