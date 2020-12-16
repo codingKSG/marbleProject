@@ -96,4 +96,7 @@ public interface Protocol {
 	
 	// 스페셜 타일 
 	String PLAYERSPECIAL = "PLAYERSPECIAL";
+	
+	// 세계여행 타일
+	String PLAYERSPACE = "PLAYERSPACE";
 }

@@ -490,6 +490,20 @@ public class MarbleServer {
 					}
 				}
 			} // PLAYERSPECIAL END
+			if (dto.getType().equals(Protocol.PLAYERSPACE)) {
+				
+				
+				tempDto.setGubun(Protocol.GAME);
+				tempDto.setType(Protocol.MOVE);
+				tempDto.setId(dto.getId());
+				tempDto.setNewPlayerTile(dto.getNewPlayerTile());
+				output = gson.toJson(tempDto);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(output);
+					System.out.println(TAG + "MOVE 받아서 보냄");
+				}
+			} // SPACE 끝
+			
 		} // end of router
 	} // end of thread
 
@@ -498,7 +512,7 @@ public class MarbleServer {
 		tileList = new Vector<>();
 		Tile T0 = new SpecialTile("시작", 0, 0, 650, 650);
 		Tile T1 = new CityTile("홍콩", 1, 1, 550, 650, "", 0, arrayinit, 20, 24, 30, 36, 0, 0);
-		Tile T2 = new SpecialTile("스페셜", 2, 3, 450, 650);
+		Tile T2 = new SpecialTile("스페셜1", 2, 3, 450, 650);
 		Tile T3 = new CityTile("도쿄", 3, 1, 350, 650, "", 0, arrayinit, 24, 28, 34, 40, 0, 0);
 		Tile T4 = new IsLandTile("제주도", 4, 2, 250, 650, "", 0, arrayinit, 45, 0);
 		Tile T5 = new CityTile("카이로", 5, 1, 150, 650, "", 0, arrayinit, 27, 35, 41, 48, 0, 0);
@@ -506,16 +520,16 @@ public class MarbleServer {
 		Tile T7 = new IsLandTile("하와이", 7, 2, 0, 550, "", 0, arrayinit, 65, 0);
 		Tile T8 = new CityTile("시드니", 8, 1, 0, 450, "", 0, arrayinit, 30, 38, 45, 52, 0, 0);
 		Tile T9 = new CityTile("상파울로", 9, 1, 0, 350, "", 0, arrayinit, 32, 40, 47, 55, 0, 0);
-		Tile T10 = new SpecialTile("스페셜", 10, 3, 0, 250);
+		Tile T10 = new SpecialTile("스페셜2", 10, 3, 0, 250);
 		Tile T11 = new CityTile("퀘벡", 11, 1, 0, 150, "", 0, arrayinit, 35, 43, 51, 59, 0, 0);
 		Tile T12 = new SpecialTile("올림픽", 12, 5, 0, 0);
 		Tile T13 = new CityTile("모스크바", 13, 1, 150, 0, "", 0, arrayinit, 37, 46, 54, 63, 0, 0);
 		Tile T14 = new CityTile("베를린", 14, 1, 250, 0, "", 0, arrayinit, 40, 50, 59, 68, 0, 0);
 		Tile T15 = new IsLandTile("독도", 15, 2, 350, 0, "", 0, arrayinit, 80, 0);
-		Tile T16 = new SpecialTile("스페셜", 16, 3, 450, 0);
+		Tile T16 = new SpecialTile("스페셜3", 16, 3, 450, 0);
 		Tile T17 = new CityTile("로마", 17, 1, 550, 0, "", 0, arrayinit, 43, 54, 65, 74, 0, 0);
 		Tile T18 = new SpecialTile("세계여행", 18, 6, 650, 0);
-		Tile T19 = new SpecialTile("스페셜", 19, 3, 650, 150);
+		Tile T19 = new SpecialTile("스페셜4", 19, 3, 650, 150);
 		Tile T20 = new CityTile("런던", 20, 1, 650, 250, "", 0, arrayinit, 45, 58, 70, 79, 0, 0);
 		Tile T21 = new CityTile("파리", 21, 1, 650, 350, "", 0, arrayinit, 47, 62, 74, 84, 0, 0);
 		Tile T22 = new CityTile("뉴옥", 22, 1, 650, 450, "", 0, arrayinit, 50, 65, 79, 89, 0, 0);

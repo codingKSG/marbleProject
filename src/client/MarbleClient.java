@@ -52,8 +52,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 	static boolean isInfoOn = false;
 	static int olympicTileNum;
+	static int spaceTileNum;
 	static int nowPrice;
 	static boolean isOlympic = false;
+	static boolean isSpace = false;
 	static boolean isDialogCity = false;
 	static boolean isDialogIsland = false;
 	static boolean isDialogFine = false;
@@ -1521,12 +1523,44 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		                              }
 		                           }).start();
 		                        }
-		                        
-		                     } else if (TILE.getTileType() == 6) {
-		                        
-		                     }
-
-							if (isDouble == 1) {
+		                     } else if (TILE.getTileType() == 6) { //세계여행일 경우
+			                           new DialogSpace(id, tileList);
+			                           new Thread(new Runnable() {
+			                              @Override
+			                              public void run() {
+			                                 int tempTileNum = 0;
+			                                 while (true) {
+			                                    try {
+			                                       Thread.sleep(500);
+			                                       if (isSpace == true) {
+			                                          for (int i = 0; i < tileList.size(); i++) {
+			                                             if (tileList.get(i).getTileNum() == spaceTileNum) {
+			                                                tempTileNum = i;
+			                                                TILE = tileList.get(i);
+			                                                break;
+			                                             }
+			                                          }
+			                                          RequestDto tempDto = new RequestDto();
+			                                          tempDto.setId(id);
+			                                          tempDto.setType(Protocol.PLAYERSPACE);
+			                                          tempDto.setNewPlayerTile(tempTileNum);
+			                                          tempDto.setTileInfo(TILE);
+			                                          writer.println(gson.toJson(tempDto));
+			                                          
+			                                          isSpace = false;
+			                                          
+			                                          break;
+			                                       }
+			                                    } catch (InterruptedException e) {
+			                                       e.printStackTrace();
+			                                    }
+			                                 }
+			                              }
+			                           }).start();
+			                        
+			                        
+		                     } //세계여행 끝
+							    if (isDouble == 1) {
 								btnDiceRoll.setVisible(true);
 								isTurn = true;
 							} else if ((isDouble == 0) || (isDouble == 2)) {
@@ -1905,6 +1939,47 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							}
 						}
 					} // special 끝
+					if (dto.getType().equals(Protocol.PLAYERSPACE)) {
+						RequestDto tempDto = new RequestDto();
+						if (dto.getId().equals(player1.getId())) { // 플레이어1이 스페셜 타일이라면
+								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player1.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto)); // 서버에 전송
+									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
+								}
+							} else if (dto.getId().equals(player2.getId())) { // 플레이어1이 스페셜 타일이라면
+								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player2.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto)); // 서버에 전송
+									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
+								}
+							} else if (dto.getId().equals(player3.getId())) { // 플레이어1이 스페셜 타일이라면
+								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player3.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto)); // 서버에 전송
+									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
+								}
+							} else if (dto.getId().equals(player4.getId())) { // 플레이어1이 스페셜 타일이라면
+								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
+									tempDto.setGubun(Protocol.GAME);
+									tempDto.setType(Protocol.DIALOGREQUEST);
+									tempDto.setId(player4.getId());
+									tempDto.setNowPlayerTile(dto.getNewPlayerTile()); // 타일 번호 넘김
+									writer.println(gson.toJson(tempDto)); // 서버에 전송
+									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
+								}
+							}
+						
+						} // SPACE 끝
 				} // 서버 통신 읽기 끝
 			} catch (Exception e) {
 				e.printStackTrace();
