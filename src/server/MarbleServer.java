@@ -289,6 +289,7 @@ public class MarbleServer {
 						tempTile = tileList.get(i);
 						tempDto.setTileInfo(tempTile);
 						tempDto.setTileType(tempTile.getTileType());
+						tempDto.setNowBuild(tempTile.getIsPurchased());
 						break;
 					}
 				}
