@@ -55,6 +55,9 @@ public class RequestDto {
 	
 	// 타일 주인의 아이디
 	private String tileOwnerId;
+	
+	// 현재 지어진 건물리스트
+	private int[] nowBuild;
 
 	// 새로 지어지는 건물리스트
 	private int[] newBuild;
@@ -77,4 +80,10 @@ public class RequestDto {
 	
 	// 월급
 	private int salary;
+	
+	//이벤트 종류
+	private int specialType;
+	
+	//이벤트 발생 시 나오는 문구
+	private String specialText;
 }

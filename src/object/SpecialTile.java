@@ -10,6 +10,5 @@ public class SpecialTile extends Tile implements SpecialInterface{
 	public void event() {
 		
 	}// 스페셜 타일의 이벤트
-
 	
 }

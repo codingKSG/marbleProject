@@ -20,8 +20,6 @@ public class DialogCity extends JDialog implements JFrameSet {
 	private DialogCity diallogCity = this;
 	private final static String TAG = "DiallogCity : ";
 
-	private Player player;
-
 	private String id; // ÇØ´ç ¶¥À» ¹âÀº ÇÃ·¹ÀÌ¾î id
 	private int playerMoney;
 
@@ -122,6 +120,12 @@ public class DialogCity extends JDialog implements JFrameSet {
 		checkHouse.setEnabled(false);
 		checkBuilding.setEnabled(false);
 		checkHotel.setEnabled(false);
+		
+		if(MarbleClient.TILE.getIsPurchased()[0] == 1) {
+			checkHouse.setEnabled(true);
+			checkBuilding.setEnabled(true);
+			checkHotel.setEnabled(true);
+		}
 
 		checkDisable();
 	}
