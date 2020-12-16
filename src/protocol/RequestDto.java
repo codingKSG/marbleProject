@@ -43,7 +43,7 @@ public class RequestDto {
 
 	// 타일 정보 값
 	private Tile tileInfo;
-	
+
 	// 타일 타입 값
 	private int tileType;
 	

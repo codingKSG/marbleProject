@@ -48,6 +48,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private MarbleClient marbleClient = this;
 	private final static String TAG = "MarbleClient : ";
 	static Tile TILE;
+
 	static boolean isInfoOn = false;
 	static int olympicTileNum;
 	static int nowPrice;
@@ -1305,230 +1306,244 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
-						if (dto.getId().equals(id)) {
-							TILE = dto.getTileInfo();
 
-							nowPrice = TILE.getPriceAll();
-							nowBuild = TILE.getIsPurchased();
+		                  if (dto.getId().equals(id)) {
+		                     TILE = dto.getTileInfo();
 
-							if (TILE.getTileType() == 1) {
-								if (dto.getTileInfo().getLandOwner().equals("")
-										|| dto.getTileInfo().getLandOwner().equals(id)) {
-									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedCity)) {
-										return;
-									} else {
-										new DialogCity(id);
+		                     nowPrice = TILE.getPriceAll();
+		                     nowBuild = TILE.getIsPurchased();
 
-										// isPurchased 가 allPurchasedCity 와 다를 경우 서버로 타일 변경 값 전송
-										new Thread(new Runnable() {
-											@Override
-											public void run() {
-												while (true) {
-													try {
-														Thread.sleep(500);
-														if (isDialogCity == true) {
-															RequestDto tempDto = new RequestDto();
-															newBuild = TILE.getIsPurchased();
-															int[] tempBuild = new int[4];
+		                     if (TILE.getTileType() == 1) {
+		                        if (dto.getTileInfo().getLandOwner().equals("")
+		                              || dto.getTileInfo().getLandOwner().equals(id)) {
+		                           if (dto.getTileInfo().getIsPurchased().equals(allPurchasedCity)) {
+		                              return;
+		                           } else {
+		                        	   if ((player1.getId() != null) && (player1.getId().equals(id))){
+		                        		   new DialogCity(player1.getMoney(), id);
+		                        	   } else if ((player2.getId() != null) && (player2.getId().equals(id))){
+		                        		   new DialogCity(player2.getMoney(), id);
+		                        	   } else if ((player3.getId() != null) && (player3.getId().equals(id))){
+		                        		   new DialogCity(player3.getMoney(), id);
+		                        	   } else if ((player4.getId() != null) && (player4.getId().equals(id))){
+		                        		   new DialogCity(player4.getMoney(), id);
+		                        	   }
+		                             
 
-															tempDto.setType(Protocol.DIALOGUPDATE);
-															tempDto.setTileInfo(TILE);
-															writer.println(gson.toJson(tempDto));
+		                              // isPurchased 가 allPurchasedCity 와 다를 경우 서버로 타일 변경 값 전송
+		                              new Thread(new Runnable() {
+		                                 @Override
+		                                 public void run() {
+		                                    while (true) {
+		                                       try {
+		                                          Thread.sleep(500);
+		                                          if (isDialogCity == true) {
+		                                             RequestDto tempDto = new RequestDto();
+		                                             newBuild = TILE.getIsPurchased();
+		                                             int[] tempBuild = new int[4];
 
-															tempDto.setType(Protocol.PLAYERPURCHASED);
-															tempDto.setId(id);
-															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
-															writer.println(gson.toJson(tempDto));
+		                                             tempDto.setType(Protocol.DIALOGUPDATE);
+		                                             tempDto.setTileInfo(TILE);
+		                                             writer.println(gson.toJson(tempDto));
 
-															tempDto.setType(Protocol.PLAYERBUILD);
-															tempDto.setTileOwnerId(TILE.getLandOwner());
-															for (int i = 1; i < nowBuild.length; i++) {
-																tempBuild[i] = nowBuild[i] - newBuild[i];
-															}
-															tempDto.setNewBuild(tempBuild);
-															tempDto.setNowPlayerTile(nowPlayerTile);
-															writer.println(gson.toJson(tempDto));
+		                                             tempDto.setType(Protocol.PLAYERPURCHASED);
+		                                             tempDto.setId(id);
+		                                             tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
+		                                             writer.println(gson.toJson(tempDto));
 
-															isDialogCity = false;
+		                                             tempDto.setType(Protocol.PLAYERBUILD);
+		                                             tempDto.setTileOwnerId(TILE.getLandOwner());
+		                                             for (int i = 1; i < nowBuild.length; i++) {
+		                                                tempBuild[i] = nowBuild[i] - newBuild[i];
+		                                             }
+		                                             tempDto.setNewBuild(tempBuild);
+		                                             tempDto.setNowPlayerTile(nowPlayerTile);
+		                                             writer.println(gson.toJson(tempDto));
 
-															break;
-														}
-													} catch (InterruptedException e) {
-														e.printStackTrace();
-													}
-												}
-											}
-										}).start();
-									}
-								} else {
-									new DialogFine(id);
+		                                             isDialogCity = false;
 
-									new Thread(new Runnable() {
-										@Override
-										public void run() {
-											while (true) {
-												try {
-													Thread.sleep(500);
-													if (isDialogFine == true) {
-														RequestDto tempDto = new RequestDto();
-														tempDto.setType(Protocol.PLAYERFINE);
-														tempDto.setId(id);
-														tempDto.setTileFine(TILE.getFine());
-														tempDto.setTileOwnerId(TILE.getLandOwner());
-														writer.println(gson.toJson(tempDto));
+		                                             break;
+		                                          }
+		                                       } catch (InterruptedException e) {
+		                                          e.printStackTrace();
+		                                       }
+		                                    }
+		                                 }
+		                              }).start();
+		                           }
+		                        } else {
+		                           new DialogFine(id);
 
-														isDialogFine = false;
+		                           new Thread(new Runnable() {
+		                              @Override
+		                              public void run() {
+		                                 while (true) {
+		                                    try {
+		                                       Thread.sleep(500);
+		                                       if (isDialogFine == true) {
+		                                          RequestDto tempDto = new RequestDto();
+		                                          tempDto.setType(Protocol.PLAYERFINE);
+		                                          tempDto.setId(id);
+		                                          tempDto.setTileFine(TILE.getFine());
+		                                          tempDto.setTileOwnerId(TILE.getLandOwner());
+		                                          writer.println(gson.toJson(tempDto));
 
-														break;
-													}
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
-								}
-							} else if (TILE.getTileType() == 2) {
-								if (dto.getTileInfo().getLandOwner().equals("")
-										|| dto.getTileInfo().getLandOwner().equals(id)) {
-									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedIsland)) {
-										return;
-									} else {
-										nowPrice = TILE.getPriceAll();
-										new DialogIsland(id);
+		                                          isDialogFine = false;
 
-										// isPurchased 가 allPurchasedIsland와 다를 경우 타일 변경값 서버에 전송
-										new Thread(new Runnable() {
+		                                          break;
+		                                       }
+		                                    } catch (InterruptedException e) {
+		                                       e.printStackTrace();
+		                                    }
+		                                 }
+		                              }
+		                           }).start();
+		                        }
+		                     } else if (TILE.getTileType() == 2) {
+		                        if (dto.getTileInfo().getLandOwner().equals("")
+		                              || dto.getTileInfo().getLandOwner().equals(id)) {
+		                           if (dto.getTileInfo().getIsPurchased().equals(allPurchasedIsland)) {
+		                              return;
+		                           } else {
+		                              if ((player1.getId() != null) && (player1.getId().equals(id))){
+		                        		   new DialogIsland(player1.getMoney(), id);
+		                        	   } else if ((player2.getId() != null) && (player2.getId().equals(id))){
+		                        		   new DialogIsland(player2.getMoney(), id);
+		                        	   } else if ((player3.getId() != null) && (player3.getId().equals(id))){
+		                        		   new DialogIsland(player3.getMoney(), id);
+		                        	   } else if ((player4.getId() != null) && (player4.getId().equals(id))){
+		                        		   new DialogIsland(player4.getMoney(), id);
+		                        	   }
 
-											@Override
-											public void run() {
-												while (true) {
-													try {
-														Thread.sleep(500);
-														if (isDialogIsland == true) {
-															RequestDto tempDto = new RequestDto();
+		                              // isPurchased 가 allPurchasedIsland와 다를 경우 타일 변경값 서버에 전송
+		                              new Thread(new Runnable() {
 
-															tempDto.setType(Protocol.DIALOGUPDATE);
-															tempDto.setTileInfo(TILE);
-															writer.println(gson.toJson(tempDto));
+		                                 @Override
+		                                 public void run() {
+		                                    while (true) {
+		                                       try {
+		                                          Thread.sleep(500);
+		                                          if (isDialogIsland == true) {
+		                                             RequestDto tempDto = new RequestDto();
 
-															tempDto.setType(Protocol.PLAYERPURCHASED);
-															tempDto.setId(id);
-															tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
-															writer.println(gson.toJson(tempDto));
+		                                             tempDto.setType(Protocol.DIALOGUPDATE);
+		                                             tempDto.setTileInfo(TILE);
+		                                             writer.println(gson.toJson(tempDto));
 
-															tempDto.setType(Protocol.PLAYERISLAND);
-															tempDto.setTileOwnerId(TILE.getLandOwner());
-															if (TILE.getIsPurchased()[0] == 1) {
-																tempDto.setNowPlayerTile(nowPlayerTile);
-																writer.println(gson.toJson(tempDto));
-															}
+		                                             tempDto.setType(Protocol.PLAYERPURCHASED);
+		                                             tempDto.setId(id);
+		                                             tempDto.setNewprice(TILE.getPriceAll() - nowPrice);
+		                                             writer.println(gson.toJson(tempDto));
 
-															isDialogIsland = false;
+		                                             tempDto.setType(Protocol.PLAYERISLAND);
+		                                             tempDto.setTileOwnerId(TILE.getLandOwner());
+		                                             if (TILE.getIsPurchased()[0] == 1) {
+		                                                tempDto.setNowPlayerTile(nowPlayerTile);
+		                                                writer.println(gson.toJson(tempDto));
+		                                             }
 
-															break;
-														}
-													} catch (InterruptedException e) {
-														e.printStackTrace();
-													}
-												}
+		                                             isDialogIsland = false;
 
-											}
-										}).start();
-									}
-								} else {
-									new DialogFine(id);
+		                                             break;
+		                                          }
+		                                       } catch (InterruptedException e) {
+		                                          e.printStackTrace();
+		                                       }
+		                                    }
 
-									new Thread(new Runnable() {
+		                                 }
+		                              }).start();
+		                           }
+		                        } else {
+		                           new DialogFine(id);
 
-										@Override
-										public void run() {
-											while (true) {
-												try {
-													Thread.sleep(500);
-													if (isDialogFine == true) {
-														RequestDto tempDto = new RequestDto();
+		                           new Thread(new Runnable() {
 
-														tempDto.setType(Protocol.PLAYERFINE);
-														tempDto.setId(id);
-														tempDto.setTileFine(TILE.getFine());
-														tempDto.setTileOwnerId(TILE.getLandOwner());
-														writer.println(gson.toJson(tempDto));
+		                              @Override
+		                              public void run() {
+		                                 while (true) {
+		                                    try {
+		                                       Thread.sleep(500);
+		                                       if (isDialogFine == true) {
+		                                          RequestDto tempDto = new RequestDto();
 
-														isDialogFine = false;
+		                                          tempDto.setType(Protocol.PLAYERFINE);
+		                                          tempDto.setId(id);
+		                                          tempDto.setTileFine(TILE.getFine());
+		                                          tempDto.setTileOwnerId(TILE.getLandOwner());
+		                                          writer.println(gson.toJson(tempDto));
 
-														break;
-													}
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
-								}
-							} else if (TILE.getTileType() == 3) {
+		                                          isDialogFine = false;
 
-							} else if (TILE.getTileType() == 4) {
-								isResting += 1;
-							} else if (TILE.getTileType() == 5) {
-								int tempCount = 0;
-								for (int i = 0; i < tileList.size(); i++) {
-									if ((tileList.get(i).getLandOwner() != null)
-											&& (tileList.get(i).getLandOwner().equals(id))) {
-										tempCount++;
-										break;
-									}
-								}
-
-								if (tempCount == 0) {
-									JOptionPane.showMessageDialog(null, "보유한 땅이 없습니다 ㅠㅠ");
-								} else if (tempCount > 0) {
-									new DialogOlympic(id, tileList);
-									new Thread(new Runnable() {
-										@Override
-										public void run() {
-											int tempTileNum = 30;
-											while (true) {
-												try {
-													Thread.sleep(500);
-													if (isOlympic == true) {
-														for (int i = 0; i < tileList.size(); i++) {
-															if (tileList.get(i).getTileNum() == olympicTileNum) {
-																tileList.get(i).setOlympicCount(
-																		tileList.get(i).getOlympicCount() + 1);
-																tempTileNum = i;
-																TILE = tileList.get(i);
-																break;
-															}
-														}
-														RequestDto tempDto = new RequestDto();
-
-														tempDto.setType(Protocol.DIALOGUPDATE);
-														tempDto.setTileNum(tempTileNum);
-														tempDto.setTileInfo(TILE);
-														writer.println(gson.toJson(tempDto));
-
-														tempDto.setType(Protocol.OLYMPIC);
-														tempDto.setTileNum(tempTileNum);
-														writer.println(gson.toJson(tempDto));
-
-														isOlympic = false;
-
-														break;
-													}
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
-								}
-
-							} else if (TILE.getTileType() == 6) {
-
-							}
-
-							if (isDouble == 1) {
+		                                          break;
+		                                       }
+		                                    } catch (InterruptedException e) {
+		                                       e.printStackTrace();
+		                                    }
+		                                 }
+		                              }
+		                           }).start();
+		                        }
+		                     } else if (TILE.getTileType() == 3) {
+		                        
+		                     } else if (TILE.getTileType() == 4) {
+		                        isResting += 1;
+		                     } else if (TILE.getTileType() == 5) {
+		                        int tempCount = 0;
+		                        for (int i = 0; i < tileList.size(); i++) {
+		                           if ((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(id))) {
+		                              tempCount++;
+		                              break;
+		                           }
+		                        }
+		                        
+		                        if (tempCount == 0) {
+		                           JOptionPane.showMessageDialog(null, "보유한 땅이 없습니다 ㅠㅠ");
+		                        } else if (tempCount > 0) {
+		                           new DialogOlympic(id, tileList);
+		                           new Thread(new Runnable() {
+		                              @Override
+		                              public void run() {
+		                                 int tempTileNum = 30;
+		                                 while (true) {
+		                                    try {
+		                                       Thread.sleep(500);
+		                                       if (isOlympic == true) {
+		                                          for (int i = 0; i < tileList.size(); i++) {
+		                                             if (tileList.get(i).getTileNum() == olympicTileNum) {
+		                                                tileList.get(i).setOlympicCount(tileList.get(i).getOlympicCount()+1);
+		                                                tempTileNum = i;
+		                                                TILE = tileList.get(i);
+		                                                break;
+		                                             }
+		                                          }
+		                                          RequestDto tempDto = new RequestDto();
+		                                          
+		                                          tempDto.setType(Protocol.DIALOGUPDATE);
+		                                          tempDto.setTileNum(tempTileNum);
+		                                          tempDto.setTileInfo(TILE);
+		                                          writer.println(gson.toJson(tempDto));
+		                                          
+		                                          tempDto.setType(Protocol.OLYMPIC);
+		                                          tempDto.setTileNum(tempTileNum);
+		                                          writer.println(gson.toJson(tempDto));
+		                                          
+		                                          isOlympic = false;
+		                                          
+		                                          break;
+		                                       }
+		                                    } catch (InterruptedException e) {
+		                                       e.printStackTrace();
+		                                    }
+		                                 }
+		                              }
+		                           }).start();
+		                        }
+		                        
+		                     } else if (TILE.getTileType() == 6) {
+		                        
+		                     }
+							    if (isDouble == 1) {
 								btnDiceRoll.setVisible(true);
 								isTurn = true;
 							} else if ((isDouble == 0) || (isDouble == 2)) {

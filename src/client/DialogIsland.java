@@ -23,6 +23,7 @@ public class DialogIsland extends JDialog implements JFrameSet {
 	private final static String TAG = "DiallogIsland : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
+	private int playerMoney;
 
 	private JLabel labelText, laAll, laLand;
 	private JPanel panelMenu, panelBtn, panelLand;
@@ -51,9 +52,10 @@ public class DialogIsland extends JDialog implements JFrameSet {
 //	private String landOwner; // 소유한 플레이어
 	private int fine; // 통행료 priceAll * 2
 
-	public DialogIsland(String id) {
+	public DialogIsland(int playerMoney, String id) {
 		this.id = id;
-
+		this.playerMoney = playerMoney;
+		
 		init();
 		setting();
 		batch();
@@ -98,6 +100,13 @@ public class DialogIsland extends JDialog implements JFrameSet {
 		labelText.setHorizontalAlignment(JLabel.CENTER);
 		laLand.setHorizontalAlignment(JLabel.CENTER);
 		laAll.setHorizontalAlignment(JLabel.CENTER);
+		
+		if(playerMoney > MarbleClient.TILE.getPriceLand()) {
+			checkLand.setEnabled(true);
+		}else {
+			checkLand.setEnabled(false);
+			laAll.setText("현재 보유금액으로 구입이 불가능합니다.");
+		}
 		
 		checkDisable();
 	}

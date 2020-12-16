@@ -282,8 +282,8 @@ public class MarbleServer {
 
 			if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 				Tile tempTile = null;
-				tempDto.setId(dto.getId());
 				tempDto.setType(Protocol.DIALOGREQUEST);
+				tempDto.setId(dto.getId());
 				for (int i = 0; i < tileList.size(); i++) {
 					if (tileList.get(i).getTileNum() == dto.getNowPlayerTile()) {
 						tempTile = tileList.get(i);
@@ -381,7 +381,7 @@ public class MarbleServer {
 			if (dto.getType().equals(Protocol.PLAYERDIE)) {
 				for (int i = 0; i < tileList.size(); i++) {
 					if((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(dto.getId()))){
-						tileList.get(i).setLandOwner("MapleWord검은마법사");
+						tileList.get(i).setLandOwner("Country");
 						System.out.println("tile : " + tileList.get(i).getTileName());
 						System.out.println("소유주 : " + tileList.get(i).getLandOwner());
 					}
