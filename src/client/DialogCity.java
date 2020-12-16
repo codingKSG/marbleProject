@@ -37,8 +37,6 @@ public class DialogCity extends JDialog implements JFrameSet {
 	// 식별된 Tile의 상태 값을 받아온다.
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
-//	private String tileName; // 해당 타일의 이름
-//	private int tileNum; // 해당 타일의 번호
 
 	// 다이얼 로그가 CityTile에게 받아서 출력해야할 값들
 
@@ -47,14 +45,6 @@ public class DialogCity extends JDialog implements JFrameSet {
 
 	private int priceAll; // 전체 구매 비용
 	private int fine;
-//	private int priceLand; // 땅값
-//	private int priceHouse; // 집값
-//	private int priceBuilding; // 빌딩값
-//	private int priceHotel; // 호텔값
-
-	// 벌금시 필요한 값
-//	private String landOwner; // 소유한 플레이어
-//	private int fine; // 통행료 priceAll * 1.2
 
 	public DialogCity(int playerMoney, String id) {
 
@@ -72,6 +62,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 	@Override
 	public void init() {
 		setModal(true);
+		
 		checkLand = new JCheckBox();
 		checkHouse = new JCheckBox();
 		checkBuilding = new JCheckBox();
@@ -103,7 +94,7 @@ public class DialogCity extends JDialog implements JFrameSet {
 		setSize(250, 250);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
-
+		
 		panelMenu.setBackground(Color.LIGHT_GRAY);
 
 		panelMenu.setLayout(new BorderLayout());

@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ import javax.swing.JPanel;
 import object.Tile;
 import protocol.JFrameSet;
 
-public class DialogFine extends JFrame implements JFrameSet {
+public class DialogFine extends JDialog implements JFrameSet {
 	private DialogFine diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
 	
@@ -59,6 +60,8 @@ public class DialogFine extends JFrame implements JFrameSet {
 		setSize(250, 250);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
+		
+		setModal(true);
 
 		textLabel.setHorizontalAlignment(JLabel.CENTER);
 

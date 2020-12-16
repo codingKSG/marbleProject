@@ -11,13 +11,14 @@ import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import protocol.JFrameSet;
 
-public class DialogIsland extends JFrame implements JFrameSet {
+public class DialogIsland extends JDialog implements JFrameSet {
 	private DialogIsland diallogIsland = this;
 	private final static String TAG = "DiallogIsland : ";
 	
@@ -89,6 +90,8 @@ public class DialogIsland extends JFrame implements JFrameSet {
 		setSize(250, 250);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
+		
+		setModal(true);
 
 		panelMenu.setBackground(Color.LIGHT_GRAY);
 		panelMenu.setLayout(new BorderLayout());

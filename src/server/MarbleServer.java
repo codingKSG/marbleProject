@@ -26,10 +26,6 @@ public class MarbleServer {
 	private Socket socket;
 	private Vector<PlayerThread> playerList; // 플레이어 객체가 담긴 벡터
 	private Vector<Tile> tileList; // 타일 객체가 담긴 벡터
-	private String player1 = "";
-	private String player2 = "";
-	private String player3 = "";
-	private String player4 = ""; // 플레이어 ID가 담긴 변수
 
 	private String nowPlayer; // 현재 차례인 플레이어
 	private int countTurn; // 현재 진행 턴 수
@@ -75,7 +71,8 @@ public class MarbleServer {
 		private BufferedReader reader;
 		private PrintWriter writer;
 		private String id;
-
+		private boolean playerPlaying = true;
+		
 		public PlayerThread(Socket socket) {
 			this.socket = socket;
 		}
@@ -161,6 +158,7 @@ public class MarbleServer {
 
 			if (dto.getType().equals(Protocol.GAMESTART)) {
 				isPlaying = true;
+				countPlayer = playerList.size();
 				tempDto.setType(Protocol.PLAYERSET);
 				if (playerList.size() == 4) {
 					tempDto.setPlayer1(playerList.get(0).id);
@@ -226,11 +224,13 @@ public class MarbleServer {
 					if (playerList.get(playerList.size() - 1).id.equals(dto.getId())) {
 						tempId = playerList.get(0).id;
 						tempIndex = 0;
+						tempDto.setGubun(Protocol.TURNSEQUENCE);
 						break;
 					}
 					if (playerList.get(i).id.equals(dto.getId())) {
 						tempId = playerList.get(i + 1).id;
 						tempIndex = i + 1;
+						tempDto.setGubun("아직아니야");
 						break;
 					}
 				}
@@ -250,8 +250,8 @@ public class MarbleServer {
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.DICEROLL);
 				tempDto.setId(dto.getId());
-				tempDto.setDice1(1);
-				tempDto.setDice2(1);
+				tempDto.setDice1(dto.getDice1());
+				tempDto.setDice2(dto.getDice2());
 				output = gson.toJson(tempDto);
 				System.out.println(TAG + "DICEROLL 받음");
 				for (int i = 0; i < playerList.size(); i++) {
@@ -301,12 +301,21 @@ public class MarbleServer {
 			// 클라이언트 >> 서버로 받은 값 업데이트
 			if (dto.getType().equals(Protocol.DIALOGUPDATE)) {
 				Tile tempTile = null;
+				int tempTileNum = 30;
 				for (int i = 0; i < tileList.size(); i++) {
 					if (tileList.get(i).getTileNum() == dto.getTileInfo().getTileNum()) {
 						tempTile = dto.getTileInfo();
+						tempTileNum = i;
 						tileList.set(i, tempTile);
 						break;
 					}
+				}
+				// 다시 클라이언트에 전송
+				tempDto.setType(Protocol.DIALOGUPDATE);
+				tempDto.setTileNum(tempTileNum);
+				tempDto.setTileInfo(tempTile);
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
 			// 구매 다이얼로그 정보 받아서 모든 클라이언트에게 돌려줌.
@@ -351,6 +360,23 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
+
+			if (dto.getType().equals(Protocol.MONTHLY)) {
+				tempDto.setType(Protocol.MONTHLY);
+				tempDto.setSalary(300);
+				tempDto.setId(dto.getId());
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+			
+			if (dto.getType().equals(Protocol.OLYMPIC)) {
+				tempDto.setType(Protocol.OLYMPIC);
+				tempDto.setTileNum(dto.getTileNum());
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
 			
 			if (dto.getType().equals(Protocol.PLAYERDIE)) {
 				for (int i = 0; i < tileList.size(); i++) {
@@ -367,6 +393,7 @@ public class MarbleServer {
 				for (int i = 0; i < playerList.size(); i++) {
 					if (playerList.get(i).id.equals(dto.getId())) {
 						tempDto.setId(dto.getId());
+						playerList.get(i).playerPlaying = false;
 						playerList.get(i).writer.println(gson.toJson(tempDto));
 					}
 				}
@@ -375,6 +402,31 @@ public class MarbleServer {
 				tempDto.setText("[공지] " + dto.getId() + "님이 탈락하셨습니다.\n");
 				for (int i = 0; i < playerList.size(); i++) {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+				
+				countPlayer--;
+				
+				if (countPlayer == 1) {
+					String winner = "";
+					tempDto.setType(Protocol.ENDGAME);
+					for (int i = 0; i < playerList.size(); i++) {
+						if (playerList.get(i).playerPlaying == true) {
+							tempDto.setGubun(Protocol.WIN);
+							playerList.get(i).writer.println(gson.toJson(tempDto));
+							winner = playerList.get(i).id;
+						} else {
+							tempDto.setGubun(Protocol.LOSE);
+							playerList.get(i).writer.println(gson.toJson(tempDto));
+						}
+					}
+					
+					tempDto.setType(Protocol.CHAT);
+					tempDto.setGubun(Protocol.CHAT);
+					tempDto.setText("[공지] " + winner + "님이 승리하셨습니다 !!");
+					for (int i = 0; i < playerList.size(); i++) {
+						playerList.get(i).writer.println(gson.toJson(tempDto));
+					}
+					
 				}
 			}
 			
@@ -405,29 +457,29 @@ public class MarbleServer {
 		playerList = new Vector<>(); // 입장한 유저가 Vector에 담김
 		tileList = new Vector<>();
 		Tile T0 = new SpecialTile("시작", 0, 0, 650, 650);
-		Tile T1 = new CityTile("홍콩", 1, 1, 550, 650, "", 0, arrayinit, 20, 24, 30, 36, 0);
+		Tile T1 = new CityTile("홍콩", 1, 1, 550, 650, "", 0, arrayinit, 20, 24, 30, 36, 0, 0);
 		Tile T2 = new SpecialTile("스페셜", 2, 3, 450, 650);
-		Tile T3 = new CityTile("도쿄", 3, 1, 350, 650, "", 0, arrayinit, 24, 28, 34, 40, 0);
-		Tile T4 = new IsLandTile("제주도", 4, 2, 250, 650, "", 0, arrayinit, 45);
-		Tile T5 = new CityTile("카이로", 5, 1, 150, 650, "", 0, arrayinit, 27, 35, 41, 48, 0);
-		Tile T6 = new SpecialTile("무인도", 6, 3, 0, 650);
-		Tile T7 = new IsLandTile("하와이", 7, 2, 0, 550, "", 0, arrayinit, 65);
-		Tile T8 = new CityTile("시드니", 8, 1, 0, 450, "", 0, arrayinit, 30, 38, 45, 52, 0);
-		Tile T9 = new CityTile("상파울로", 9, 1, 0, 350, "", 0, arrayinit, 32, 40, 47, 55, 0);
+		Tile T3 = new CityTile("도쿄", 3, 1, 350, 650, "", 0, arrayinit, 24, 28, 34, 40, 0, 0);
+		Tile T4 = new IsLandTile("제주도", 4, 2, 250, 650, "", 0, arrayinit, 45, 0);
+		Tile T5 = new CityTile("카이로", 5, 1, 150, 650, "", 0, arrayinit, 27, 35, 41, 48, 0, 0);
+		Tile T6 = new SpecialTile("무인도", 6, 4, 0, 650);
+		Tile T7 = new IsLandTile("하와이", 7, 2, 0, 550, "", 0, arrayinit, 65, 0);
+		Tile T8 = new CityTile("시드니", 8, 1, 0, 450, "", 0, arrayinit, 30, 38, 45, 52, 0, 0);
+		Tile T9 = new CityTile("상파울로", 9, 1, 0, 350, "", 0, arrayinit, 32, 40, 47, 55, 0, 0);
 		Tile T10 = new SpecialTile("스페셜", 10, 3, 0, 250);
-		Tile T11 = new CityTile("퀘벡", 11, 1, 0, 150, "", 0, arrayinit, 35, 43, 51, 59, 0);
-		Tile T12 = new SpecialTile("올림픽", 12, 3, 0, 0);
-		Tile T13 = new CityTile("모스크바", 13, 1, 150, 0, "", 0, arrayinit, 37, 46, 54, 63, 0);
-		Tile T14 = new CityTile("베를린", 14, 1, 250, 0, "", 0, arrayinit, 40, 50, 59, 68, 0);
-		Tile T15 = new IsLandTile("독도", 15, 2, 350, 0, "", 0, arrayinit, 80);
+		Tile T11 = new CityTile("퀘벡", 11, 1, 0, 150, "", 0, arrayinit, 35, 43, 51, 59, 0, 0);
+		Tile T12 = new SpecialTile("올림픽", 12, 5, 0, 0);
+		Tile T13 = new CityTile("모스크바", 13, 1, 150, 0, "", 0, arrayinit, 37, 46, 54, 63, 0, 0);
+		Tile T14 = new CityTile("베를린", 14, 1, 250, 0, "", 0, arrayinit, 40, 50, 59, 68, 0, 0);
+		Tile T15 = new IsLandTile("독도", 15, 2, 350, 0, "", 0, arrayinit, 80, 0);
 		Tile T16 = new SpecialTile("스페셜", 16, 3, 450, 0);
-		Tile T17 = new CityTile("로마", 17, 1, 550, 0, "", 0, arrayinit, 43, 54, 65, 74, 0);
-		Tile T18 = new SpecialTile("세계여행", 18, 3, 650, 0);
+		Tile T17 = new CityTile("로마", 17, 1, 550, 0, "", 0, arrayinit, 43, 54, 65, 74, 0, 0);
+		Tile T18 = new SpecialTile("세계여행", 18, 6, 650, 0);
 		Tile T19 = new SpecialTile("스페셜", 19, 3, 650, 150);
-		Tile T20 = new CityTile("런던", 20, 1, 650, 250, "", 0, arrayinit, 45, 58, 70, 79, 0);
-		Tile T21 = new CityTile("파리", 21, 1, 650, 350, "", 0, arrayinit, 47, 62, 74, 84, 0);
-		Tile T22 = new CityTile("뉴옥", 22, 1, 650, 450, "", 0, arrayinit, 50, 65, 79, 89, 0);
-		Tile T23 = new IsLandTile("서울", 23, 2, 650, 550, "", 0, arrayinit, 100);
+		Tile T20 = new CityTile("런던", 20, 1, 650, 250, "", 0, arrayinit, 45, 58, 70, 79, 0, 0);
+		Tile T21 = new CityTile("파리", 21, 1, 650, 350, "", 0, arrayinit, 47, 62, 74, 84, 0, 0);
+		Tile T22 = new CityTile("뉴옥", 22, 1, 650, 450, "", 0, arrayinit, 50, 65, 79, 89, 0, 0);
+		Tile T23 = new IsLandTile("서울", 23, 2, 650, 550, "", 0, arrayinit, 100, 0);
 
 		tileList.add(T0);
 		tileList.add(T1);
