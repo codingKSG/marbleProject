@@ -3,17 +3,15 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import protocol.JFrameSet;
 
-public class DialogSpecial extends JFrame implements JFrameSet {
+public class DialogSpecial extends JDialog implements JFrameSet {
 	private DialogSpecial diallogSpecial = this;
 	private final static String TAG = "DiallogSpecial : ";
 
@@ -54,7 +52,8 @@ public class DialogSpecial extends JFrame implements JFrameSet {
 
 		labelText.setHorizontalAlignment(JLabel.CENTER);
 		labelEvent.setHorizontalAlignment(JLabel.CENTER);
-
+		
+		setModal(true);
 	}
 
 	@Override
