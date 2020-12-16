@@ -186,7 +186,7 @@ public class MarbleServer {
 				}
 				
 				// 플레이어 턴
-				tempDto.setType(Protocol.TURN);
+				tempDto.setType(Protocol.INITTURN);
 				tempDto.setTurnId(playerList.get(0).id);
 
 				for (int i = 0; i < playerList.size(); i++) {

@@ -1015,12 +1015,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 
 		private void playerRoll() {
-//			int tempDice1 = dice.nextInt(6) + 1;
-//			int tempDice2 = dice.nextInt(6) + 1;
-//			dice1 = tempDice1;
-//			dice2 = tempDice2;
-			dice1 = 2;
-			dice2 = 2;
+			int tempDice1 = dice.nextInt(6) + 1;
+			int tempDice2 = dice.nextInt(6) + 1;
+			dice1 = tempDice1;
+			dice2 = tempDice2;
 
 			if (dice1 == dice2) {
 				isDouble += 1;
@@ -1156,7 +1154,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					}
 					// isPlaying 이 true 일 때만
 					// 플레이어 턴 부여
-					if (dto.getType().equals(Protocol.TURN)) {
+					if (dto.getType().equals(Protocol.INITTURN)) {
 						if (dto.getTurnId().equals(id)) {
 							btnDiceRoll.setVisible(true);
 						}

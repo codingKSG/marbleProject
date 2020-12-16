@@ -67,8 +67,8 @@ public interface Protocol {
 	// 서버로부터 타일리스트 pull
 	String TILELISTPULL = "TILELISTPULL";
 	
-	// 플레이어 턴
-	String TURN = "TURN";
+	// 플레이어 첫 턴
+	String INITTURN = "INITTURN";
 	
 	// 다음 턴
 	String NEXTTURN = "NEXTTURN";
