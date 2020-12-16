@@ -2,19 +2,8 @@
 
 ## 참고사항
 **MarbleClient.java** 444 line 
-		btnStart.setVisible(false); //*true로  변경하면 1인플로 테스트할 수 있습니다.
-## 수정사항
-**MarbleClient.java**
-		tile5와 tile 2를 변경해야 됩니다. ??
-		유저가 입장했을 때 체팅으로 알려주는것
+		btnStart.setVisible(ture); //*false로  변경하면 1인플로 테스트할 수 있습니다
 
-~1. 스페셜 타일 함수 ~
-~2. isTurn(); 구현
-	- 턴종료버튼도 구현해야됨.~
-~3. 건물세우기 구현~
-4. 매각 구현
-5. 세계여행
- - 원하는곳으로 다음 차례 시작시 이동하게
 
 **강조**
 # 큰글씨
@@ -22,62 +11,115 @@
 - li
 > 보기좋게!
 
+시연영상에 들어가야 하는것.
+로그인및 단체 입장
+-같은 아이디x 6자이상x
+-4명 초과x 시작중인 게임x
+시작버튼 1p만
+주사위 굴리기
+애니메이션 이동
+더블이면 한번더
+턴 종료시 턴 넘어감
+타일 클릭시 정보 출력
+다이어로그는 모달창
+변경되는 자산
+인원수 별 케릭터 설정
+마우스 변경
 
-# Synchronization
+타일 도착시 소유주판단 후 구매창
+-땅 안고르면 구매불가
+-체크되면 총 가격변동
+-구매시 라벨의 색 변경
+-구매한 건물이 보이게
+소유주가 다른 땅은 벌금 지불
 
-Synchronization is one of the biggest features of StackEdit. It enables you to synchronize any file in your workspace with other files stored in your **Google Drive**, your **Dropbox** and your **GitHub** accounts. This allows you to keep writing on other devices, collaborate with people you share the file with, integrate easily into your workflow... The synchronization mechanism takes place every minute in the background, downloading, merging, and uploading file modifications.
+스페셜칸 이벤트 종류(세계여행 확률좀 줄이고)
+스타트칸 지나면 월급
+무인도 못움직이는거, 더블 시 탈출
+올림픽 땅 없을 때와 있을 때
+- 선택후 x2표시 x8까지?
+- 벌금도 얼마나 올라가는지
+세계여행 아무일도 일어나지 않는다.(돈 10원 쓰게?)
+-시작 시 다이어로그와 선택장소로 이동하는 것까지. 
+-월급과 도착한 땅에서 도착액션
 
-There are two types of synchronization and they can complement each other:
+채팅 입장시 턴 시작, 종료
+파산의 경우 사라지는 케릭터와 게임오버
+승리 시 보이는 화면
+(진행한 턴 수 보이게끔?)
 
-- The workspace synchronization will sync all your files, folders and settings automatically. This will allow you to fetch your workspace on any other device.
-	> To start syncing your workspace, just sign in with Google in the menu.
+## 로그인
+![image](https://user-images.githubusercontent.com/30206820/102387974-6ef4e980-4014-11eb-8446-75c540955c69.png)
+게임을 실행하면 아이디를 설정해야 합니다.
+### 6자 이상 입력시 에러 메시지가 출력됩니다.
+![image](https://user-images.githubusercontent.com/30206820/102388073-95b32000-4014-11eb-9fa4-da07de46eebb.png)
 
-- The file synchronization will keep one file of the workspace synced with one or multiple files in **Google Drive**, **Dropbox** or **GitHub**.
-	> Before starting to sync files, you must link an account in the **Synchronize** sub-menu.
+## 초기화면
+![image](https://user-images.githubusercontent.com/30206820/102386975-2983ec80-4013-11eb-896f-ccd4d646e4da.png)
+우측에는 게임을 할 수 있는 보드판이 있으며 좌측에는 케릭터 정보창과 체팅창이 있습니다.
+기본적으로는 2명 이상이어야 게임을 시작할 수 있으며 최대 4인까지 가능합니다.
+### 기존에 존재하는 닉네임으로 접속시 에러창이 발생합니다. 
+![image](https://user-images.githubusercontent.com/30206820/102387392-a9aa5200-4013-11eb-81fe-2286af08b572.png)
+### 게임이 이미 시작중이거나 4명이 초과되면 에러창이 발생합니다.
+![image](https://user-images.githubusercontent.com/30206820/102387665-0148bd80-4014-11eb-8df2-6ad227ca7b42.png)
+### 가장 빨리 접속한 플레이어에게 게임 시작 버튼이 보이게 됩니다.
+![image](https://user-images.githubusercontent.com/30206820/102388188-c1360a80-4014-11eb-86cf-8f98c3204318.png)
 
-## Open a file
+## 게임 
+![image](https://user-images.githubusercontent.com/30206820/102388343-f5a9c680-4014-11eb-89b2-66f555f99390.png)
+게임을 시작하게 되면 플레이어의 수 만큼 플레이어 케릭터가 등장하게 됩니다.
+시작한 플레이어 부터 차례대로 턴을 진행하게 됩니다.
+보여지는 화면은 모든 플레이어가 동일하게 보여집니다.
+### 주사위를 굴리면 플레이어가 움직입니다.
+![image](https://user-images.githubusercontent.com/30206820/102388657-68b33d00-4015-11eb-839d-d67c7c8f5587.png)
+### 스타트 지점을 통과하게 되면 월급을 받을 수 있습니다.
+![image](https://user-images.githubusercontent.com/30206820/102389611-af556700-4016-11eb-9c5e-773bcce959cc.png)
 
-You can open a file from **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Open from**. Once opened in the workspace, any modification in the file will be automatically synced.
+## 구매
+![image](https://user-images.githubusercontent.com/30206820/102388924-c6478980-4015-11eb-8eaa-922fbb9026bc.png)
+타일이 섬 또는 도시이고 소유주가 없다면 구매를 할 수 있습니다.
+![image](https://user-images.githubusercontent.com/30206820/102389176-158dba00-4016-11eb-8070-8a22d1581c3f.png)
+도시의 경우 땅, 집, 빌딩, 호텔을 살 수 있으며 땅을 사지 않으면 구매할 수 없습니다.
+![image](https://user-images.githubusercontent.com/30206820/102389336-508fed80-4016-11eb-8253-48c3b15132a0.png)
+체크박스를 누르면 구매 예상가격이 나오게 됩니다.
+### 구매 후
+![image](https://user-images.githubusercontent.com/30206820/102389419-71584300-4016-11eb-93de-664ec225147c.png)
+구매를 하게되면 그 타일의 이름칸 색깔이 나의 색으로 바뀌게 됩니다.
+보유하고 있는 자산에서 금액이 차감됩니다.
+턴 종료버튼이 보여지게 됩니다.
 
-## Save a file
+## 벌금
+![image](https://user-images.githubusercontent.com/30206820/102390192-6fdb4a80-4017-11eb-9798-5081f0f5ab18.png)
+섬이나 도시 타일이지만 소유주가 다른 경우에는 해당 소유주에게 벌금을 내야합니다.
+![image](https://user-images.githubusercontent.com/30206820/102390791-37883c00-4018-11eb-9e6f-9794f02320ef.png)
+만약 보유한 금액이 벌금보다 적다면 탈락하게 됩니다.
+![image](https://user-images.githubusercontent.com/30206820/102392094-f8f38100-4019-11eb-9622-df6573eafa24.png)
+문구가 출력되며 체팅창에도 알림이 공지됩니다.
 
-You can save any file of the workspace to **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Save on**. Even if a file in the workspace is already synced, you can save it to another location. StackEdit can sync one file with multiple locations and accounts.
+## 특수 타일
+![image](https://user-images.githubusercontent.com/30206820/102389787-f3486c00-4016-11eb-99c5-ea12e4c07e5e.png)
+황금 열쇠가 그려진 칸에 도달하게 되면 특수한 이벤트가 발생합니다.
 
-## Synchronize a file
+### 세계여행에 도착하게 되면 일단은 아무일도 일어나지 않습니다.
+![image](https://user-images.githubusercontent.com/30206820/102390055-4a4e4100-4017-11eb-9779-aefcf0e77aa3.png)
+새로운 차례가 시작되면 세계여행을 제외한 원하는 타일을 선택할 수 있습니다.
+![image](https://user-images.githubusercontent.com/30206820/102390946-669ead80-4018-11eb-9350-0ff192622c50.png)
+버튼을 클릭하면 이동 후 액션을 수행합니다.
+![image](https://user-images.githubusercontent.com/30206820/102391096-9948a600-4018-11eb-8582-75743437d024.png)
 
-Once your file is linked to a synchronized location, StackEdit will periodically synchronize it by downloading/uploading any modification. A merge will be performed if necessary and conflicts will be resolved.
+### 올림픽 타일에 도착하게 되면 자신의 타일 중 한 곳을 선택하여 통행료를 2배로 받을 수 있습니다.
+![image](https://user-images.githubusercontent.com/30206820/102391328-e88ed680-4018-11eb-8d25-1124118392f6.png)
 
-If you just have modified your file and you want to force syncing, click the **Synchronize now** button in the navigation bar.
+## 기타 기능
 
-> **Note:** The **Synchronize now** button is disabled if you have no file to synchronize.
+### 승리 문구
+![image](https://user-images.githubusercontent.com/30206820/102392251-2c361000-401a-11eb-888f-970583bb638c.png)
+- 타일을 클릭하면 정보창이 보여집니다.
+![image](https://user-images.githubusercontent.com/30206820/102392466-70c1ab80-401a-11eb-9364-ffee21a64131.png)
+![image](https://user-images.githubusercontent.com/30206820/102392555-8df67a00-401a-11eb-8fb1-7d80ae7dd70c.png)
 
-## Manage file synchronization
-
-Since one file can be synced with multiple locations, you can list and manage synchronized locations by clicking **File synchronization** in the **Synchronize** sub-menu. This allows you to list and remove synchronized locations that are linked to your file.
 
 
-# Publication
-
-Publishing in StackEdit makes it simple for you to publish online your files. Once you're happy with a file, you can publish it to different hosting platforms like **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **WordPress** and **Zendesk**. With [Handlebars templates](http://handlebarsjs.com/), you have full control over what you export.
-
-> Before starting to publish, you must link an account in the **Publish** sub-menu.
-
-## Publish a File
-
-You can publish your file by opening the **Publish** sub-menu and by clicking **Publish to**. For some locations, you can choose between the following formats:
-
-- Markdown: publish the Markdown text on a website that can interpret it (**GitHub** for instance),
-- HTML: publish the file converted to HTML via a Handlebars template (on a blog for example).
-
-## Update a publication
-
-After publishing, StackEdit keeps your file linked to that publication which makes it easy for you to re-publish it. Once you have modified your file and you want to update your publication, click on the **Publish now** button in the navigation bar.
-
-> **Note:** The **Publish now** button is disabled if your file has not been published yet.
-
-## Manage file publication
-
-Since one file can be published to multiple locations, you can list and manage publish locations by clicking **File publication** in the **Publish** sub-menu. This allows you to list and remove publication locations that are linked to your file.
 
 
 # Markdown extensions
