@@ -82,7 +82,7 @@ public class MarbleLogin extends JFrame {
 	private void login() {
 		String userInput = tfId.getText();
 		if (userInput.length() > 6) {
-			laText2.setText("5자 이내의 ID로 변경해주세요 !");
+			laText2.setText("6자 이내의 ID로 변경해주세요 !");
 			return;
 		}
 		if (userInput.equals("")) {
