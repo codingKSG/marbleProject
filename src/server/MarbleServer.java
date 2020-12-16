@@ -304,9 +304,9 @@ public class MarbleServer {
 				int tempTileNum = 30;
 				for (int i = 0; i < tileList.size(); i++) {
 					if (tileList.get(i).getTileNum() == dto.getTileInfo().getTileNum()) {
-						tempTile = dto.getTileInfo();
+						tileList.set(i, dto.getTileInfo());
+						tempTile = tileList.get(i);
 						tempTileNum = i;
-						tileList.set(i, tempTile);
 						break;
 					}
 				}

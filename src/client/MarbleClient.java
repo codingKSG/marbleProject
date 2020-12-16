@@ -144,7 +144,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	public void init() {
 		// 커서변경
 		noClickCursor();
-		
+
 		// 라인별 시티/아일랜드 타일을 담는 리스트
 		boardLine0 = new ArrayList<>();
 		boardLine1 = new ArrayList<>();
@@ -752,12 +752,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			public void mousePressed(MouseEvent e) {
 				onClickCursor();
 			}
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				noClickCursor();
 			}
 		});
-		
+
 		// 주사위굴리기 버튼 리스너
 		btnDiceRoll.addActionListener(new ActionListener() {
 			@Override
@@ -766,7 +767,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				btnDiceRoll.setVisible(false);
 			}
 		});
-		
+
 		// 턴종료 버튼 리스너
 		btnEndTurn.addActionListener(new ActionListener() {
 			@Override
@@ -857,7 +858,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				}
 			}
 		});
-		
+
 		// 시작버튼 리스너
 		btnStart.addActionListener(new ActionListener() {
 			@Override
@@ -875,7 +876,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				cpt.writer.println(gameStart);
 			}
 		});
-		
+
 		// 채팅 리스너
 		playerChatField.addActionListener(new ActionListener() {
 			@Override
@@ -883,7 +884,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				sendChat();
 			}
 		});
-		
+
 		// 타일 정보 보여주는 리스너
 		board1.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1076,11 +1077,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 
 		private void playerRoll() {
-			int tempDice1 = dice.nextInt(6) + 1;
-			int tempDice2 = dice.nextInt(6) + 1;
-			dice1 = tempDice1;
-			dice2 = tempDice2;
-			
+//			int tempDice1 = dice.nextInt(6) + 1;
+//			int tempDice2 = dice.nextInt(6) + 1;
+//			dice1 = tempDice1;
+//			dice2 = tempDice2;
+			dice1 = 2;
+			dice2 = 2;
+
 			if (dice1 == dice2) {
 				isDouble += 1;
 			} else {
@@ -1095,13 +1098,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 			output = gson.toJson(dto);
 			writer.println(output);
-			
+
 			if ((isResting >= 1) && (isDouble == 0)) {
 				isTurn = false;
 				btnEndTurn.setVisible(true);
 				return;
 			}
-			
+
 			int newPlayerTile = (int) ((nowPlayerTile + dice1 + dice2) % 24);
 
 			move(newPlayerTile);
@@ -1109,14 +1112,13 @@ public class MarbleClient extends JFrame implements JFrameSet {
 
 		private void move(int newPlayerTile) {
 			int tempNowTile = nowPlayerTile;
-			
+
 			if ((nowPlayerTile >= 12) && (newPlayerTile < 12)) {
 				dto.setType(Protocol.MONTHLY);
 				dto.setId(id);
 				writer.println(gson.toJson(dto));
 			}
-			
-			
+
 			dto.setId(id);
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.MOVE);
@@ -1240,7 +1242,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 					}
 					// 움직이기 구현, 주사위 이미지 띄우기 구현
 					if (dto.getType().equals(Protocol.MOVE)) {
-						int nextx,nexty,nextnum; //다음칸의 x, y, tilenum
+						int nextx, nexty, nextnum; // 다음칸의 x, y, tilenum
 
 						if (dto.getId().equals(player1.getId())) {
 							// 주사위를 굴려 나온 만큼 이동하지 않았다면
@@ -1276,31 +1278,31 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								Thread.sleep(100);
 							}
 						}
-						
+
 						laDice1.setVisible(false);
 						laDice2.setVisible(false);
 					}
 					// 월급
 					if (dto.getType().equals(Protocol.MONTHLY)) {
 						if ((player1.getId() != null) && (player1.getId().equals(dto.getId()))) {
-							player1.setMoney(player1.getMoney()+dto.getSalary());
+							player1.setMoney(player1.getMoney() + dto.getSalary());
 							player1Money.setText(Integer.toString(player1.getMoney()));
 						} else if ((player2.getId() != null) && (player2.getId().equals(dto.getId()))) {
-							player2.setMoney(player2.getMoney()+dto.getSalary());
+							player2.setMoney(player2.getMoney() + dto.getSalary());
 							player2Money.setText(Integer.toString(player2.getMoney()));
 						} else if ((player3.getId() != null) && (player3.getId().equals(dto.getId()))) {
-							player3.setMoney(player3.getMoney()+dto.getSalary());
+							player3.setMoney(player3.getMoney() + dto.getSalary());
 							player3Money.setText(Integer.toString(player3.getMoney()));
 						} else if ((player4.getId() != null) && (player4.getId().equals(dto.getId()))) {
-							player4.setMoney(player4.getMoney()+dto.getSalary());
+							player4.setMoney(player4.getMoney() + dto.getSalary());
 							player4Money.setText(Integer.toString(player4.getMoney()));
 						}
-						
+
 						if (dto.getId().equals(id)) {
 							JOptionPane.showMessageDialog(null, "월급(300)을 받았습니다 !!");
 						}
 					}
-					
+
 					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 						if (dto.getId().equals(id)) {
@@ -1465,18 +1467,19 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									}).start();
 								}
 							} else if (TILE.getTileType() == 3) {
-								
+
 							} else if (TILE.getTileType() == 4) {
 								isResting += 1;
 							} else if (TILE.getTileType() == 5) {
 								int tempCount = 0;
 								for (int i = 0; i < tileList.size(); i++) {
-									if ((tileList.get(i).getLandOwner() != null) && (tileList.get(i).getLandOwner().equals(id))) {
+									if ((tileList.get(i).getLandOwner() != null)
+											&& (tileList.get(i).getLandOwner().equals(id))) {
 										tempCount++;
 										break;
 									}
 								}
-								
+
 								if (tempCount == 0) {
 									JOptionPane.showMessageDialog(null, "보유한 땅이 없습니다 ㅠㅠ");
 								} else if (tempCount > 0) {
@@ -1484,7 +1487,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									new Thread(new Runnable() {
 										@Override
 										public void run() {
-											Tile tempTile = new Tile("선언용", 31, 31, 0, 0);
 											int tempTileNum = 30;
 											while (true) {
 												try {
@@ -1492,24 +1494,26 @@ public class MarbleClient extends JFrame implements JFrameSet {
 													if (isOlympic == true) {
 														for (int i = 0; i < tileList.size(); i++) {
 															if (tileList.get(i).getTileNum() == olympicTileNum) {
-																tileList.get(i).setOlympicCount(tileList.get(i).getOlympicCount()+1);
+																tileList.get(i).setOlympicCount(
+																		tileList.get(i).getOlympicCount() + 1);
 																tempTileNum = i;
-																tempTile = tileList.get(i);
+																TILE = tileList.get(i);
 																break;
 															}
 														}
 														RequestDto tempDto = new RequestDto();
-														
+
 														tempDto.setType(Protocol.DIALOGUPDATE);
 														tempDto.setTileNum(tempTileNum);
-														tempDto.setTileInfo(tempTile);
-														
+														tempDto.setTileInfo(TILE);
+														writer.println(gson.toJson(tempDto));
+
 														tempDto.setType(Protocol.OLYMPIC);
 														tempDto.setTileNum(tempTileNum);
 														writer.println(gson.toJson(tempDto));
-														
+
 														isOlympic = false;
-														
+
 														break;
 													}
 												} catch (InterruptedException e) {
@@ -1519,12 +1523,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 										}
 									}).start();
 								}
-								
+
 							} else if (TILE.getTileType() == 6) {
-								
+
 							}
-							
-							
+
 							if (isDouble == 1) {
 								btnDiceRoll.setVisible(true);
 								isTurn = true;
@@ -1720,27 +1723,27 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						if (isPlaying == false) {
 							btnDiceRoll.setVisible(false);
 							btnEndTurn.setVisible(false);
-							
+
 							tempDto.setType(Protocol.ENDTURN);
 							tempDto.setGubun(Protocol.ENDTURN);
 							tempDto.setId(id);
 							writer.println(gson.toJson(tempDto));
-							
+
 							tempDto.setType(Protocol.NEXTTURN);
 							tempDto.setId(id);
 							writer.println(gson.toJson(tempDto));
-						}
-						else if (dto.getTurnId().equals(id)) {
+						} else if (dto.getTurnId().equals(id)) {
 							btnDiceRoll.setVisible(true);
 						}
 						if (dto.getGubun().equals(Protocol.TURNSEQUENCE)) {
 							totalTurn++;
 						}
 					}
-					
+
 					if (dto.getType().equals(Protocol.OLYMPIC)) {
-						int doubleCount = (int)(Math.pow(2, tileList.get(dto.getTileNum()).getOlympicCount()));
-						tileList.get(dto.getTileNum()).setFine((tileList.get(dto.getTileNum()).getFine() * doubleCount));
+						int doubleCount = (int) (Math.pow(2, tileList.get(dto.getTileNum()).getOlympicCount()));
+						tileList.get(dto.getTileNum())
+								.setFine((tileList.get(dto.getTileNum()).getFine() * doubleCount));
 						showOlympic(dto.getTileNum(), doubleCount);
 					}
 
@@ -1750,18 +1753,18 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						btnStart.setVisible(false);
 						laDice1.setVisible(false);
 						laDice2.setVisible(false);
-						
+
 						if (dto.getGubun().equals(Protocol.WIN)) {
 							JOptionPane.showMessageDialog(null, "축하합니다. 승리하셨습니다 !");
 							boardCenter.setIcon(new ImageIcon("images/bg_win.jpg"));
 						}
-						
+
 						if (dto.getGubun().equals(Protocol.LOSE)) {
 							JOptionPane.showMessageDialog(null, "아쉽군요. 패배하셨습니다 ;-(");
 							boardCenter.setIcon(new ImageIcon("images/bg_lose.jpg"));
 						}
 					}
-					
+
 					// 채팅 시스템 구현
 					if (dto.getType().equals(Protocol.CHAT)) {
 						playerChatList.append(dto.getText());
@@ -2134,43 +2137,110 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			board23CityName.repaint();
 		}
 	}
-	
+
 	// 올림픽 배율 띄우기
 	private void showOlympic(int tileNum, int doubleCount) {
 		String text = "X" + doubleCount;
-		
+
 		switch (tileNum) {
-		case 1: board1Centerla.setText(text);
+		case 1:
+			board1Centerla.setText(text);
+			board1Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board1Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board1Centerla.setVerticalAlignment(JLabel.CENTER);
+			board1Centerla.repaint();
 			break;
-		case 3: board3Centerla.setText(text);
+		case 3:
+			board3Centerla.setText(text);
+			board3Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board3Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board3Centerla.setVerticalAlignment(JLabel.CENTER);
+			board3Centerla.repaint();
 			break;
-		case 4: board4Centerla.setText(text);
+		case 4:
+			board4Centerla.setText(text);
+			board4Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board4Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board4Centerla.setVerticalAlignment(JLabel.CENTER);
+			board4Centerla.repaint();
 			break;
-		case 5: board5Centerla.setText(text);
+		case 5:
+			board5Centerla.setText(text);
+			board5Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board5Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board5Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 7: board7Centerla.setText(text);
+		case 7:
+			board7Centerla.setText(text);
+			board7Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board7Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board7Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 8: board8Centerla.setText(text);
+		case 8:
+			board8Centerla.setText(text);
+			board8Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board8Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board8Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 9: board9Centerla.setText(text);
+		case 9:
+			board9Centerla.setText(text);
+			board9Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board9Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board9Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 11: board11Centerla.setText(text);
+		case 11:
+			board11Centerla.setText(text);
+			board11Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board11Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board11Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 13: board13Centerla.setText(text);
+		case 13:
+			board13Centerla.setText(text);
+			board13Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board13Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board13Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 14: board14Centerla.setText(text);
+		case 14:
+			board14Centerla.setText(text);
+			board14Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board14Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board14Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 15: board15Centerla.setText(text);
+		case 15:
+			board15Centerla.setText(text);
+			board15Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board15Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board15Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 17: board17Centerla.setText(text);
+		case 17:
+			board17Centerla.setText(text);
+			board17Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board17Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board17Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 20: board20Centerla.setText(text);
+		case 20:
+			board20Centerla.setText(text);
+			board20Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board20Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board20Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 21: board21Centerla.setText(text);
+		case 21:
+			board21Centerla.setText(text);
+			board21Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board21Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board21Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 22: board22Centerla.setText(text);
+		case 22:
+			board22Centerla.setText(text);
+			board22Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board22Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board22Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
-		case 23: board23Centerla.setText(text);
+		case 23:
+			board23Centerla.setText(text);
+			board23Centerla.setFont((new Font("CookieRun BLACK", Font.BOLD, 20)));
+			board23Centerla.setHorizontalAlignment(JLabel.CENTER);
+			board23Centerla.setVerticalAlignment(JLabel.CENTER);
 			break;
 		}
 	}
@@ -2196,20 +2266,21 @@ public class MarbleClient extends JFrame implements JFrameSet {
 			}
 		}
 	}
-	
+
 	// 마우스 커서 변경 (클릭 뗄 시)
 	private void noClickCursor() {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Image cursorimage = tk.getImage("images/img_mouse_noclick.png");
-		Point point = new Point(10,10);
+		Point point = new Point(10, 10);
 		Cursor cursor = tk.createCustomCursor(cursorimage, point, "haha");
-		setCursor(cursor); 
+		setCursor(cursor);
 	}
+
 	// 마우스 커서 변경 (클릭시)
 	private void onClickCursor() {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Image cursorimage = tk.getImage("images/img_mouse_click.png");
-		Point point = new Point(10,10);
+		Point point = new Point(10, 10);
 		Cursor cursor = tk.createCustomCursor(cursorimage, point, "haha");
 		setCursor(cursor);
 
