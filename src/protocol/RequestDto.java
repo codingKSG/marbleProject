@@ -74,4 +74,7 @@ public class RequestDto {
 	
 	// 올림픽 밟은 플레이어의 타일 리스트
 	private Vector<Tile> playerTileList;
+	
+	// 월급
+	private int salary;
 }

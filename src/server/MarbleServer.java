@@ -361,6 +361,15 @@ public class MarbleServer {
 				}
 			}
 
+			if (dto.getType().equals(Protocol.MONTHLY)) {
+				tempDto.setType(Protocol.MONTHLY);
+				tempDto.setSalary(300);
+				tempDto.setId(dto.getId());
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+			}
+			
 			if (dto.getType().equals(Protocol.OLYMPIC)) {
 				tempDto.setType(Protocol.OLYMPIC);
 				tempDto.setTileNum(dto.getTileNum());

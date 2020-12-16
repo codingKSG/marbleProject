@@ -76,6 +76,9 @@ public interface Protocol {
 	// 턴 종료
 	String ENDTURN = "ENDTURN";
 	
+	// 월급
+	String MONTHLY = "MONTHLY";
+	
 	// 올림픽
 	String OLYMPIC = "OLYMPIC";
 	

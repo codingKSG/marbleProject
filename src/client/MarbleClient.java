@@ -1108,7 +1108,15 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 
 		private void move(int newPlayerTile) {
-
+			int tempNowTile = nowPlayerTile;
+			
+			if ((nowPlayerTile >= 12) && (newPlayerTile < 12)) {
+				dto.setType(Protocol.MONTHLY);
+				dto.setId(id);
+				writer.println(gson.toJson(dto));
+			}
+			
+			
 			dto.setId(id);
 			dto.setGubun(Protocol.GAME);
 			dto.setType(Protocol.MOVE);
@@ -1272,6 +1280,27 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						laDice1.setVisible(false);
 						laDice2.setVisible(false);
 					}
+					// 월급
+					if (dto.getType().equals(Protocol.MONTHLY)) {
+						if ((player1.getId() != null) && (player1.getId().equals(dto.getId()))) {
+							player1.setMoney(player1.getMoney()+dto.getSalary());
+							player1Money.setText(Integer.toString(player1.getMoney()));
+						} else if ((player2.getId() != null) && (player2.getId().equals(dto.getId()))) {
+							player2.setMoney(player2.getMoney()+dto.getSalary());
+							player2Money.setText(Integer.toString(player2.getMoney()));
+						} else if ((player3.getId() != null) && (player3.getId().equals(dto.getId()))) {
+							player3.setMoney(player3.getMoney()+dto.getSalary());
+							player3Money.setText(Integer.toString(player3.getMoney()));
+						} else if ((player4.getId() != null) && (player4.getId().equals(dto.getId()))) {
+							player4.setMoney(player4.getMoney()+dto.getSalary());
+							player4Money.setText(Integer.toString(player4.getMoney()));
+						}
+						
+						if (dto.getId().equals(id)) {
+							JOptionPane.showMessageDialog(null, "월급(300)을 받았습니다 !!");
+						}
+					}
+					
 					// 해당 플레이어가 다이얼로그 타입을 보냈으면 해당 타일 정보 받아옴.
 					if (dto.getType().equals(Protocol.DIALOGREQUEST)) {
 						if (dto.getId().equals(id)) {
@@ -1280,9 +1309,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 							nowPrice = TILE.getPriceAll();
 							nowBuild = TILE.getIsPurchased();
 
-							if (TILE.getTileType() == 0) {
-
-							} else if (TILE.getTileType() == 1) {
+							if (TILE.getTileType() == 1) {
 								if (dto.getTileInfo().getLandOwner().equals("")
 										|| dto.getTileInfo().getLandOwner().equals(id)) {
 									if (dto.getTileInfo().getIsPurchased().equals(allPurchasedCity)) {
@@ -1452,7 +1479,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								
 								if (tempCount == 0) {
 									JOptionPane.showMessageDialog(null, "보유한 땅이 없습니다 ㅠㅠ");
-									return;
 								} else if (tempCount > 0) {
 									new DialogOlympic(id, tileList);
 									new Thread(new Runnable() {
