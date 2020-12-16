@@ -90,4 +90,7 @@ public interface Protocol {
 	
 	// 게임 패배
 	String LOSE = "LOSE";
+	
+	// 스페셜 타일 
+	String PLAYERSPECIAL = "PLAYERSPECIAL";
 }

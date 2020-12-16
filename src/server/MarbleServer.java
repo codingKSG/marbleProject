@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 import java.util.Vector;
 
 import com.google.gson.Gson;
@@ -121,7 +122,6 @@ public class MarbleServer {
 				if (playerList.size() > 1) {
 					for (int i = 0; i < playerList.size() - 1; i++) {
 						if (playerList.get(i).id.equals(dto.getId())) {
-							System.out.println("ID가 같다고???");
 							tempDto.setType(Protocol.IDCHECK);
 							playerList.get(playerList.size() - 1).writer.println(gson.toJson(tempDto));
 							playerList.remove(playerList.size() - 1);
@@ -203,7 +203,7 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
-			
+
 			if (dto.getType().equals(Protocol.ENDTURN)) {
 				if (dto.getGubun().equals(Protocol.ENDTURN)) {
 					return;
@@ -215,7 +215,7 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
-			
+
 			if (dto.getType().equals(Protocol.NEXTTURN)) {
 				String tempId = "";
 				int tempIndex = 5;
@@ -260,13 +260,6 @@ public class MarbleServer {
 			}
 
 			if (dto.getType().equals(Protocol.MOVE)) {
-				for (int i = 0; i < tileList.size(); i++) {
-					if (tileList.get(i).getTileNum() == dto.getNewPlayerTile()) {
-						tempDto.setNewPlayerX(tileList.get(i).getTileX());
-						tempDto.setNewPlayerY(tileList.get(i).getTileY());
-						break;
-					}
-				}
 				tempDto.setGubun(Protocol.GAME);
 				tempDto.setType(Protocol.MOVE);
 				tempDto.setId(dto.getId());
@@ -340,7 +333,7 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 			}
-			
+
 			if (dto.getType().equals(Protocol.PLAYERISLAND)) {
 				tempDto.setType(Protocol.PLAYERISLAND);
 				tempDto.setTileOwnerId(dto.getTileOwnerId());
@@ -449,8 +442,30 @@ public class MarbleServer {
 					}
 				}
 			}
+			// 황금열쇄 칸에 도착 시
+			if (dto.getType().equals(Protocol.PLAYERSPECIAL)) {
+				tempDto.setType(Protocol.PLAYERSPECIAL);
+				tempDto.setId(dto.getId());
+				tempDto.setSpecialType(dto.getSpecialType());
+				tempDto.setTileFine(dto.getTileFine());
+				tempDto.setNewPlayerTile(dto.getNewPlayerTile());
+				for (int i = 0; i < playerList.size(); i++) {
+					playerList.get(i).writer.println(gson.toJson(tempDto));
+				}
+				// 이동을 해야되는 이벤트일 경우
+				if (dto.getSpecialType() == 2 || dto.getSpecialType() == 3) {
+					tempDto.setGubun(Protocol.GAME);
+					tempDto.setType(Protocol.MOVE);
+					tempDto.setId(dto.getId());
+					tempDto.setNewPlayerTile(dto.getNewPlayerTile());
+					output = gson.toJson(tempDto);
+					for (int i = 0; i < playerList.size(); i++) {
+						playerList.get(i).writer.println(output);
+						System.out.println(TAG + "MOVE 받아서 보냄");
+					}
+				}
+			} // PLAYERSPECIAL END
 		} // end of router
-
 	} // end of thread
 
 	private void initSetting() {
