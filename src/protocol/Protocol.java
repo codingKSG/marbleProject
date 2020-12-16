@@ -7,6 +7,9 @@ public interface Protocol {
 	String CHAT = "CHAT";
 	String GAME = "GAME";
 	
+	// 입장시 알림메시지
+	String ENTERHELLO = "ENTERHELLO";
+	
 	// 제일 먼저 입장한 플레이어 = 방장
 	String GAMEHOST = "GAMEHOST";
 	

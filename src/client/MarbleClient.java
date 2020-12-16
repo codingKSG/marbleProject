@@ -128,8 +128,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	public MarbleClient(String id) {
 		this.id = id;
 
-		connect();
-
 		init();
 
 		setting();
@@ -137,6 +135,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		batch();
 
 		listener();
+		
+		connect();
 
 		setVisible(true);
 	}
@@ -782,75 +782,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				cpt.dto.setId(id);
 				cpt.writer.println(cpt.gson.toJson(cpt.dto));
 
-				if (player1.getMoney() < 0) {
-					if (player1.getId().equals(id)) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								while (true) {
-									RequestDto tempDto = new RequestDto();
-
-									tempDto.setType(Protocol.PLAYERLISTOUT);
-									tempDto.setId(id);
-									cpt.writer.println(cpt.gson.toJson(tempDto));
-
-									break;
-								}
-							}
-						}).start();
-					}
-				} else if (player2.getMoney() < 0) {
-					if (player2.getId().equals(id)) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								while (true) {
-									RequestDto tempDto = new RequestDto();
-
-									tempDto.setType(Protocol.PLAYERLISTOUT);
-									tempDto.setId(id);
-									cpt.writer.println(cpt.gson.toJson(tempDto));
-
-									break;
-								}
-							}
-						}).start();
-					}
-				} else if (player3.getMoney() < 0) {
-					if (player3.getId().equals(id)) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								while (true) {
-									RequestDto tempDto = new RequestDto();
-
-									tempDto.setType(Protocol.PLAYERLISTOUT);
-									tempDto.setId(id);
-									cpt.writer.println(cpt.gson.toJson(tempDto));
-
-									break;
-								}
-							}
-						}).start();
-					}
-				} else if (player4.getMoney() < 0) {
-					if (player4.getId().equals(id)) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								while (true) {
-									RequestDto tempDto = new RequestDto();
-
-									tempDto.setType(Protocol.PLAYERLISTOUT);
-									tempDto.setId(id);
-									cpt.writer.println(cpt.gson.toJson(tempDto));
-
-									break;
-								}
-							}
-						}).start();
-					}
-				}
 				btnEndTurn.setVisible(false);
 				if (isResting == 1) {
 					isResting++;
@@ -1059,10 +990,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 				String idSet = gson.toJson(dto);
 				writer.println(idSet);
 
-//				dto.setType(Protocol.PLAYERSET);
-//				dto.setId(this.id);
-//				String playerSet = gson.toJson(dto);
-//				writer.println(playerSet);
+				// 인사메시지 출력
+				dto.setType(Protocol.ENTERHELLO);
+				dto.setId(this.id);
+				String idHello = gson.toJson(dto);
+				writer.println(idHello);
 
 				// 서버의 playerList의 크기가 4명 이상이면 서버 연결이 되지 않게 함.
 				dto.setType(Protocol.PLAYERNUMCHECK);
@@ -1078,12 +1010,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		}
 
 		private void playerRoll() {
-//			int tempDice1 = dice.nextInt(6) + 1;
-//			int tempDice2 = dice.nextInt(6) + 1;
-//			dice1 = tempDice1;
-//			dice2 = tempDice2;
-			dice1 = 2;
-			dice2 = 2;
+			int tempDice1 = dice.nextInt(6) + 1;
+			int tempDice2 = dice.nextInt(6) + 1;
+			dice1 = tempDice1;
+			dice2 = tempDice2;
 
 			if (dice1 == dice2) {
 				isDouble += 1;
@@ -1230,6 +1160,16 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						if (dto.getId().equals(id)) {
 							isPlaying = false;
 						}
+						
+						if ((player1.getId() != null) && (player1.getId().equals(dto.getId()))) {
+							player1.setVisible(false);
+						} else if ((player2.getId() != null) && (player2.getId().equals(dto.getId()))) {
+							player2.setVisible(false);
+						} else if ((player3.getId() != null) && (player3.getId().equals(dto.getId()))) {
+							player3.setVisible(false);
+						} else if ((player4.getId() != null) && (player4.getId().equals(dto.getId()))) {
+							player4.setVisible(false);
+						} 
 					}
 
 					// 주사위굴리기 구현
@@ -1543,9 +1483,10 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		                     } else if (TILE.getTileType() == 6) {
 		                        
 		                     }
-							    if (isDouble == 1) {
-								btnDiceRoll.setVisible(true);
-								isTurn = true;
+		                     
+						    if (isDouble == 1) {
+							btnDiceRoll.setVisible(true);
+							isTurn = true;
 							} else if ((isDouble == 0) || (isDouble == 2)) {
 								isTurn = false;
 								btnDiceRoll.setVisible(false);
@@ -1625,13 +1566,26 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
+									btnDiceRoll.setVisible(false);
+									btnEndTurn.setVisible(false);
 
 									RequestDto tempDto = new RequestDto();
 									tempDto.setType(Protocol.PLAYERDIE);
 									tempDto.setId(id);
 									writer.println(gson.toJson(tempDto));
-
-									break;
+									
+									tempDto.setType(Protocol.ENDTURN);
+									tempDto.setGubun(Protocol.ENDTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.NEXTTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.PLAYERLISTOUT);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
 								}
 							} else
 								player1Money.setText(Integer.toString(player1.getMoney()));
@@ -1643,25 +1597,26 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
+									btnDiceRoll.setVisible(false);
+									btnEndTurn.setVisible(false);
 
-									new Thread(new Runnable() {
-										@Override
-										public void run() {
-											while (true) {
-												try {
-													Thread.sleep(1000);
-													RequestDto tempDto = new RequestDto();
-													tempDto.setType(Protocol.PLAYERDIE);
-													tempDto.setId(id);
-													writer.println(gson.toJson(tempDto));
-
-													break;
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
+									RequestDto tempDto = new RequestDto();
+									tempDto.setType(Protocol.PLAYERDIE);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.ENDTURN);
+									tempDto.setGubun(Protocol.ENDTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.NEXTTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.PLAYERLISTOUT);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
 								}
 							} else
 								player2Money.setText(Integer.toString(player2.getMoney()));
@@ -1673,25 +1628,26 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
+									btnDiceRoll.setVisible(false);
+									btnEndTurn.setVisible(false);
 
-									new Thread(new Runnable() {
-										@Override
-										public void run() {
-											while (true) {
-												try {
-													Thread.sleep(1000);
-													RequestDto tempDto = new RequestDto();
-													tempDto.setType(Protocol.PLAYERDIE);
-													tempDto.setId(id);
-													writer.println(gson.toJson(tempDto));
-
-													break;
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
+									RequestDto tempDto = new RequestDto();
+									tempDto.setType(Protocol.PLAYERDIE);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.ENDTURN);
+									tempDto.setGubun(Protocol.ENDTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.NEXTTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.PLAYERLISTOUT);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
 								}
 							} else
 								player3Money.setText(Integer.toString(player3.getMoney()));
@@ -1703,25 +1659,26 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								if (dto.getId().equals(id)) {
 									isDouble = 0;
 									isPlaying = false;
+									btnDiceRoll.setVisible(false);
+									btnEndTurn.setVisible(false);
 
-									new Thread(new Runnable() {
-										@Override
-										public void run() {
-											while (true) {
-												try {
-													Thread.sleep(1000);
-													RequestDto tempDto = new RequestDto();
-													tempDto.setType(Protocol.PLAYERDIE);
-													tempDto.setId(id);
-													writer.println(gson.toJson(tempDto));
-
-													break;
-												} catch (InterruptedException e) {
-													e.printStackTrace();
-												}
-											}
-										}
-									}).start();
+									RequestDto tempDto = new RequestDto();
+									tempDto.setType(Protocol.PLAYERDIE);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.ENDTURN);
+									tempDto.setGubun(Protocol.ENDTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.NEXTTURN);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
+									
+									tempDto.setType(Protocol.PLAYERLISTOUT);
+									tempDto.setId(id);
+									writer.println(gson.toJson(tempDto));
 								}
 							} else
 								player4Money.setText(Integer.toString(player4.getMoney()));
@@ -1858,16 +1815,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		} else if (player4.getId().equals(id)) {
 			playerColor = new Color(102, 255, 51);
 		}
-
-		System.out.println("buildUp 실행");
-		System.out.println(intArray[1]);
-		System.out.println("isHouse : " + isHouse);
-		System.out.println(intArray[2]);
-		System.out.println("isBuilding : " + isBuilding);
-		System.out.println(intArray[3]);
-		System.out.println("isHotel : " + isHotel);
-		System.out.println("tileNum : " + tileNum);
-		System.out.println("color : " + playerColor);
 
 		if (tileNum == 1) {
 			board1CityName.setOpaque(true);
