@@ -1431,25 +1431,28 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		                     } else if (TILE.getTileType() == 3) {
 									RequestDto tempDto = new RequestDto();
 									Random rand = new Random();
-									int randNum = rand.nextInt(3) + 1; // 스페셜 이벤트 1~3
+									int randNum = rand.nextInt(5) + 1; // 스페셜 이벤트 1~5
 									String specialText = "null"; // 안내 문구
 									
 									
 									switch (randNum) {
-									case 1: // 벌금
+									case 1:
+									case 2: // 벌금
 										tempDto.setSpecialType(randNum); // 이벤트 타입 지정
 										tempDto.setTileFine(100); // 벌금 설정
 										specialText = "과속입니다! \n 벌금은 100원 입니다!!"; // 안내 문구 설정
 										break;
-									case 2: // 세계여행
+									case 3: // 세계여행
 										tempDto.setSpecialType(randNum);
 										tempDto.setNewPlayerTile(18); // 이동할 칸 지정
 										specialText = "세계여행 당첨!";
 										break;
-									case 3: // 앞으로 2칸 이동
+									case 4:
+									case 5: // 앞으로 2칸 이동
 										tempDto.setSpecialType(randNum);
 										tempDto.setNewPlayerTile(dto.getTileInfo().getTileNum() + 2); // 전진할 칸 수 지정
 										specialText = "앞으로 두칸!";
+										
 									default:
 										break;
 									}
@@ -1537,17 +1540,19 @@ public class MarbleClient extends JFrame implements JFrameSet {
 								String specialText = "null"; // 안내 문구
 
 								switch (randNum) {
-								case 1: // 벌금
+								case 1:
+								case 2: // 벌금
 									tempDto.setSpecialType(randNum); // 이벤트 타입 지정
 									tempDto.setTileFine(100); // 벌금 설정
 									specialText = "과속입니다! \n 벌금은 100원 입니다!!"; // 안내 문구 설정
 									break;
-								case 2: // 세계여행
+								case 3: // 세계여행
 									tempDto.setSpecialType(randNum);
 									tempDto.setNewPlayerTile(18); // 이동할 칸 지정
 									specialText = "세계여행 당첨!";
 									break;
-								case 3: // 앞으로 2칸 이동
+								case 4:
+								case 5: // 앞으로 2칸 이동
 									tempDto.setSpecialType(randNum);
 									tempDto.setNewPlayerTile(dto.getTileInfo().getTileNum() + 2); // 전진할 칸 수 지정
 									specialText = "앞으로 두칸!";
