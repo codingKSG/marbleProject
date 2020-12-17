@@ -1,7 +1,7 @@
 package protocol;
 
 public interface Protocol {
-	String HOST = "localhost";
+	String HOST = "113.198.238.69";
 	int PORT = 10001;
 	
 	String CHAT = "CHAT";
