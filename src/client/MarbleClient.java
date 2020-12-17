@@ -1840,10 +1840,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						if (dto.getId().equals(player1.getId())) { // 플레이어1이 스페셜 타일이라면
 							switch (dto.getSpecialType()) { // 이벤트 종류
 							case 1: // 벌금
+							case 2:
 								player1.setMoney(player1.getMoney() - 100); // 100원 벌금
 								player1Money.setText(Integer.toString(player1.getMoney())); // 텍스트 라벨 수정
 								break;
-							case 2: // 세계여행
+							case 3: // 세계여행
 								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
@@ -1853,7 +1854,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									nowPlayerTile = dto.getNewPlayerTile(); // 스페셜 타일에 있는 사람의 위치 변경.
 								}
 								break;
-							case 3: // 앞으로 2칸 이동
+							case 4: // 앞으로 2칸 이동
+							case 5:
 								if (dto.getId().equals(id)) { // 스페셜 타일에 있는 사람에게만 적용
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
