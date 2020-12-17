@@ -1533,7 +1533,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									isSpaceWait = true;
 		                     } //세계여행 끝
 							    if (isDouble == 1) {
-								btnDiceRoll.setVisible(true);
 								isTurn = true;
 							} else if ((isDouble == 0) || (isDouble == 2)) {
 								isTurn = false;
