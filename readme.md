@@ -1,4 +1,5 @@
 # MarbleProject
+<<<<<<< HEAD
 
 ## 서버 구동 방법
 **MableLauncher.java**  
@@ -28,6 +29,25 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 # 게임 구동 영상
  - 링크 넣을곳<br/><br/>
 >>>>>>> 1634cb42243da037a230bef7a5e4f30b08629fff
+=======
+
+## 서버 구동 방법
+**MableLauncher.java**  
+MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
+
+## 클라이언트 구동 방법
+**MarbleLogin.java**  
+		MarbleServer가 실행된 상태면, MarbleLogin.java를 통해 아이디를 입력한 후 로그인할 수 있습니다.<br/><br/>
+
+## 활용 라이브러리
+** gson ** : 서버와 클라이언트 간 소켓 통신 시 toJson, fromJson을 통해 RequestDto 클래스를 이용하였습니다.  
+** lombok ** : Player 객체, Tile 객체 내부의 변수를 get/set 하기 위해 이용하였습니다.
+
+<br/><br/><br/>
+
+# 게임 구동 영상
+ - 링크 넣을곳<br/><br/>
+>>>>>>> c56a7a4e0fd4a619a441c88bb9af52b0837ccbdd
 
 <br/><br/>
 
@@ -179,6 +199,7 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 	<li> 주사위를 굴린 플레이어의 ID를 받아서 player1, 2, 3, 4 중 해당 플레이어 번호를 찾습니다.
 	<li> 클라이언트에서는 플레이어 객체의 moveAnimation을 이용하여 확인된 해당 플레이어 번호의 캐릭터를 움직입니다.
 </ol>
+<<<<<<< HEAD
 
 # DIALOGREQUEST  
 **다이얼로그 정보 요청**  
@@ -242,3 +263,5 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 	<li> 클라이언트에서 같은 아이디를 가진 플레이어는 ISPLAYING 값을 FALSE로 변경합니다. </li>
 	<li> 모든 클라이언트는 받은 아이디값을 가진 플레이어의 이미지를 FALSE로 변경하여 게임화면에서 지웁니다. </li>
 </ol>  
+=======
+>>>>>>> c56a7a4e0fd4a619a441c88bb9af52b0837ccbdd

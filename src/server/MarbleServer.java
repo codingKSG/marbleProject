@@ -479,7 +479,7 @@ public class MarbleServer {
 					playerList.get(i).writer.println(gson.toJson(tempDto));
 				}
 				// 이동을 해야되는 이벤트일 경우
-				if (dto.getSpecialType() == 2 || dto.getSpecialType() == 3) {
+				if (dto.getSpecialType() > 2 && dto.getSpecialType() < 6) {
 					tempDto.setGubun(Protocol.GAME);
 					tempDto.setType(Protocol.MOVE);
 					tempDto.setId(dto.getId());
