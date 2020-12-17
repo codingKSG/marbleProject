@@ -30,11 +30,11 @@ MarbleServer가 실행된 상태면, MarbleLogin.java를 통해 아이디를 입
 
 # 게임 구동 영상
  - 플레이어 1
- https://youtu.be/UKnShk17EUE 
+ https://youtu.be/-UWOH4sqKNc
  - 플레이어 2
- https://youtu.be/PJy1z3gLQjs
+ https://youtu.be/17rZ1i5rvew
  - 플레이어 3
- https://youtu.be/Xtr9wbpGMNQ
+ https://youtu.be/LyYJ7zwcKo8
 
 <br/><br/>
 
