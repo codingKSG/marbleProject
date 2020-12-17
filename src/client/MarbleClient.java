@@ -1865,10 +1865,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						} else if (dto.getId().equals(player2.getId())) {
 							switch (dto.getSpecialType()) {
 							case 1:
+							case 2:
 								player2.setMoney(player2.getMoney() - 100);
 								player2Money.setText(Integer.toString(player2.getMoney()));
 								break;
-							case 2:
+							case 3:
 								if (dto.getId().equals(id)) {
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
@@ -1878,7 +1879,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									nowPlayerTile = dto.getNewPlayerTile();
 								}
 								break;
-							case 3:
+							case 4:
+							case 5:
 								if (dto.getId().equals(id)) {
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
@@ -1894,10 +1896,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						} else if (dto.getId().equals(player3.getId())) {
 							switch (dto.getSpecialType()) {
 							case 1:
+							case 2:
 								player3.setMoney(player3.getMoney() - 100);
 								player3Money.setText(Integer.toString(player3.getMoney()));
 								break;
-							case 2:
+							case 3:
 								if (dto.getId().equals(id)) {
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
@@ -1907,7 +1910,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									nowPlayerTile = dto.getNewPlayerTile();
 								}
 								break;
-							case 3:
+							case 4:
+							case 5:
 								if (dto.getId().equals(id)) {
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
@@ -1923,10 +1927,11 @@ public class MarbleClient extends JFrame implements JFrameSet {
 						} else if (dto.getId().equals(player4.getId())) {
 							switch (dto.getSpecialType()) {
 							case 1:
+							case 2:
 								player4.setMoney(player4.getMoney() - 100);
 								player4Money.setText(Integer.toString(player4.getMoney()));
 								break;
-							case 2:
+							case 3:
 								if (dto.getId().equals(id)) {
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
@@ -1936,7 +1941,8 @@ public class MarbleClient extends JFrame implements JFrameSet {
 									nowPlayerTile = dto.getNewPlayerTile();
 								}
 								break;
-							case 3:
+							case 4:
+							case 5:
 								if (dto.getId().equals(id)) {
 									tempDto.setGubun(Protocol.GAME);
 									tempDto.setType(Protocol.DIALOGREQUEST);
