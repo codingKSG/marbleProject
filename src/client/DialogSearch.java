@@ -16,7 +16,7 @@ import object.Tile;
 import protocol.JFrameSet;
 
 public class DialogSearch extends JFrame implements JFrameSet {
-	private DialogSearch diallogSpecial = this;
+	private DialogSearch dialogSearch = this;
 	private final static String TAG = "DialogSearch : ";
 	
 	private Tile tile;

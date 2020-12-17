@@ -1,7 +1,7 @@
 package protocol;
 
 public interface Protocol {
-	String HOST = "113.198.238.69";
+	String HOST = "localhost";
 	int PORT = 10001;
 	
 	String CHAT = "CHAT";
@@ -16,9 +16,6 @@ public interface Protocol {
 	// 게임 스타트 알림
 	String GAMESTART = "GAMESTART";
 	
-	// 입장거절
-	String REJECTENTER = "REJECTENTER";
-	
 	// 서버 플레이어 수 체크
 	String PLAYERNUMCHECK = "PLAYERNUMCHECK";
 	
@@ -30,9 +27,6 @@ public interface Protocol {
 	
 	// 이미 존재하는 ID인지 체크
 	String IDCHECK = "IDCHECK";
-	
-	// 캐릭터 이미지 생성 요청
-	String MAKEPLAYER = "MAKEPLAYER";
 	
 	// 주사위를 굴린다는 신호
 	String DICEROLL = "DICEROLL";

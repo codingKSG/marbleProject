@@ -18,7 +18,7 @@ import object.Tile;
 import protocol.JFrameSet;
 
 public class DialogSpace extends JDialog implements JFrameSet {
-	private DialogSpace diallogSpace = this;
+	private DialogSpace dialogSpace = this;
 	private final static String TAG = "DialogSpace : ";
 	
 	private String id;

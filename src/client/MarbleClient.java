@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
-import javax.net.ssl.CertPathTrustManagerParameters;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,9 +36,6 @@ import javax.swing.border.LineBorder;
 
 import com.google.gson.Gson;
 
-import object.CityTile;
-import object.IsLandTile;
-import object.SpecialTile;
 import object.Tile;
 import protocol.JFrameSet;
 import protocol.Protocol;
@@ -71,8 +67,6 @@ public class MarbleClient extends JFrame implements JFrameSet {
 	private int dice1;
 	private int dice2;
 	private int nowPlayerTile = 0;
-	private int playerX = 240;
-	private int playerY = 240;
 	private boolean isTurn = false; // 현재 플레이어의 턴인지
 	boolean isPlaying = true; // 플레이어 생존 여부
 	int isDouble = 0; // 더블 여부

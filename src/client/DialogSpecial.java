@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 import protocol.JFrameSet;
 
 public class DialogSpecial extends JDialog implements JFrameSet {
-	private DialogSpecial diallogSpecial = this;
-	private final static String TAG = "DiallogSpecial : ";
+	private DialogSpecial dialogSpecial = this;
+	private final static String TAG = "DialogSpecial : ";
 
 	private String id; // 해당 땅을 밟은 플레이어 id
 	private JLabel labelText, labelEvent; // 타일이름, 안내 문구

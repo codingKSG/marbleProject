@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 import protocol.JFrameSet;
 
 public class DialogCity extends JDialog implements JFrameSet {
-	private DialogCity diallogCity = this;
-	private final static String TAG = "DiallogCity : ";
+	private DialogCity dialogCity = this;
+	private final static String TAG = "DialogCity : ";
 
 	private String id; // 해당 땅을 밟은 플레이어 id
 	private int playerMoney;

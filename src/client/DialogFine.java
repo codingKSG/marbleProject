@@ -3,21 +3,17 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import object.Tile;
 import protocol.JFrameSet;
 
 public class DialogFine extends JDialog implements JFrameSet {
-	private DialogFine diallogSpecial = this;
-	private final static String TAG = "DiallogSpecial : ";
+	private DialogFine dialogSpecial = this;
+	private final static String TAG = "DialogFine : ";
 	
 	private String id; // 해당 땅을 밟은 플레이어 id
 
@@ -31,8 +27,6 @@ public class DialogFine extends JDialog implements JFrameSet {
 
 	// 다이얼 로그가 Tile에게 받아서 출력해야할 값들
 	private String tileName; // 해당 타일의 이름
-	private int tileNum; // 해당 타일의 번호
-
 
 	public DialogFine(String id) {
 		this.id = id;
