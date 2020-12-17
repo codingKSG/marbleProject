@@ -2,11 +2,15 @@
 
 ## 서버 구동 방법
 **MableLauncher.java**  
-MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
+
+1. protocol 패키지 내부의 Protocol.java 파일의 HOST 변수에 자신의 IP를 추가합니다.
+2. 포트 번호도 변경할 수 있습니다.
+3. 그 후 MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 
 ## 클라이언트 구동 방법
 **MarbleLogin.java**  
-		MarbleServer가 실행된 상태면, MarbleLogin.java를 통해 아이디를 입력한 후 로그인할 수 있습니다.<br/><br/>
+  
+MarbleServer가 실행된 상태면, MarbleLogin.java를 통해 아이디를 입력한 후 로그인할 수 있습니다.<br/><br/>
 
 ## 기본 동작 원리
 - 클라이언트 접속 시 서버와 소켓통신을 시작합니다.
@@ -25,23 +29,14 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 <br/><br/><br/>
 
 # 게임 구동 영상
- - 링크 넣을곳<br/><br/>
+ - 플레이어 1
+ https://youtu.be/UKnShk17EUE 
+ - 플레이어 2
+ https://youtu.be/PJy1z3gLQjs
+ - 플레이어 3
+ https://youtu.be/Xtr9wbpGMNQ
 
 <br/><br/>
-
-## 서버 구동 방법
-**MableLauncher.java**  
-MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
-
-## 클라이언트 구동 방법
-**MarbleLogin.java**  
-		MarbleServer가 실행된 상태면, MarbleLogin.java를 통해 아이디를 입력한 후 로그인할 수 있습니다.<br/><br/>
-
-## 활용 라이브러리
-** gson ** : 서버와 클라이언트 간 소켓 통신 시 toJson, fromJson을 통해 RequestDto 클래스를 이용하였습니다.  
-** lombok ** : Player 객체, Tile 객체 내부의 변수를 get/set 하기 위해 이용하였습니다.
-
-<br/><br/><br/>
 
 ## 로그인
 ![image](https://user-images.githubusercontent.com/63082842/102418718-a1690b80-4041-11eb-9727-bb08a63705b5.png)<br/><br/>
@@ -145,20 +140,20 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 ## 사용한 프로토콜
 
 ### IDSET
-** 플레이어 로그인 시 로그인창에 입력한 ID값을 서버로 전송하는 기능 **
+**플레이어 로그인 시 로그인창에 입력한 ID값을 서버로 전송하는 기능**
 
 ### IDCHECK
-** IDSET 시 이미 서버상에 존재하는 ID면 접속이 불가능하게 하는 기능 **  
+**IDSET 시 이미 서버상에 존재하는 ID면 접속이 불가능하게 하는 기능**  
 
 ### GAMEHOST
-** 방장이 된 플레이어의 클라이언트의 시작버튼을 활성화하는 기능 **  
+**방장이 된 플레이어의 클라이언트의 시작버튼을 활성화하는 기능**  
 <ol>
 	<li> 플레이어가 접속할 때마다 서버의 playerList(접속중인 플레이어를 담은 Vector)를 확인합니다.
 	<li> 2명 이상이 되면 playerList의 0번 인덱스 유저 클라이언트의 '시작버튼'을 활성화합니다.
 </ol>
 
 ### GAMESTART
-** 방장이 '시작버튼'을 누르면 서버의 시작여부 함수를 변경하고 시작을 알리는 기능 **
+**방장이 '시작버튼'을 누르면 서버의 시작여부 함수를 변경하고 시작을 알리는 기능**
 <ol>
 	<li> 서버의 시작여부 변수(isPlaying)를 true로 변경합니다. // default : false  
 	<li> PLAYERSET 프로토콜을 사용하여 클라이언트의 Player 객체의 ID값을 변경합니다.
@@ -167,7 +162,7 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 </ol>
 
 ### PLAYERSET
-** 서버로부터 각 플레이어의 ID값을 받아 클라이언트에 있는 Player 객체의 ID값을 변경하는 기능 **  
+**서버로부터 각 플레이어의 ID값을 받아 클라이언트에 있는 Player 객체의 ID값을 변경하는 기능**  
 <ol>
 	<li> 서버의 countPlayer 변수를 접속중인 플레이어 수만큼 지정합니다. (승리/패배 확인을 위해)
 	<li> 플레이어의 수만큼 차례대로 클라이언트의 player1, 2, 3, 4의 ID값을 설정해줍니다.
@@ -176,13 +171,13 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 </ol>
 
 ### TILELISTPULL
-** 게임 시작 시 서버의 타일정보를 클라이언트로 받아오는 기능 **
+**게임 시작 시 서버의 타일정보를 클라이언트로 받아오는 기능**
 
 ### INITTURN
-** 게임 시작 시 서버가 방장 플레이어에게 턴을 주는 기능 **
+**게임 시작 시 서버가 방장 플레이어에게 턴을 주는 기능**
 
 ### DICEROLL
-** 클라이언트의 '주사위 굴리기' 버튼을 누르면 1~6 랜덤값 두 개를 서버로 보내는 기능 **  
+**클라이언트의 '주사위 굴리기' 버튼을 누르면 1~6 랜덤값 두 개를 서버로 보내는 기능**  
 <ol>
 	<li> 클라이언트에 존재하는 '주사위 굴리기' 버튼을 누르면 playerRoll 함수가 실행됩니다.
 	<li> playerRoll 함수가 실행되면, DICEROLL 프로토콜을 사용하여 서버로 주사위 값을 보냅니다.
@@ -191,7 +186,7 @@ MarbleLauncher.java를 구동하면 MarbleServer가 실행됩니다.<br/><br/>
 </ol>
 
 ### MOVE
-** 주사위를 굴린 플레이어의 캐릭터의 발판위치를 변경하는 기능 **  
+**주사위를 굴린 플레이어의 캐릭터의 발판위치를 변경하는 기능**  
 <ol>
 	<li> 주사위를 굴린 플레이어의 ID를 받아서 player1, 2, 3, 4 중 해당 플레이어 번호를 찾습니다.
 	<li> 클라이언트에서는 플레이어 객체의 moveAnimation을 이용하여 확인된 해당 플레이어 번호의 캐릭터를 움직입니다.

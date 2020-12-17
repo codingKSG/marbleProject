@@ -1532,15 +1532,24 @@ public class MarbleClient extends JFrame implements JFrameSet {
 		                     } else if (TILE.getTileType() == 6) { //技拌咯青老 版快
 									isSpaceWait = true;
 		                     } //技拌咯青 场
-							    if (isDouble == 1) {
-								isTurn = true;
-							} else if ((isDouble == 0) || (isDouble == 2)) {
+						    
+							if (isSpaceWait == true) {
 								isTurn = false;
 								btnDiceRoll.setVisible(false);
-							}
-							if (isTurn == false) {
 								btnEndTurn.setVisible(true);
+							} else {
+								if (isDouble == 1) {
+									btnDiceRoll.setVisible(true);
+									isTurn = true;
+								} else if ((isDouble == 0) || (isDouble == 2)) {
+									isTurn = false;
+									btnDiceRoll.setVisible(false);
+								}
+								if (isTurn == false) {
+									btnEndTurn.setVisible(true);
+								}
 							}
+							
 						}
 					}
 
@@ -1779,7 +1788,7 @@ public class MarbleClient extends JFrame implements JFrameSet {
 													tempDto.setId(id);
 													writer.println(gson.toJson(tempDto));
 												}
-												isSpace = false;
+												isSpaceWait = false;
 												break;
 											}
 										} catch (InterruptedException e) {
